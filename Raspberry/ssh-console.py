@@ -1,7 +1,10 @@
 import paramiko
 import time
+import sys
 
-ip_address = '127.0.0.1'
+print('Successful connection!')
+ip_address = str(sys.argv[1])
+port = str(sys.argv[2])
 username='root'
 password = 'root'
 ssh_client = paramiko.SSHClient()
