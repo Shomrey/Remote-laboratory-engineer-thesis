@@ -20,7 +20,8 @@ $ pip install paramiko
 Uruchomienie skryptu:
 ```shell
 $ cd Raspberry
-$ python3 ssh-console-py
+$ make program
+python3 ssh-console.py 0.0.0.0 32769
 Successful connection!
 switch> enable
 switch>enable
@@ -67,4 +68,5 @@ interface FastEthernet0/12
 end
 
 switch#
-```
+switch> 
+
