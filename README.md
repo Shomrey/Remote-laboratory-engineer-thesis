@@ -1,3 +1,3 @@
 # Remote-laboratory-bachelor-degree
 
-#Praca inżynierska bardzo skomplikowana
+# Praca inżynierska bardzo skomplikowana
