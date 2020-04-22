@@ -1,5 +1,8 @@
 # Remote-laboratory-bachelor-degree
 
 
-## Praca inżynierska bardzo skomplikowana
+## Raspberry
+Jako sprzęt laboratoryjny na ten moment jest wykorzystywana bilbioteka fake-switches, w przyszłości będzie to rzeczywisty sprzęt laboratoryjny.
+
+
 
