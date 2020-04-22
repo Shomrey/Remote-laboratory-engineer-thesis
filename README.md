@@ -3,6 +3,7 @@
 
 ## Raspberry
 Jako sprzęt laboratoryjny na ten moment jest wykorzystywana bilbioteka fake-switches, w przyszłości będzie to rzeczywisty sprzęt laboratoryjny.<br /> 
+Skrypt ssh-console.py łączy się po ssh z interfejsem switcha, i udostępnia go użytkownikowi w formie konsoli. <br /> 
 ### Uruchomienie:
 Uruchomienie switch-a: (na Raspbianie trzeba zbudować obraz ze źródła, ten gotowy z dockerhuba nie chce współpracować):
 ```shell
