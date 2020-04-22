@@ -2,7 +2,6 @@ import paramiko
 import time
 import sys
 
-print('Successful connection!')
 ip_address = str(sys.argv[1])
 port = str(sys.argv[2])
 username='root'
