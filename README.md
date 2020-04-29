@@ -1,5 +1,7 @@
 # Remote-laboratory-bachelor-degree
 
+link do dokumentacji: https://www.overleaf.com/1198454443fcnrgqfhwzqb
+
 
 ## Raspberry
 Jako sprzęt laboratoryjny na ten moment jest wykorzystywana bilbioteka fake-switches, w przyszłości będzie to rzeczywisty sprzęt laboratoryjny.<br /> 
