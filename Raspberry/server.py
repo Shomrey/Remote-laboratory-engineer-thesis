@@ -1,7 +1,9 @@
+#This is script for testing virtual-device.py program.
+#It simply connects to client and allows user to enter commands.
+
 import paramiko
 import time
 import sys
-
 import socket
 
 
@@ -21,13 +23,14 @@ except socket.error as err:
 
 
 conn, addr = server.accept()
+
 while True:
+    #enter command
     cmd = input('>>')+'\n'
-
+    #send command to client(Raspberry)
     conn.send(cmd.encode())
-
+    #read&print result message after executing command
     message = conn.recv(1024)
-
     print(str(message.decode("utf-8") ))
     
     
