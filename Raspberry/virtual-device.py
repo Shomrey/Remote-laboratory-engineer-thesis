@@ -19,7 +19,7 @@ print('Connected to virtual device!')
 
 #server connection setup
 server_address = '127.0.0.1'
-server_port = 5050
+server_port = 5051
 
 try: 
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
