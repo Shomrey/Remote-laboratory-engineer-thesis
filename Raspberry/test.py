@@ -59,22 +59,6 @@ while True:
 
 
 
-# while True:
-#     try:         
-#             #listen for message from server
-#             message = server.recv(1024)
-#             if message:
-#                 cmd = message.decode()
-#                 #send message to device
-#                 device_connection.send(cmd.encode(encoding='UTF-8'))
-#                 time.sleep(1)
-#                 #read response from device after executing command
-#                 res = device_connection.recv(999)
-#                 #send response to server
-#                 server.send(res)
-#                 print(str(res.decode("utf-8") ))
-#     except:
-#         continue
 
   
 ssh_client.close 
