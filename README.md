@@ -2,6 +2,8 @@
 
 link do dokumentacji: https://www.overleaf.com/1198454443fcnrgqfhwzqb
 
+link do drive z materiałami: https://drive.google.com/drive/folders/1TX7XJqXAYbwheHr5op2QxaxSH4cafo3k?usp=sharing
+
 
 ## Raspberry
 Jako sprzęt laboratoryjny na ten moment jest wykorzystywana bilbioteka fake-switches, w przyszłości będzie to rzeczywisty sprzęt laboratoryjny.<br /> 
