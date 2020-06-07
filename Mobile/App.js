@@ -11,17 +11,14 @@ const Stack = createStackNavigator();
 export default function App() {
     return (
         <NavigationContainer>
-            <Stack.Navigator>
+            <Stack.Navigator initialRouteName="Login">
                 <Stack.Screen
                     name="Login"
                     component={Login}
                 />
-                <Stack.Screen 
+                <Stack.Screen
                     name="Main"
                     component={Main}
-                    options={{
-                        headerShown: false
-                    }}
                 />
             </Stack.Navigator>
         </NavigationContainer>
@@ -29,5 +26,5 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-    
+
 });

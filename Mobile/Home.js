@@ -1,21 +1,69 @@
 import 'react-native-gesture-handler';
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+import LabClassCard from './LabClassCard';
+import { createStackNavigator } from '@react-navigation/stack';
+import LabClass from './LabClass';
 
-export default function Home({ navigation }) {
+const Stack = createStackNavigator()
+
+export default function Home() {
     return (
-        <View style={styles.pageTitle}>
-            <Text>
-                Home page
-            </Text>
-        </View>
+        <Stack.Navigator initialRouteName="HomeContent">
+            <Stack.Screen
+                name="HomeContent"
+                component={HomeContent}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name="LabClass"
+                component={LabClass}
+                options={{ headerShown: false }}
+            />
+        </Stack.Navigator>
     );
 }
 
+function HomeContent({ navigation }) {
+    return (
+        <View style={styles.container}>
+            <Text style={styles.labsHeader}>
+                Available labs
+            </Text>
+            <View style={styles.labs}>
+                {labs.map(lab => <LabClassCard lab={lab} key={lab.id} navigation={navigation} />)}
+            </View>
+        </View>
+    )
+}
+
 const styles = StyleSheet.create({
-    pageTitle: {
+    container: {
+        display: "flex",
+        flexDirection: "column",
+        padding: 15
+    },
+    labsHeader: {
+        fontSize: 20,
+        fontWeight: "700",
+    },
+    labs: {
         flex: 1,
-        justifyContent: "center",
-        alignItems: "center"
+        flexDirection: "column"
     }
 });
+
+const labs = [
+    {
+        id: 1,
+        professor: "dr John Brown",
+        name: "Operating systems",
+        subject: "Sockets"
+    },
+    {
+        id: 2,
+        professor: "dr John Brown",
+        name: "Computer networks",
+        subject: "Introduction to the IP protocol"
+    }
+]
