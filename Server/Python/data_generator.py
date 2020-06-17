@@ -31,3 +31,5 @@ def add_enrollments():
     for i in range(1, 100):
         database.enroll_student(i,random.randint(1,9))
 
+
+print(str(database.get_teacher_labs(8)))
