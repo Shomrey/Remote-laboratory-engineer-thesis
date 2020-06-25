@@ -2,6 +2,7 @@ import socket
 import threading
 from flask import Flask, request, jsonify
 from flask_api import status
+from flask_cors import CORS, cross_origin
 import database
 
 
@@ -46,6 +47,7 @@ socketServerThread = threading.Thread(target=run_socket_server)
 socketServerThread.start()
 
 app = Flask(__name__)
+CORS(app)
 
 
 @app.route('/user/register', methods=['POST'])
@@ -63,6 +65,7 @@ def register_user():
 @app.route('/user/login', methods=['POST'])
 def login():
     content = request.get_json()
+    print('Login request', content)
     # TODO content validation
     # TODO hash the password
     if database.validate_user(content['mail'], content['password']):
