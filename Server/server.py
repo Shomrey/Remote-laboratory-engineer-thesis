@@ -1,6 +1,6 @@
 import socket
 import threading
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_api import status
 import database
 
@@ -52,17 +52,39 @@ app = Flask(__name__)
 def register_user():
     content = request.get_json()
     # TODO content validation
-    if database.add_student(content['name'], content['surname'],
-                            content['mail'], content['password']):  # TODO hash the password
+    # TODO hash the password
+    if database.add_user(content['name'], content['surname'],
+                         content['mail'], content['password'], content['user_type']):
         return 'Registered succesfully', status.HTTP_200_OK
     else:
         return 'Failed to register', status.HTTP_400_BAD_REQUEST
+
 
 @app.route('/user/login', methods=['POST'])
 def login():
     content = request.get_json()
     # TODO content validation
-    if database.validate_student(content['mail'], content['password']):  # TODO hash the password
+    # TODO hash the password
+    if database.validate_user(content['mail'], content['password']):
         return 'Login succesful', status.HTTP_200_OK
     else:
         return 'Failed to log in', status.HTTP_400_BAD_REQUEST
+
+
+@app.route('/user/<user_id>/labs')
+def get_user_labs(user_id):
+    if request.args.get('type') == 'teacher':
+        return jsonify(database.get_teacher_labs(user_id))
+    else:
+        return jsonify(database.get_labs_for_student(user_id))
+
+
+@app.route('/user/<user_id>/labs', methods=['POST'])
+def add_lab():
+    content = request.get_json()
+    # TODO content validation
+    if database.add_laboratory(content['date'], content['duration'], content['title'], content['configuration'],
+                               content['description'], content['topology'], content['max_students'], content['teacher']):
+        return 'Lab added succesfully', status.HTTP_200_OK
+    else:
+        return 'Failed to add lab', status.HTTP_400_BAD_REQUEST
