@@ -1,28 +1,31 @@
 import 'react-native-gesture-handler';
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { DrawerActions } from '@react-navigation/native';
+import { DrawerActions, NavigationContainer } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import Home from './Home';
 import Settings from './Settings';
+import { Header } from 'react-native-elements';
 
 const Drawer = createDrawerNavigator();
 
 export default function Main({ navigation }) {
-    navigation.setOptions({
-        headerLeft: () => (
-            <Icon name="menu" size={40} style={styles.menu} onPress={() => {
-                navigation.dispatch(DrawerActions.toggleDrawer())
-            }} />
-        )
-    })
+    // navigation.setOptions({
+    //     headerLeft: () => (
+    //         <Icon name="menu" size={40} style={styles.menu} onPress={() => {
+    //             navigation.dispatch(DrawerActions.toggleDrawer())
+    //         }} />
+    //     )
+    // })
 
     return (
-        <Drawer.Navigator initialRouteName="Home">
-            <Drawer.Screen name="Home" component={Home} />
-            <Drawer.Screen name="Settings" component={Settings} />
-        </Drawer.Navigator>
+        <NavigationContainer>
+            <Drawer.Navigator initialRouteName="Home">
+                <Drawer.Screen name="Home" component={Home} options={{}}/>
+                <Drawer.Screen name="Settings" component={Settings} />
+            </Drawer.Navigator>
+        </NavigationContainer>
     );
 }
 
