@@ -4,12 +4,14 @@ import { StyleSheet, Text, View } from 'react-native';
 import LabClassCard from './LabClassCard';
 import { createStackNavigator } from '@react-navigation/stack';
 import LabClass from './LabClass';
+import { Header, Icon } from 'react-native-elements';
+import { DrawerActions } from '@react-navigation/native';
 
 const Stack = createStackNavigator()
 
 export default function Home() {
     return (
-        <Stack.Navigator initialRouteName="HomeContent">
+        <Stack.Navigator initialRouteName="HomeContent" mode="modal">
             <Stack.Screen
                 name="HomeContent"
                 component={HomeContent}
@@ -18,7 +20,7 @@ export default function Home() {
             <Stack.Screen
                 name="LabClass"
                 component={LabClass}
-                options={{ headerShown: false }}
+                options={{title: "Laboratory class"}}
             />
         </Stack.Navigator>
     );
@@ -26,12 +28,22 @@ export default function Home() {
 
 function HomeContent({ navigation }) {
     return (
-        <View style={styles.container}>
-            <Text style={styles.labsHeader}>
-                Available labs
+        <View>
+            <Header
+                leftComponent={
+                    <Icon name="menu" size={40} onPress={() => {
+                        navigation.dispatch(DrawerActions.toggleDrawer())
+                    }} />
+                }
+                backgroundColor="white"
+            />
+            <View style={styles.container}>
+                <Text style={styles.labsHeader}>
+                    Available labs
             </Text>
-            <View style={styles.labs}>
-                {labs.map(lab => <LabClassCard lab={lab} key={lab.id} navigation={navigation} />)}
+                <View style={styles.labs}>
+                    {labs.map(lab => <LabClassCard lab={lab} key={lab.id} navigation={navigation} />)}
+                </View>
             </View>
         </View>
     )
