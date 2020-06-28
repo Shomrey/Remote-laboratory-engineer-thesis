@@ -71,7 +71,7 @@ def login():
     if database.validate_user(content['mail'], content['password']):
         return 'Login succesful', status.HTTP_200_OK
     else:
-        return 'Failed to log in', status.HTTP_400_BAD_REQUEST
+        return 'Failed to log in', status.HTTP_401_UNAUTHORIZED
 
 
 @app.route('/user/<user_id>/labs')
