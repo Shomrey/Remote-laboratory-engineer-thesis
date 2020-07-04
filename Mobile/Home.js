@@ -1,11 +1,12 @@
 import 'react-native-gesture-handler';
-import React from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import LabClassCard from './LabClassCard';
 import { createStackNavigator } from '@react-navigation/stack';
 import LabClass from './LabClass';
 import { Header, Icon } from 'react-native-elements';
 import { DrawerActions } from '@react-navigation/native';
+import { AuthContext } from './AuthContext';
 
 const Stack = createStackNavigator()
 
@@ -20,13 +21,15 @@ export default function Home() {
             <Stack.Screen
                 name="LabClass"
                 component={LabClass}
-                options={{title: "Laboratory class"}}
+                options={{ title: "Laboratory class" }}
             />
         </Stack.Navigator>
     );
 }
 
 function HomeContent({ navigation }) {
+    const [token, setToken] = useContext(AuthContext);
+
     return (
         <View>
             <Header

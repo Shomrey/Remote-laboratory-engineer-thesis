@@ -73,6 +73,10 @@ def login():
         return 'Failed to log in', status.HTTP_401_UNAUTHORIZED
     else:
         response = Response('Login succesful')
+
+        # required for testing in chrome
+        response.headers['Access-Control-Expose-Headers'] = 'auth-token'
+
         response.headers['auth-token'] = jwt.encode(
             {'id': user_id}, 'secret', algorithm='HS256')
         return response

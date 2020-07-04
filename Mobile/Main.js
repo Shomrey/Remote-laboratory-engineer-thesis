@@ -11,13 +11,6 @@ import { Header } from 'react-native-elements';
 const Drawer = createDrawerNavigator();
 
 export default function Main({ navigation }) {
-    // navigation.setOptions({
-    //     headerLeft: () => (
-    //         <Icon name="menu" size={40} style={styles.menu} onPress={() => {
-    //             navigation.dispatch(DrawerActions.toggleDrawer())
-    //         }} />
-    //     )
-    // })
 
     return (
         <NavigationContainer>
