@@ -22,7 +22,7 @@ export default function Main({ navigation }) {
     return (
         <NavigationContainer>
             <Drawer.Navigator initialRouteName="Home">
-                <Drawer.Screen name="Home" component={Home} options={{}}/>
+                <Drawer.Screen name="Home" component={Home} options={{}} />
                 <Drawer.Screen name="Settings" component={Settings} />
             </Drawer.Navigator>
         </NavigationContainer>

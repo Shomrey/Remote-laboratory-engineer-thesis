@@ -120,11 +120,10 @@ def validate_user(mail: str, password: str):
     student = students.fetchone()
     if student == None:
         print("Failed to validate student, no student with mail: " + str(mail))
-        return False
+        return None
     else:
-        print(student)
         if student['password_hash'] == password:
-            return True
+            return student['id']
         else:
             print('Passwords do not match')
-            return False
+            return None

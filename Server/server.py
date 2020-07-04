@@ -1,9 +1,10 @@
 import socket
 import threading
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 from flask_api import status
 from flask_cors import CORS, cross_origin
 import database
+import jwt
 
 
 def run_socket_server():
@@ -20,8 +21,8 @@ def run_socket_server():
     response_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     response_socket.bind(('', response_port))
 
-    #mobile_server_socket.bind(('', mobile_port))
-    #raspberry_server_socket.bind(('', raspberry_port))
+    # mobile_server_socket.bind(('', mobile_port))
+    # raspberry_server_socket.bind(('', raspberry_port))
 
     print('Server started, listening on', server_ip)
     print('Ports:')
@@ -65,24 +66,31 @@ def register_user():
 @app.route('/user/login', methods=['POST'])
 def login():
     content = request.get_json()
-    print('Login request', content)
     # TODO content validation
     # TODO hash the password
-    if database.validate_user(content['mail'], content['password']):
-        return 'Login succesful', status.HTTP_200_OK
-    else:
+    user_id = database.validate_user(content['mail'], content['password'])
+    if user_id is None:
         return 'Failed to log in', status.HTTP_401_UNAUTHORIZED
+    else:
+        response = Response('Login succesful')
+        response.headers['auth-token'] = jwt.encode(
+            {'id': user_id}, 'secret', algorithm='HS256')
+        return response
 
 
-@app.route('/user/<user_id>/labs')
-def get_user_labs(user_id):
+@app.route('/user/labs')
+def get_user_labs():
+    try:
+        user_id = validate_token(request.headers['auth-token'])
+    except jwt.InvalidSignatureError:
+        return 'Unauthorized access', status.HTTP_401_UNAUTHORIZED
     if request.args.get('type') == 'teacher':
         return jsonify(database.get_teacher_labs(user_id))
     else:
         return jsonify(database.get_labs_for_student(user_id))
 
 
-@app.route('/user/<user_id>/labs', methods=['POST'])
+@app.route('/user/labs', methods=['POST'])
 def add_lab():
     content = request.get_json()
     # TODO content validation
@@ -91,3 +99,7 @@ def add_lab():
         return 'Lab added succesfully', status.HTTP_200_OK
     else:
         return 'Failed to add lab', status.HTTP_400_BAD_REQUEST
+
+
+def validate_token(token: str):
+    return jwt.decode(token, 'secret', algorithms=['HS256'])['id']
