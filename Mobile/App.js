@@ -10,6 +10,7 @@ export default function App() {
     const [waitingForResponse, setWaitingForResponse] = useState(false);
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
 
     return (
         isLoggedIn ?
@@ -32,14 +33,15 @@ export default function App() {
                     <TextInput placeholder="Password" onChangeText={text => setPassword(text)} secureTextEntry={true} />
                 </View>
                 <View style={styles.buttonWrapper}>
-                    <Button title="Log in" color="black" style={styles.button} disabled={waitingForResponse} onPress={() => loginFunction(login, password, setIsLoggedIn, setWaitingForResponse)} />
+                    <Button title="Log in" color="black" style={styles.button} disabled={waitingForResponse} onPress={() => loginFunction(login, password, setIsLoggedIn, setWaitingForResponse, setErrorMessage)} />
                 </View>
+                <Text style={styles.errorMessage}> {errorMessage} </Text>
                 <ActivityIndicator style={styles.loader} animating={waitingForResponse} size="large" color="#000000" />
             </View>)
     );
 }
 
-function loginFunction(login, password, loginSuccessfulHandler, waitingForResponseHandler) {
+function loginFunction(login, password, loginSuccessfulHandler, waitingForResponseHandler, errorMessageHandler) {
     waitingForResponseHandler(true);
 
     Axios.post('http://localhost:5000/user/login', {
@@ -53,12 +55,12 @@ function loginFunction(login, password, loginSuccessfulHandler, waitingForRespon
             waitingForResponseHandler(false);
             if (error.response) {
                 if (error.response.status === 401) {
-                    console.log('Invalid credentials');
+                    errorMessageHandler('Incorrect login or password.')
                 } else {
-                    console.log('Server error');
+                    errorMessageHandler('Unknown server error.')
                 }
             } else {
-                console.log('Connection error')
+                errorMessageHandler('Failed to connect to the server.')
             }
         });
 }
@@ -68,7 +70,7 @@ const styles = StyleSheet.create({
         padding: 50,
         flex: 1,
         flexDirection: "column",
-        justifyContent: "center"
+        justifyContent: "center",
     },
     input: {
         marginBottom: 20,
@@ -90,11 +92,10 @@ const styles = StyleSheet.create({
         marginBottom: 100,
         textTransform: "uppercase",
         fontFamily: "Roboto",
-        fontWeight: "bold",
+        fontWeight: "700",
         fontSize: 18,
         lineHeight: 21,
-        letterSpacing: 0.05,
-        fontWeight: "500",
+        letterSpacing: 1,
     },
     loader: {
         marginTop: 10
@@ -105,5 +106,10 @@ const styles = StyleSheet.create({
         width: 150,
         marginLeft: "auto",
         marginRight: "auto"
+    },
+    errorMessage: {
+        margin: 10,
+        color: 'red',
+        textAlign: "center"
     }
 });
