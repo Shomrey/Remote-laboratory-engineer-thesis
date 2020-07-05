@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import LabClassCard from './LabClassCard';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -7,6 +7,7 @@ import LabClass from './LabClass';
 import { Header, Icon } from 'react-native-elements';
 import { DrawerActions } from '@react-navigation/native';
 import { AuthContext } from './AuthContext';
+import Axios from 'axios';
 
 const Stack = createStackNavigator()
 
@@ -29,6 +30,10 @@ export default function Home() {
 
 function HomeContent({ navigation }) {
     const [token, setToken] = useContext(AuthContext);
+    const [labs, setLabs] = useState([]);
+    const [labsDownloaded, setLabsDownloaded] = useState(false);
+
+    getUsersLabs(token, labs, setLabs, labsDownloaded, setLabsDownloaded);
 
     return (
         <View>
@@ -52,6 +57,28 @@ function HomeContent({ navigation }) {
     )
 }
 
+function getUsersLabs(token, labs, setLabs, labsDownloaded, setLabsDownloaded) {
+    console.log(labs)
+    if (!labsDownloaded) {
+        Axios.get('http://localhost:5000/user/labs', { headers: { 'auth-token': token } })
+            .then(function (response) {
+                setLabsDownloaded(true);
+                setLabs(response.data);
+            })
+            .catch(function (error) {
+                if (error.response) {
+                    if (error.response.status === 401) {
+                        console.log('Failed to authenticate.')
+                    } else {
+                        console.log('Unknown server error.')
+                    }
+                } else {
+                    console.log('Failed to connect to the server.')
+                }
+            });
+    }
+}
+
 const styles = StyleSheet.create({
     container: {
         display: "flex",
@@ -67,18 +94,3 @@ const styles = StyleSheet.create({
         flexDirection: "column"
     }
 });
-
-const labs = [
-    {
-        id: 1,
-        professor: "dr John Brown",
-        name: "Operating systems",
-        subject: "Sockets"
-    },
-    {
-        id: 2,
-        professor: "dr John Brown",
-        name: "Computer networks",
-        subject: "Introduction to the IP protocol"
-    }
-]

@@ -109,7 +109,7 @@ def get_labs_for_student(student_id: int) -> list:
         print("Failed to read, no student with id: "+str(student_id))
         return False
     result = c.execute(
-        'SELECT laboratory FROM Enrollments WHERE student=?', (student_id,))
+        'SELECT l.*, u.name, u.surname FROM Enrollments e JOIN Labs l ON e.laboratory=l.id JOIN Users u ON l.teacher=u.id WHERE student=?', (student_id,))
     return result.fetchall()
 
 

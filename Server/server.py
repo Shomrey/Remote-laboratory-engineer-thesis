@@ -89,9 +89,11 @@ def get_user_labs():
     except jwt.InvalidSignatureError:
         return 'Unauthorized access', status.HTTP_401_UNAUTHORIZED
     if request.args.get('type') == 'teacher':
-        return jsonify(database.get_teacher_labs(user_id))
+        lab_rows = database.get_teacher_labs(user_id)
+        return jsonify(rows_to_labs(lab_rows))
     else:
-        return jsonify(database.get_labs_for_student(user_id))
+        lab_rows = database.get_labs_for_student(user_id)
+        return jsonify(rows_to_labs(lab_rows))
 
 
 @app.route('/user/labs', methods=['POST'])
@@ -107,3 +109,13 @@ def add_lab():
 
 def validate_token(token: str):
     return jwt.decode(token, 'secret', algorithms=['HS256'])['id']
+
+
+def rows_to_labs(rows):
+    labs = []
+    for row in rows:
+        labs.append({'id': row['id'], 'date': row['date'],
+                     'duration': row['duration'], 'title': row['title'],
+                     'configuration': row['configuration'], 'description': row['description'],
+                     'teacher': row['name'] + ' ' + row['surname']})
+    return labs
