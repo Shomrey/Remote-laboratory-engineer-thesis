@@ -1,12 +1,10 @@
 import 'react-native-gesture-handler';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet} from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { DrawerActions, NavigationContainer } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/MaterialIcons'
+import { NavigationContainer } from '@react-navigation/native';
 import Home from './Home';
 import Settings from './Settings';
-import { Header } from 'react-native-elements';
 
 const Drawer = createDrawerNavigator();
 

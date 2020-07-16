@@ -15,7 +15,7 @@ def create_tables():
     conn.commit()
 
     # Labs table
-    c.execute('''CREATE TABLE IF NOT EXISTS Labs (id integer PRIMARY KEY AUTOINCREMENT,date text,duration integer, title text, configuration text, description text, topology blob, max_students integer DEFAULT 1,teacher integer, FOREIGN KEY(teacher) REFERENCES Users(id))''')
+    c.execute('''CREATE TABLE IF NOT EXISTS Labs (id integer PRIMARY KEY AUTOINCREMENT,date text,duration integer, title text, configuration text, description text, topology blob, max_students integer DEFAULT 1,teacher integer, tasks text, FOREIGN KEY(teacher) REFERENCES Users(id))''')
     conn.commit()
 
     # Enrollments table

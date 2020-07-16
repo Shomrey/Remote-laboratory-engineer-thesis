@@ -16,20 +16,22 @@ const labDetails = {
 
 const Tab = createMaterialTopTabNavigator();
 
-export default function LabClass() {
+export default function LabClass(props) {
+    const lab = props.route.params.lab;
+
     return (
         <Tab.Navigator>
-            <Tab.Screen name="Introduction" component={LabIntroduction} />
+            <Tab.Screen name="Introduction" component={LabIntroduction} initialParams={{text: lab.description}}/>
             <Tab.Screen name="Tasks" component={LabTasks} />
             <Tab.Screen name="Terminal" component={LabTerminal} />
         </Tab.Navigator>
     )
 }
 
-function LabIntroduction() {
+function LabIntroduction(props) {
     return (
         <View style={styles.tabContainer}>
-            <Text style={styles.text}> {labDetails.introduction} </Text>
+            <Text style={styles.text}> {props.route.params.text} </Text>
         </View>
     )
 }
