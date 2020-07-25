@@ -1,7 +1,7 @@
 import 'react-native-gesture-handler';
 import React from 'react';
-import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import {StyleSheet, Text, View, Button, TextInput} from 'react-native';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
 const labDetails = {
@@ -22,24 +22,28 @@ export default function LabClass(props) {
     return (
         <Tab.Navigator>
             <Tab.Screen name="Introduction" component={LabIntroduction} initialParams={{text: lab.description}}/>
-            <Tab.Screen name="Tasks" component={LabTasks} />
+            <Tab.Screen name="Tasks" component={LabTasks} initialParams={{tasks: lab.tasks}}/>
             <Tab.Screen name="Terminal" component={LabTerminal} />
         </Tab.Navigator>
     )
 }
 
 function LabIntroduction(props) {
+    const introduction = props.route.params.text;
+
     return (
         <View style={styles.tabContainer}>
-            <Text style={styles.text}> {props.route.params.text} </Text>
+            <Text style={styles.text}> {introduction} </Text>
         </View>
     )
 }
 
-function LabTasks() {
+function LabTasks(props) {
+    const tasks = props.route.params.tasks;
+
     return (
         <View style={styles.tabContainer}>
-            <Text style={styles.text}> {labDetails.tasks} </Text>
+            <Text style={styles.text}> {tasks.replace(/#/gi, '\n')} </Text>
         </View>
     )
 }
@@ -56,11 +60,11 @@ function LabTerminal() {
             </View>
             <View style={styles.inputContainer}>
                 <View style={styles.input}>
-                    <TextInput style={styles.textInput} placeholder="Write your commands here" />
+                    <TextInput style={styles.textInput} placeholder="Write your commands here"/>
                 </View>
                 <Icon name="play-arrow" size={60} onPress={() => {
 
-                }} />
+                }}/>
             </View>
         </View>
     )
@@ -89,9 +93,7 @@ const styles = StyleSheet.create({
         width: '80%',
         padding: 10
     },
-    button: {
-
-    },
+    button: {},
     inputContainer: {
         marginTop: 25,
         height: '13%',

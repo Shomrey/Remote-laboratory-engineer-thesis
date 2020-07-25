@@ -25,8 +25,8 @@ def add_labs():
         reader = csv.reader(f)
         datas = list(reader)
     for data in datas:
-        database.add_laboratory(data[1], int(
-            data[2]), data[3], data[4], data[5], data[6], int(data[7]), int(data[8]))
+        database.add_laboratory(data[1],
+            data[2], data[3], data[4], data[5], data[6], data[7], int(data[8]), int(data[9]))
 
 
 def add_enrollments():

@@ -117,5 +117,5 @@ def rows_to_labs(rows):
         labs.append({'id': row['id'], 'date': row['date'],
                      'duration': row['duration'], 'title': row['title'],
                      'configuration': row['configuration'], 'description': row['description'],
-                     'teacher': row['name'] + ' ' + row['surname']})
+                     'tasks': row['tasks'], 'teacher': row['name'] + ' ' + row['surname']})
     return labs

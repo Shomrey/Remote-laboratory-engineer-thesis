@@ -11,15 +11,45 @@ c = conn.cursor()
 def create_tables():
     global c
     # Users table
-    c.execute('''CREATE TABLE IF NOT EXISTS Users (id integer PRIMARY KEY AUTOINCREMENT, name text, surname text, mail text UNIQUE, password_hash text NOT NULL, user_type text NOT NULL)''')
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS Users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT, 
+            name TEXT, 
+            surname TEXT, 
+            mail TEXT UNIQUE, 
+            password_hash TEXT NOT NULL, 
+            user_type TEXT NOT NULL
+        )''')
     conn.commit()
 
     # Labs table
-    c.execute('''CREATE TABLE IF NOT EXISTS Labs (id integer PRIMARY KEY AUTOINCREMENT,date text,duration integer, title text, configuration text, description text, topology blob, max_students integer DEFAULT 1,teacher integer, tasks text, FOREIGN KEY(teacher) REFERENCES Users(id))''')
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS Labs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            date TEXT,duration INTEGER, 
+            title TEXT, 
+            configuration TEXT, 
+            description TEXT,
+            tasks TEXT,
+            topology BLOB, 
+            max_students INTEGER DEFAULT 1,
+            teacher INTEGER, 
+            FOREIGN KEY(teacher) REFERENCES Users(id)
+        )''')
     conn.commit()
 
     # Enrollments table
-    c.execute('''CREATE TABLE IF NOT EXISTS Enrollments (id integer PRIMARY KEY AUTOINCREMENT, student integer, laboratory integer, result text, score int, comment text,FOREIGN KEY(student) REFERENCES Users(id),FOREIGN KEY(laboratory) REFERENCES Labs(id) )''')
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS Enrollments (
+            id INTEGER PRIMARY KEY AUTOINCREMENT, 
+            student INTEGER, 
+            laboratory INTEGER, 
+            result TEXT, 
+            score INTEGER,
+            comment TEXT,
+            FOREIGN KEY(student) REFERENCES Users(id),
+            FOREIGN KEY(laboratory) REFERENCES Labs(id) 
+        )''')
     conn.commit()
 
 
@@ -37,17 +67,17 @@ def add_user(name: str, surname: str, mail: str, password_hash: str, user_type: 
         return False
 
 
-def add_laboratory(date: str, duration: int, title: str, configuration: str, description: str, topology, max_students: int, teacher: int) -> bool:
+def add_laboratory(date: str, duration: int, title: str, configuration: str, description: str, tasks: str, topology, max_students: int, teacher: int) -> bool:
     global c
     check = c.execute('SELECT * FROM Users WHERE id=?', (teacher,))
     if len(check.fetchall()) == 0:
         print("Failed to add library, no teacher with id: "+str(teacher))
         return False
 
-    sql = ''' INSERT INTO Labs(date,duration, title, configuration, description, topology, max_students, teacher) VALUES(?,?,?,?,?,?,?,?)'''
+    sql = ''' INSERT INTO Labs(date,duration, title, configuration, description, tasks, topology, max_students, teacher) VALUES(?,?,?,?,?,?,?,?,?)'''
     try:
         c.execute(sql, (date, duration, title, configuration,
-                        description, topology, max_students, teacher))
+                        description, tasks, topology, max_students, teacher))
         conn.commit()
         return True
     except:
@@ -108,8 +138,12 @@ def get_labs_for_student(student_id: int) -> list:
     if len(check_student.fetchall()) == 0:
         print("Failed to read, no student with id: "+str(student_id))
         return False
-    result = c.execute(
-        'SELECT l.*, u.name, u.surname FROM Enrollments e JOIN Labs l ON e.laboratory=l.id JOIN Users u ON l.teacher=u.id WHERE student=?', (student_id,))
+    result = c.execute('''
+        SELECT l.*, u.name, u.surname
+        FROM Enrollments e
+        JOIN Labs l ON e.laboratory=l.id
+        JOIN Users u ON l.teacher=u.id
+        WHERE student=?''', (student_id,))
     return result.fetchall()
 
 
