@@ -95,6 +95,14 @@ def get_user_labs():
         lab_rows = database.get_labs_for_student(user_id)
         return jsonify(rows_to_labs(lab_rows))
 
+@app.route('/user/current')
+def get_current_user_data():
+    try:
+        user_id = validate_token(request.headers['auth-token'])
+    except jwt.InvalidSignatureError:
+        return 'Unauthorized access', status.HTTP_401_UNAUTHORIZED
+    user = database.get_user(user_id)
+    return jsonify(row_to_user(user))
 
 @app.route('/user/labs', methods=['POST'])
 def add_lab():
@@ -119,3 +127,12 @@ def rows_to_labs(rows):
                      'configuration': row['configuration'], 'description': row['description'],
                      'tasks': row['tasks'], 'teacher': row['name'] + ' ' + row['surname']})
     return labs
+
+def row_to_user(row):
+    return {
+        'id': row['id'],
+        'name': row['name'],
+        'surname': row['surname'],
+        'mail': row['mail'],
+        'user_type': row['user_type']
+    }

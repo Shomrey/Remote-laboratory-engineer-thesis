@@ -5,6 +5,8 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 import Home from './Home';
 import Settings from './Settings';
+import {Icon} from "react-native-elements";
+import Account from "./Account";
 
 const Drawer = createDrawerNavigator();
 
@@ -13,8 +15,9 @@ export default function Main({ navigation }) {
     return (
         <NavigationContainer>
             <Drawer.Navigator initialRouteName="Home">
-                <Drawer.Screen name="Home" component={Home} options={{}} />
-                <Drawer.Screen name="Settings" component={Settings} />
+                <Drawer.Screen name="Home" component={Home} options={{drawerIcon: () => (<Icon name='home'/>)}} />
+                <Drawer.Screen name="Account" component={Account} options={{drawerIcon: () => (<Icon name='account_circle' type='material'/>)}} />
+                <Drawer.Screen name="Settings" component={Settings} options={{drawerIcon: () => (<Icon name='settings'/>)}} />
             </Drawer.Navigator>
         </NavigationContainer>
     );

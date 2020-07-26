@@ -48,7 +48,7 @@ function HomeContent({ navigation }) {
             <View style={styles.container}>
                 <Text style={styles.labsHeader}>
                     Available labs
-            </Text>
+                </Text>
                 <View style={styles.labs}>
                     {labs.map(lab => <LabClassCard lab={lab} key={lab.id} navigation={navigation} />)}
                 </View>
@@ -83,7 +83,8 @@ const styles = StyleSheet.create({
     container: {
         display: "flex",
         flexDirection: "column",
-        padding: 15
+        padding: 15,
+        flex: 1
     },
     labsHeader: {
         fontSize: 20,
@@ -91,6 +92,6 @@ const styles = StyleSheet.create({
     },
     labs: {
         flex: 1,
-        flexDirection: "column"
+        flexDirection: "column",
     }
 });

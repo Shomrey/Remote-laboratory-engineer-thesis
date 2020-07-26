@@ -119,6 +119,16 @@ def get_teacher_labs(teacher_id: int) -> list:
     result = c.execute('SELECT * FROM Labs WHERE teacher=?', (teacher_id,))
     return result.fetchall()
 
+def get_user(user_id: int):
+    global c
+    user = c.execute(
+        'SELECT * FROM Users WHERE id=?', (user_id,))
+    result = user.fetchall()
+    if len(result) == 0:
+        print("Failed to read, no user with id: "+str(user_id))
+        return None
+    return result[0]
+
 
 def get_students_from_lab(lab_id: int) -> list:
     global c
