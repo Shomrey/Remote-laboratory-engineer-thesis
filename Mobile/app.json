@@ -22,7 +22,12 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
-    }
+      "supportsTablet": true,
+      "bundleIdentifier": "pl.edu.agh.remotelab"
+    },
+    "android": {
+      "package": "pl.edu.agh.remotelab"
+    },
+    "entryPoint": "node_modules/expo/AppEntry.js"
   }
 }
