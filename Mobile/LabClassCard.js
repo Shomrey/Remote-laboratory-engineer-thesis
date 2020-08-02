@@ -22,7 +22,6 @@ export default function LabClassCard(props) {
 
 const styles = StyleSheet.create({
     touchable: {
-        height: 112,
         borderRadius: 5,
         marginTop: 10,
         backgroundColor: "#e6e6eb",
@@ -36,10 +35,7 @@ const styles = StyleSheet.create({
         elevation: 6
     },
     content: {
-        display: "flex",
-        flexDirection: "column",
         padding: 16,
-        flex: 1
     },
     profName: {
         fontSize: 14,
@@ -55,8 +51,6 @@ const styles = StyleSheet.create({
         lineHeight: 20,
         letterSpacing: 0.25,
         color: "rgba(0, 0, 0, 0.6)",
-        position: "absolute",
-        bottom: 16,
-        left: 16
+        marginTop: 6
     }
 });

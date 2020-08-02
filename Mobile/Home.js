@@ -84,14 +84,12 @@ const styles = StyleSheet.create({
         display: "flex",
         flexDirection: "column",
         padding: 15,
-        flex: 1
     },
     labsHeader: {
         fontSize: 20,
         fontWeight: "700",
     },
     labs: {
-        flex: 1,
         flexDirection: "column",
     }
 });
