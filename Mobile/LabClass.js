@@ -30,13 +30,13 @@ export default function LabClass(props) {
 }
 
 function LabIntroduction(props) {
-    const { description, topology } = props.route.params;
+    const {description, topology} = props.route.params;
 
     return (
         <View style={styles.tabContainer}>
-            <Text style={styles.text}> {description} </Text>
-            <Text> {'\n'} </Text>
-            <Text style={styles.text}> {'Topology: \n' + topology}</Text>
+            <Text style={styles.text}>{description}</Text>
+            <Text>{'\n'}</Text>
+            <Text style={styles.text}>{'Topology: \n' + topology}</Text>
         </View>
     )
 }
@@ -46,7 +46,7 @@ function LabTasks(props) {
 
     return (
         <View style={styles.tabContainer}>
-            <Text style={styles.text}> {tasks.replace(/#/gi, '\n')} </Text>
+            <Text style={styles.text}>{tasks ? tasks.replace(/#/gi, '\n'): ''}</Text>
         </View>
     )
 }
@@ -56,18 +56,19 @@ function LabTerminal() {
         <View style={styles.tabContainer}>
             <View style={styles.terminalWindow}>
                 <Text style={styles.terminalText}>
-                    &gt;&gt; enable
-                    <Text> {'\n'} </Text>
-                    &gt;&gt; conf t
+                    &gt;&gt;enable
+                    <Text>{'\n'}</Text>
+                    &gt;&gt;conf t
                 </Text>
             </View>
-            <KeyboardAvoidingView behavior={"padding"} style={styles.inputContainer}>
-                <View style={styles.input}>
-                    <TextInput style={styles.textInput} placeholder="Write your commands here"/>
+            <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} keyboardVerticalOffset={140}>
+                <View style={styles.inputContainer}>
+                    <View style={styles.input}>
+                        <TextInput style={styles.textInput} placeholder="Write your commands here"/>
+                    </View>
+                    <Icon name="play-arrow" size={60} onPress={() => {
+                    }}/>
                 </View>
-                <Icon name="play-arrow" size={60} onPress={() => {
-
-                }}/>
             </KeyboardAvoidingView>
         </View>
     )
@@ -84,27 +85,24 @@ const styles = StyleSheet.create({
     terminalWindow: {
         borderColor: 'black',
         borderWidth: 1,
-        height: '80%',
         padding: 10,
         fontSize: 16,
-        fontFamily: 'consolas'
+        flex: 1
     },
     input: {
         borderColor: 'black',
         borderWidth: 1,
-        height: '100%',
         width: '80%',
-        padding: 10
+        justifyContent: 'center',
+        paddingLeft: 10
     },
     button: {},
     inputContainer: {
         marginTop: 25,
-        height: '13%',
         flexDirection: 'row',
         justifyContent: "space-between"
     },
     textInput: {
-        height: '100%',
         fontSize: 16
     },
     terminalText: {

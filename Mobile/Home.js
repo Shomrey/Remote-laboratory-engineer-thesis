@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 import React, { useContext, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import LabClassCard from './LabClassCard';
 import { createStackNavigator } from '@react-navigation/stack';
 import LabClass from './LabClass';
@@ -45,14 +45,16 @@ function HomeContent({ navigation }) {
                 }
                 backgroundColor="white"
             />
-            <View style={styles.container}>
+            <ScrollView style={styles.container}>
                 <Text style={styles.labsHeader}>
                     Available labs
                 </Text>
                 <View style={styles.labs}>
                     {labs.map(lab => <LabClassCard lab={lab} key={lab.id} navigation={navigation} />)}
+                    {labs.map(lab => <LabClassCard lab={lab} key={lab.id} navigation={navigation} />)}
+                    {labs.map(lab => <LabClassCard lab={lab} key={lab.id} navigation={navigation} />)}
                 </View>
-            </View>
+            </ScrollView>
         </View>
     )
 }
@@ -84,6 +86,7 @@ const styles = StyleSheet.create({
         display: "flex",
         flexDirection: "column",
         padding: 15,
+        marginBottom: 100
     },
     labsHeader: {
         fontSize: 20,
