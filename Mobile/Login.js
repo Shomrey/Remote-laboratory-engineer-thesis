@@ -1,9 +1,19 @@
 import 'react-native-gesture-handler';
-import React, { useState, useContext } from 'react';
-import { StyleSheet, Text, View, TextInput, Button, ActivityIndicator, Image } from 'react-native';
+import React, {useState, useContext} from 'react';
+import {
+    StyleSheet,
+    Text,
+    View,
+    TextInput,
+    Button,
+    ActivityIndicator,
+    Image,
+    KeyboardAvoidingView,
+    Platform
+} from 'react-native';
 import Main from './Main';
 import Axios from 'axios';
-import { AuthContext } from './AuthContext'
+import {AuthContext} from './AuthContext'
 
 export default function Login() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -13,9 +23,14 @@ export default function Login() {
     const [errorMessage, setErrorMessage] = useState('');
     const [token, setToken] = useContext(AuthContext);
 
+    const logOut = () => {
+        setIsLoggedIn(false);
+        setToken('');
+    }
+
     return (
         isLoggedIn ?
-            <Main />
+            <Main logOut={logOut}/>
 
             :
 
@@ -27,17 +42,21 @@ export default function Login() {
                     }
                 />
                 <Text style={styles.header}> Remote Laboratory </Text>
-                <View style={styles.input} >
-                    <TextInput placeholder="Login" onChangeText={text => setLogin(text)} />
-                </View>
-                <View style={styles.input} >
-                    <TextInput placeholder="Password" onChangeText={text => setPassword(text)} secureTextEntry={true} />
-                </View>
+                <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
+                    <View style={styles.input}>
+                        <TextInput placeholder="Login" onChangeText={text => setLogin(text)}/>
+                    </View>
+                    <View style={styles.input}>
+                        <TextInput placeholder="Password" onChangeText={text => setPassword(text)}
+                                   secureTextEntry={true}/>
+                    </View>
+                </KeyboardAvoidingView>
                 <View style={styles.buttonWrapper}>
-                    <Button title="Log in" color="black" style={styles.button} disabled={waitingForResponse} onPress={() => loginFunction(login, password, setIsLoggedIn, setWaitingForResponse, setErrorMessage, setToken)} />
+                    <Button title="Log in" color="black" style={styles.button} disabled={waitingForResponse}
+                            onPress={() => loginFunction(login, password, setIsLoggedIn, setWaitingForResponse, setErrorMessage, setToken)}/>
                 </View>
                 <Text style={styles.errorMessage}> {errorMessage} </Text>
-                <ActivityIndicator style={styles.loader} animating={waitingForResponse} size="large" color="#000000" />
+                <ActivityIndicator style={styles.loader} animating={waitingForResponse} size="large" color="#000000"/>
             </View>)
 
     );
@@ -53,6 +72,7 @@ function loginFunction(login, password, loginSuccessfulHandler, waitingForRespon
         .then(function (response) {
             tokenHandler(response.headers['auth-token']);
             loginSuccessfulHandler(true);
+            waitingForResponseHandler(false);
         })
         .catch(function (error) {
             waitingForResponseHandler(false);
@@ -94,7 +114,6 @@ const styles = StyleSheet.create({
         marginRight: "auto",
         marginBottom: 100,
         textTransform: "uppercase",
-        fontFamily: "Roboto",
         fontWeight: "700",
         fontSize: 18,
         lineHeight: 21,

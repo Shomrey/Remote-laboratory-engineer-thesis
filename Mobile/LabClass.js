@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 import React from 'react';
-import {StyleSheet, Text, View, Button, TextInput} from 'react-native';
+import {StyleSheet, Text, View, Button, TextInput, KeyboardAvoidingView, Platform} from 'react-native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
@@ -21,19 +21,22 @@ export default function LabClass(props) {
 
     return (
         <Tab.Navigator>
-            <Tab.Screen name="Introduction" component={LabIntroduction} initialParams={{text: lab.description}}/>
+            <Tab.Screen name={Platform.OS === 'ios' ? "Intro" : "Introduction"} component={LabIntroduction}
+                        initialParams={{description: lab.description, topology: lab.topology}}/>
             <Tab.Screen name="Tasks" component={LabTasks} initialParams={{tasks: lab.tasks}}/>
-            <Tab.Screen name="Terminal" component={LabTerminal} />
+            <Tab.Screen name="Terminal" component={LabTerminal}/>
         </Tab.Navigator>
     )
 }
 
 function LabIntroduction(props) {
-    const introduction = props.route.params.text;
+    const { description, topology } = props.route.params;
 
     return (
         <View style={styles.tabContainer}>
-            <Text style={styles.text}> {introduction} </Text>
+            <Text style={styles.text}> {description} </Text>
+            <Text> {'\n'} </Text>
+            <Text style={styles.text}> {'Topology: \n' + topology}</Text>
         </View>
     )
 }
@@ -54,18 +57,18 @@ function LabTerminal() {
             <View style={styles.terminalWindow}>
                 <Text style={styles.terminalText}>
                     &gt;&gt; enable
-                    <br></br>
+                    <Text> {'\n'} </Text>
                     &gt;&gt; conf t
                 </Text>
             </View>
-            <View style={styles.inputContainer}>
+            <KeyboardAvoidingView behavior={"padding"} style={styles.inputContainer}>
                 <View style={styles.input}>
                     <TextInput style={styles.textInput} placeholder="Write your commands here"/>
                 </View>
                 <Icon name="play-arrow" size={60} onPress={() => {
 
                 }}/>
-            </View>
+            </KeyboardAvoidingView>
         </View>
     )
 }
@@ -102,12 +105,10 @@ const styles = StyleSheet.create({
     },
     textInput: {
         height: '100%',
-        fontSize: 16,
-        fontFamily: 'consolas'
+        fontSize: 16
     },
     terminalText: {
-        fontSize: 16,
-        fontFamily: 'consolas'
+        fontSize: 16
     }
 });
 

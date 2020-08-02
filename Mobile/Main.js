@@ -10,14 +10,17 @@ import Account from "./Account";
 
 const Drawer = createDrawerNavigator();
 
-export default function Main({ navigation }) {
+export default function Main({ navigation, logOut }) {
 
     return (
         <NavigationContainer>
             <Drawer.Navigator initialRouteName="Home">
                 <Drawer.Screen name="Home" component={Home} options={{drawerIcon: () => (<Icon name='home'/>)}} />
-                <Drawer.Screen name="Account" component={Account} options={{drawerIcon: () => (<Icon name='account_circle' type='material'/>)}} />
+                <Drawer.Screen name="Account" component={Account} options={{drawerIcon: () => (<Icon name='account-circle' type='material'/>)}} />
                 <Drawer.Screen name="Settings" component={Settings} options={{drawerIcon: () => (<Icon name='settings'/>)}} />
+                <Drawer.Screen name="Log out" component={Settings} options={{drawerIcon: () => (<Icon name='logout-variant' type={"material-community"}/>)}} listeners={props => {
+                    logOut();
+                }}/>
             </Drawer.Navigator>
         </NavigationContainer>
     );

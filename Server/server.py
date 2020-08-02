@@ -125,7 +125,8 @@ def rows_to_labs(rows):
         labs.append({'id': row['id'], 'date': row['date'],
                      'duration': row['duration'], 'title': row['title'],
                      'configuration': row['configuration'], 'description': row['description'],
-                     'tasks': row['tasks'], 'teacher': row['name'] + ' ' + row['surname']})
+                     'tasks': row['tasks'], 'topology': row['topology'],
+                      'teacher': row['name'] + ' ' + row['surname']})
     return labs
 
 def row_to_user(row):
