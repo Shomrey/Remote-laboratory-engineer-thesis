@@ -28,6 +28,32 @@ export default function Login() {
         setToken('');
     }
 
+    const logIn = () => {
+        setWaitingForResponse(true);
+
+        Axios.post('http://localhost:5000/user/login', {
+            mail: login,
+            password: password
+        })
+            .then(function (response) {
+                setToken(response.headers['auth-token']);
+                setIsLoggedIn(true);
+                setWaitingForResponse(false);
+            })
+            .catch(function (error) {
+                setWaitingForResponse(false);
+                if (error.response) {
+                    if (error.response.status === 401) {
+                        setErrorMessage('Incorrect login or password.')
+                    } else {
+                        setErrorMessage('Unknown server error.')
+                    }
+                } else {
+                    setErrorMessage('Failed to connect to the server.')
+                }
+            });
+    }
+
     return (
         isLoggedIn ?
             <Main logOut={logOut}/>
@@ -53,39 +79,13 @@ export default function Login() {
                 </KeyboardAvoidingView>
                 <View style={styles.buttonWrapper}>
                     <Button title="Log in" color="black" style={styles.button} disabled={waitingForResponse}
-                            onPress={() => loginFunction(login, password, setIsLoggedIn, setWaitingForResponse, setErrorMessage, setToken)}/>
+                            onPress={() => logIn()}/>
                 </View>
                 <Text style={styles.errorMessage}> {errorMessage} </Text>
                 <ActivityIndicator style={styles.loader} animating={waitingForResponse} size="large" color="#000000"/>
             </View>)
 
     );
-}
-
-function loginFunction(login, password, loginSuccessfulHandler, waitingForResponseHandler, errorMessageHandler, tokenHandler) {
-    waitingForResponseHandler(true);
-
-    Axios.post('http://localhost:5000/user/login', {
-        mail: login,
-        password: password
-    })
-        .then(function (response) {
-            tokenHandler(response.headers['auth-token']);
-            loginSuccessfulHandler(true);
-            waitingForResponseHandler(false);
-        })
-        .catch(function (error) {
-            waitingForResponseHandler(false);
-            if (error.response) {
-                if (error.response.status === 401) {
-                    errorMessageHandler('Incorrect login or password.')
-                } else {
-                    errorMessageHandler('Unknown server error.')
-                }
-            } else {
-                errorMessageHandler('Failed to connect to the server.')
-            }
-        });
 }
 
 const styles = StyleSheet.create({

@@ -33,7 +33,28 @@ function HomeContent({ navigation }) {
     const [labs, setLabs] = useState([]);
     const [labsDownloaded, setLabsDownloaded] = useState(false);
 
-    getUsersLabs(token, labs, setLabs, labsDownloaded, setLabsDownloaded);
+    const getUserLabs = () => {
+        if (!labsDownloaded) {
+            Axios.get('http://localhost:5000/user/labs', { headers: { 'auth-token': token } })
+                .then(function (response) {
+                    setLabsDownloaded(true);
+                    setLabs(response.data);
+                })
+                .catch(function (error) {
+                    if (error.response) {
+                        if (error.response.status === 401) {
+                            console.log('Failed to authenticate.')
+                        } else {
+                            console.log('Unknown server error.')
+                        }
+                    } else {
+                        console.log('Failed to connect to the server.')
+                    }
+                });
+        }
+    }
+
+    getUserLabs();
 
     return (
         <View>
@@ -57,28 +78,6 @@ function HomeContent({ navigation }) {
             </ScrollView>
         </View>
     )
-}
-
-function getUsersLabs(token, labs, setLabs, labsDownloaded, setLabsDownloaded) {
-    console.log(labs)
-    if (!labsDownloaded) {
-        Axios.get('http://localhost:5000/user/labs', { headers: { 'auth-token': token } })
-            .then(function (response) {
-                setLabsDownloaded(true);
-                setLabs(response.data);
-            })
-            .catch(function (error) {
-                if (error.response) {
-                    if (error.response.status === 401) {
-                        console.log('Failed to authenticate.')
-                    } else {
-                        console.log('Unknown server error.')
-                    }
-                } else {
-                    console.log('Failed to connect to the server.')
-                }
-            });
-    }
 }
 
 const styles = StyleSheet.create({
