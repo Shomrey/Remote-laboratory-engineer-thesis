@@ -1,12 +1,12 @@
 import 'react-native-gesture-handler';
-import React, { useContext, useState } from 'react';
+import React, {useContext, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import LabClassCard from './LabClassCard';
-import { createStackNavigator } from '@react-navigation/stack';
+import {createStackNavigator} from '@react-navigation/stack';
 import LabClass from './LabClass';
-import { Header, Icon } from 'react-native-elements';
-import { DrawerActions } from '@react-navigation/native';
-import { AuthContext } from './AuthContext';
+import {Header, Icon} from 'react-native-elements';
+import {DrawerActions} from '@react-navigation/native';
+import {AuthContext} from './AuthContext';
 import Axios from 'axios';
 
 const Stack = createStackNavigator()
@@ -17,25 +17,25 @@ export default function Home() {
             <Stack.Screen
                 name="HomeContent"
                 component={HomeContent}
-                options={{ headerShown: false }}
+                options={{headerShown: false}}
             />
             <Stack.Screen
                 name="LabClass"
                 component={LabClass}
-                options={{ title: "Laboratory class" }}
+                options={{title: "Laboratory class"}}
             />
         </Stack.Navigator>
     );
 }
 
-function HomeContent({ navigation }) {
+function HomeContent({navigation}) {
     const [token, setToken] = useContext(AuthContext);
     const [labs, setLabs] = useState([]);
     const [labsDownloaded, setLabsDownloaded] = useState(false);
 
     const getUserLabs = () => {
         if (!labsDownloaded) {
-            Axios.get('http://localhost:5000/user/labs', { headers: { 'auth-token': token } })
+            Axios.get('http://localhost:5000/user/labs', {headers: {'auth-token': token}})
                 .then(function (response) {
                     setLabsDownloaded(true);
                     setLabs(response.data);
@@ -62,7 +62,7 @@ function HomeContent({ navigation }) {
                 leftComponent={
                     <Icon name="menu" size={40} onPress={() => {
                         navigation.dispatch(DrawerActions.toggleDrawer())
-                    }} />
+                    }}/>
                 }
                 backgroundColor="white"
             />
@@ -71,9 +71,7 @@ function HomeContent({ navigation }) {
                     Available labs
                 </Text>
                 <View style={styles.labs}>
-                    {labs.map(lab => <LabClassCard lab={lab} key={lab.id} navigation={navigation} />)}
-                    {labs.map(lab => <LabClassCard lab={lab} key={lab.id} navigation={navigation} />)}
-                    {labs.map(lab => <LabClassCard lab={lab} key={lab.id} navigation={navigation} />)}
+                    {labs.map(lab => <LabClassCard lab={lab} key={lab.id} navigation={navigation}/>)}
                 </View>
             </ScrollView>
         </View>

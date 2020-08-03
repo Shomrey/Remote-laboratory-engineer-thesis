@@ -24,20 +24,20 @@ export default function Account({navigation}) {
                 backgroundColor="white"
             />
             <View style={styles.content}>
-                <Text>
-                    {userData ? ('Name: ' + userData.name) : ''}
+                <Text style={styles.infoHeader}>
+                    Account information
                 </Text>
-                <Text>
-                    {userData ? ('Surname: ' + userData.surname) : ''}
+                <Text style={{ fontSize: 18}}>
+                    {userData ? (`Name: ${userData.name} ${userData.surname}`) : ''}
                 </Text>
-                <Text>
-                    {userData ? ('E-mail: ' + userData.mail) : ''}
+                <Text style={{ fontSize: 18}}>
+                    {userData ? (`E-mail: ${userData.mail}`) : ''}
                 </Text>
-                <Text>
-                    {userData ? ('Identifier: ' + userData.id) : ''}
+                <Text style={{ fontSize: 18}}>
+                    {userData ? (`Identifier: ${userData.id}`) : ''}
                 </Text>
-                <Text>
-                    {userData ? ('Account type: ' + userData.user_type) : ''}
+                <Text style={{ fontSize: 18}}>
+                    {userData ? (`Account type: ${userData.user_type}`) : ''}
                 </Text>
             </View>
         </View>
@@ -67,11 +67,14 @@ function getUserData(token, dataDownloaded, setDataDownloaded, userData, setUser
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         flexDirection: "column"
     },
     content: {
-        flex: 1,
-        padding: 15
+        padding: 15,
+    },
+    infoHeader: {
+        fontSize: 20,
+        fontWeight: "700",
+        marginBottom: 10
     }
 });

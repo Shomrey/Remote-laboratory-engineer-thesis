@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 import React from 'react';
-import {StyleSheet, Text, View, Button, TextInput, KeyboardAvoidingView, Platform} from 'react-native';
+import {StyleSheet, Text, View, Button, TextInput, KeyboardAvoidingView, Platform, Alert} from 'react-native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
@@ -18,6 +18,24 @@ const Tab = createMaterialTopTabNavigator();
 
 export default function LabClass(props) {
     const lab = props.route.params.lab;
+
+    props.navigation.setOptions({
+        headerRight: () => <Icon name={'save'} type={"ionicon"} size={30} style={{marginRight: 10}} onPress={() => {
+            Alert.alert(
+                'Save configuration',
+                'Do you want to save and send your configuration?',
+                [
+                    {
+                        text: "Cancel",
+                        style: "cancel"
+                    },
+                    {
+                        text: "OK",
+                        onPress: () => console.log("OK Pressed") }
+                ],
+            );
+        }}/>
+    });
 
     return (
         <Tab.Navigator>
@@ -46,7 +64,7 @@ function LabTasks(props) {
 
     return (
         <View style={styles.tabContainer}>
-            <Text style={styles.text}>{tasks ? tasks.replace(/#/gi, '\n'): ''}</Text>
+            <Text style={styles.text}>{tasks ? tasks.replace(/#/gi, '\n') : ''}</Text>
         </View>
     )
 }
@@ -56,9 +74,9 @@ function LabTerminal() {
         <View style={styles.tabContainer}>
             <View style={styles.terminalWindow}>
                 <Text style={styles.terminalText}>
-                    &gt;&gt;enable
+                    &gt;&gt; enable
                     <Text>{'\n'}</Text>
-                    &gt;&gt;conf t
+                    &gt;&gt; conf t
                 </Text>
             </View>
             <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} keyboardVerticalOffset={140}>
@@ -86,7 +104,6 @@ const styles = StyleSheet.create({
         borderColor: 'black',
         borderWidth: 1,
         padding: 10,
-        fontSize: 16,
         flex: 1
     },
     input: {
