@@ -1,18 +1,10 @@
 import 'react-native-gesture-handler';
-import React from 'react';
-import {StyleSheet, Text, View, Button, TextInput, KeyboardAvoidingView, Platform, Alert} from 'react-native';
+import React, {useContext, useState} from 'react';
+import {Alert, Button, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, View} from 'react-native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import Icon from 'react-native-vector-icons/MaterialIcons'
-
-const labDetails = {
-    introduction: "The Spanning Tree Protocol (STP) is a network protocol that builds a loop-free logical topology for Ethernet networks. The basic function of STP is to prevent bridge loops and the broadcast radiation that results from them. Spanning tree also allows a network design to include backup links providing fault tolerance if an active link fails. As the name suggests, STP creates a spanning tree that characterizes the relationship of nodes within a network of connected layer-2 bridges, and disables those links that are not part of the spanning tree, leaving a single active path between any two network nodes. STP is based on an algorithm that was invented by Radia Perlman while she was working for Digital Equipment Corporation.",
-    tasks: [
-        "1. Connect three switches in a way that causes a loop\n",
-        "2. Observe a broadcast storm\n",
-        "3. Enable spanning tree protocol\n",
-        "4. Check results\n"
-    ]
-}
+import socketIOClient from "socket.io-client";
+import {AuthContext} from "./AuthContext";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -31,7 +23,8 @@ export default function LabClass(props) {
                     },
                     {
                         text: "OK",
-                        onPress: () => console.log("OK Pressed") }
+                        onPress: () => console.log("OK Pressed")
+                    }
                 ],
             );
         }}/>
@@ -70,21 +63,51 @@ function LabTasks(props) {
 }
 
 function LabTerminal() {
+    const [sessionStarted, setSessionStarted] = useState(false);
+    const [terminalContent, setTerminalContent] = useState('');
+    const [command, setCommand] = useState('');
+    const [token] = useContext(AuthContext);
+    const [socket, setSocket] = useState();
+
     return (
         <View style={styles.tabContainer}>
             <View style={styles.terminalWindow}>
-                <Text style={styles.terminalText}>
-                    &gt;&gt; enable
-                    <Text>{'\n'}</Text>
-                    &gt;&gt; conf t
-                </Text>
+                {sessionStarted ?
+                    (
+                        <Text style={styles.terminalText}>
+                            {terminalContent}
+                        </Text>)
+                    :
+                    (
+                        <View style={styles.button}>
+                            <Button title={'Start session'} onPress={() => {
+
+                                const socket = socketIOClient("http://localhost:3001");
+
+                                socket.emit('access_token', token);
+
+                                setSocket(socket);
+
+                                socket.on('output', (data) => {
+                                    setTerminalContent(data);
+                                })
+
+                                setSessionStarted(true);
+                            }}/>
+                        </View>
+                    )
+                }
             </View>
             <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} keyboardVerticalOffset={140}>
                 <View style={styles.inputContainer}>
                     <View style={styles.input}>
-                        <TextInput style={styles.textInput} placeholder="Write your commands here"/>
+                        <TextInput style={styles.textInput} placeholder="Write your commands here" onChangeText={
+                            (text => setCommand(text))
+                        }/>
                     </View>
                     <Icon name="play-arrow" size={60} onPress={() => {
+                        socket.emit('command', command);
+                        setCommand('');
                     }}/>
                 </View>
             </KeyboardAvoidingView>
@@ -95,7 +118,7 @@ function LabTerminal() {
 const styles = StyleSheet.create({
     tabContainer: {
         padding: 13,
-        height: '100%',
+        flex: 1
     },
     text: {
         fontSize: 16
@@ -113,7 +136,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         paddingLeft: 10
     },
-    button: {},
+    button: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        flex: 1
+    },
     inputContainer: {
         marginTop: 25,
         flexDirection: 'row',
