@@ -4,10 +4,15 @@ import {Lab} from "./lab.model";
 import {Repository} from "typeorm";
 import {LabNotFoundError} from "./error/lab-not-found.error";
 import {CreateLabDto} from "./dto/create-lab.dto";
+import {User} from "../user/model/user.model";
+import {UserNotFoundError} from "../user/error/user-not-found.error";
+import {UserType} from "../utils/constants";
+import {InvalidTeacherError} from "./error/invalid-teacher.error";
 
 @Injectable()
 export class LabService {
-    constructor(@InjectRepository(Lab) private readonly labRepository: Repository<Lab>) {
+    constructor(@InjectRepository(Lab) private readonly labRepository: Repository<Lab>,
+                @InjectRepository(User) private readonly userRepository: Repository<User>) {
     }
 
     async findOrFailById(labId: number): Promise<Lab> {
@@ -25,6 +30,16 @@ export class LabService {
     }
 
     async create(createLabDto: CreateLabDto): Promise<Lab> {
+        const teacher = await this.userRepository.findOne({id: createLabDto.teacherId});
+
+        if (!teacher) {
+            throw new UserNotFoundError(createLabDto.teacherId);
+        }
+
+        if (teacher.userType == UserType.STUDENT) {
+            throw new InvalidTeacherError();
+        }
+
         return this.labRepository.save({...createLabDto, teacher: {id: createLabDto.teacherId}});
     }
 

@@ -10,6 +10,7 @@ import {Lab} from "../lab/lab.model";
 import {LabService} from "../lab/lab.service";
 import {EnrollmentService} from "../enrollment/enrollment.service";
 import {Enrollment} from "../enrollment/enrollment.model";
+import {LabNotFoundError} from "../lab/error/lab-not-found.error";
 
 @Injectable()
 export class UserService {
@@ -32,7 +33,7 @@ export class UserService {
         return this.userRepository.find();
     }
 
-    async findOrFailById(userId: number) {
+    async findOrFailById(userId: number): Promise<User> {
         const user = await this.userRepository.findOne(userId);
 
         if (!user) {
@@ -60,6 +61,18 @@ export class UserService {
     }
 
     async enrollStudentForLab(studentId: number, labId: number): Promise<Enrollment> {
+        const user = await this.findOrFailById(studentId);
+
+        if (!user) {
+            throw new UserNotFoundError(studentId);
+        }
+
+        const lab = await this.labService.findOrFailById(labId);
+
+        if (!lab) {
+            throw new LabNotFoundError(labId);
+        }
+
         return this.enrollmentService.enrollStudentForLab(studentId, labId);
     }
 }
