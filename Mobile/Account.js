@@ -37,7 +37,7 @@ export default function Account({navigation}) {
                     {userData ? (`Identifier: ${userData.id}`) : ''}
                 </Text>
                 <Text style={{ fontSize: 18}}>
-                    {userData ? (`Account type: ${userData.user_type}`) : ''}
+                    {userData ? (`Account type: ${userData.userType}`) : ''}
                 </Text>
             </View>
         </View>
