@@ -46,7 +46,7 @@ export default function Account({navigation}) {
 
 function getUserData(token, dataDownloaded, setDataDownloaded, userData, setUserData) {
     if (!dataDownloaded) {
-        Axios.get('http://localhost:5000/user/current', {headers: {'auth-token': token}})
+        Axios.get('http://localhost:3000/users/current', {headers: {'Authorization': `Bearer ${token}`}})
             .then(function (response) {
                 setDataDownloaded(true);
                 setUserData(response.data);

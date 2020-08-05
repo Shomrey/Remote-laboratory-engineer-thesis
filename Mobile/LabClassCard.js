@@ -7,7 +7,7 @@ export default function LabClassCard(props) {
         <TouchableOpacity onPress={() => props.navigation.navigate('LabClass', {lab: props.lab})} style={styles.touchable}>
             <View style={styles.content}>
                 <Text style={styles.profName}>
-                    {props.lab.teacher}
+                    {`${props.lab.teacher.name} ${props.lab.teacher.surname}`}
                 </Text>
                 <Text style={styles.labName}>
                     {props.lab.title}

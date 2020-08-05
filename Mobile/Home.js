@@ -35,7 +35,7 @@ function HomeContent({navigation}) {
 
     const getUserLabs = () => {
         if (!labsDownloaded) {
-            Axios.get('http://localhost:5000/user/labs', {headers: {'auth-token': token}})
+            Axios.get('http://localhost:3000/users/current/labs', {headers: {'Authorization': `Bearer ${token}`}})
                 .then(function (response) {
                     setLabsDownloaded(true);
                     setLabs(response.data);

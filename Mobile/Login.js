@@ -31,12 +31,12 @@ export default function Login() {
     const logIn = () => {
         setWaitingForResponse(true);
 
-        Axios.post('http://localhost:5000/user/login', {
+        Axios.post('http://localhost:3000/auth/login', {
             mail: login,
             password: password
         })
             .then(function (response) {
-                setToken(response.headers['auth-token']);
+                setToken(response.data['access_token']);
                 setIsLoggedIn(true);
                 setWaitingForResponse(false);
             })
