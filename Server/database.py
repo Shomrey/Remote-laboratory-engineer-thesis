@@ -3,7 +3,7 @@ import csv
 import sys
 
 # Not sure if safe... but doesn't work otherwise
-conn = sqlite3.connect('database.db', check_same_thread=False)
+conn = sqlite3.connect('../Server_2.0/database', check_same_thread=False)
 conn.row_factory = sqlite3.Row
 c = conn.cursor()
 
@@ -12,7 +12,7 @@ def create_tables():
     global c
     # Users table
     c.execute('''
-        CREATE TABLE IF NOT EXISTS Users (
+        CREATE TABLE IF NOT EXISTS user (
             id INTEGER PRIMARY KEY AUTOINCREMENT, 
             name TEXT, 
             surname TEXT, 
@@ -24,38 +24,38 @@ def create_tables():
 
     # Labs table
     c.execute('''
-        CREATE TABLE IF NOT EXISTS Labs (
+        CREATE TABLE IF NOT EXISTS lab (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             date TEXT,duration INTEGER, 
             title TEXT, 
             configuration TEXT, 
             description TEXT,
             tasks TEXT,
-            topology BLOB, 
+            topology TEXT,
             max_students INTEGER DEFAULT 1,
-            teacher INTEGER, 
-            FOREIGN KEY(teacher) REFERENCES Users(id)
+            teacherId INTEGER,
+            FOREIGN KEY(teacherId) REFERENCES user(id)
         )''')
     conn.commit()
 
     # Enrollments table
     c.execute('''
-        CREATE TABLE IF NOT EXISTS Enrollments (
+        CREATE TABLE IF NOT EXISTS enrollment (
             id INTEGER PRIMARY KEY AUTOINCREMENT, 
-            student INTEGER, 
-            laboratory INTEGER, 
+            studentId INTEGER,
+            laboratoryId INTEGER,
             result TEXT, 
             score INTEGER,
             comment TEXT,
-            FOREIGN KEY(student) REFERENCES Users(id),
-            FOREIGN KEY(laboratory) REFERENCES Labs(id) 
+            FOREIGN KEY(studentId) REFERENCES user(id),
+            FOREIGN KEY(laboratoryId) REFERENCES lab(id)
         )''')
     conn.commit()
 
 
 def add_user(name: str, surname: str, mail: str, password_hash: str, user_type: str) -> bool:
     global c
-    sql = ''' INSERT INTO Users(name, surname, mail, password_hash, user_type) VALUES (?,?,?,?,?)'''
+    sql = ''' INSERT INTO user(name, surname, mail, password_hash, user_type) VALUES (?,?,?,?,?)'''
 
     try:
         c.execute(sql, (name, surname, mail, password_hash, user_type))
@@ -67,17 +67,17 @@ def add_user(name: str, surname: str, mail: str, password_hash: str, user_type: 
         return False
 
 
-def add_laboratory(date: str, duration: int, title: str, configuration: str, description: str, tasks: str, topology, max_students: int, teacher: int) -> bool:
+def add_laboratory(date: str, duration: int, title: str, configuration: str, description: str, tasks: str, topology, max_students: int, teacherId: int) -> bool:
     global c
-    check = c.execute('SELECT * FROM Users WHERE id=?', (teacher,))
+    check = c.execute('SELECT * FROM user WHERE id=?', (teacherId,))
     if len(check.fetchall()) == 0:
-        print("Failed to add library, no teacher with id: "+str(teacher))
+        print("Failed to add library, no teacherId with id: "+str(teacherId))
         return False
 
-    sql = ''' INSERT INTO Labs(date,duration, title, configuration, description, tasks, topology, max_students, teacher) VALUES(?,?,?,?,?,?,?,?,?)'''
+    sql = ''' INSERT INTO lab(date,duration, title, configuration, description, tasks, topology, max_students, teacherId) VALUES(?,?,?,?,?,?,?,?,?)'''
     try:
         c.execute(sql, (date, duration, title, configuration,
-                        description, tasks, topology, max_students, teacher))
+                        description, tasks, topology, max_students, teacherId))
         conn.commit()
         return True
     except:
@@ -88,16 +88,16 @@ def add_laboratory(date: str, duration: int, title: str, configuration: str, des
 def enroll_student(student_id: int, lab_id: int) -> bool:
     global c
     check_student = c.execute(
-        'SELECT * FROM Users WHERE id=?', (student_id,))
+        'SELECT * FROM user WHERE id=?', (student_id,))
     if len(check_student.fetchall()) == 0:
         print("Failed to enroll, no student with id: "+str(student_id))
         return False
-    check_lab = c.execute('SELECT * FROM Labs WHERE id=?', (lab_id,))
+    check_lab = c.execute('SELECT * FROM lab WHERE id=?', (lab_id,))
     if len(check_lab.fetchall()) == 0:
         print("Failed to enroll, no laboratory with id: "+str(lab_id))
         return False
 
-    sql = ''' INSERT INTO Enrollments (student, laboratory) VALUES(?,?)'''
+    sql = ''' INSERT INTO enrollment (studentId, laboratoryId) VALUES(?,?)'''
     try:
         c.execute(sql, (student_id, lab_id))
         conn.commit()
@@ -109,20 +109,20 @@ def enroll_student(student_id: int, lab_id: int) -> bool:
 # VIEWS
 
 
-def get_teacher_labs(teacher_id: int) -> list:
+def get_teacherId_labs(teacherId_id: int) -> list:
     global c
-    check_teacher = c.execute(
-        'SELECT * FROM Users WHERE id=?', (teacher_id,))
-    if len(check_teacher.fetchall()) == 0:
-        print("Failed to read, no teacher with id: "+str(teacher_id))
+    check_teacherId = c.execute(
+        'SELECT * FROM user WHERE id=?', (teacherId_id,))
+    if len(check_teacherId.fetchall()) == 0:
+        print("Failed to read, no teacherId with id: "+str(teacherId_id))
         return None
-    result = c.execute('SELECT * FROM Labs WHERE teacher=?', (teacher_id,))
+    result = c.execute('SELECT * FROM lab WHERE teacherId=?', (teacherId_id,))
     return result.fetchall()
 
 def get_user(user_id: int):
     global c
     user = c.execute(
-        'SELECT * FROM Users WHERE id=?', (user_id,))
+        'SELECT * FROM user WHERE id=?', (user_id,))
     result = user.fetchall()
     if len(result) == 0:
         print("Failed to read, no user with id: "+str(user_id))
@@ -132,27 +132,27 @@ def get_user(user_id: int):
 
 def get_students_from_lab(lab_id: int) -> list:
     global c
-    check_lab = c.execute('SELECT * FROM Labs WHERE id=?', (lab_id,))
+    check_lab = c.execute('SELECT * FROM lab WHERE id=?', (lab_id,))
     if len(check_lab.fetchall()) == 0:
         print("Failed to read, no laboratory with id: "+str(lab_id))
         return None
     result = c.execute(
-        'SELECT student FROM Enrollments WHERE laboratory=?', (lab_id,))
+        'SELECT student FROM enrollment WHERE laboratory=?', (lab_id,))
     return result.fetchall()
 
 
 def get_labs_for_student(student_id: int) -> list:
     global c
     check_student = c.execute(
-        'SELECT * FROM Users WHERE id=?', (student_id,))
+        'SELECT * FROM user WHERE id=?', (student_id,))
     if len(check_student.fetchall()) == 0:
         print("Failed to read, no student with id: "+str(student_id))
         return False
     result = c.execute('''
         SELECT l.*, u.name, u.surname
-        FROM Enrollments e
-        JOIN Labs l ON e.laboratory=l.id
-        JOIN Users u ON l.teacher=u.id
+        FROM enrollment e
+        JOIN lab l ON e.laboratory=l.id
+        JOIN user u ON l.teacherId=u.id
         WHERE student=?''', (student_id,))
     return result.fetchall()
 
@@ -160,7 +160,7 @@ def get_labs_for_student(student_id: int) -> list:
 def validate_user(mail: str, password: str):
     global c
     students = c.execute(
-        'SELECT * FROM Users WHERE mail=?', (mail,))
+        'SELECT * FROM user WHERE mail=?', (mail,))
     student = students.fetchone()
     if student == None:
         print("Failed to validate student, no student with mail: " + str(mail))

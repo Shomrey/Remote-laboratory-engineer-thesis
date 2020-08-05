@@ -29,7 +29,7 @@ export class Lab {
     @Column()
     topology: string;
 
-    @Column({name: 'max_student', default: 1})
+    @Column({name: 'max_students', default: 1})
     maxStudents: number;
 
     @ManyToOne(type => User)
