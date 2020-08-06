@@ -120,8 +120,10 @@ function LabTerminal() {
                         } autoCapitalize={"none"} autoCompleteType={"off"} autoCorrect={false} editable={socket !== undefined}/>
                     </View>
                     <Icon name="play-arrow" size={60} onPress={() => {
-                        if (socket) {
+                        if (socket && socket.connected) {
                             socket.emit('command', command);
+                        } else {
+                            setTerminalContent('Failed to connect to the server');
                         }
                     }}/>
                 </View>
