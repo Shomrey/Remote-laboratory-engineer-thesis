@@ -36,6 +36,7 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.5.4",
+    "socket.io": "^2.3.0",
     "sqlite3": "^5.0.0",
     "swagger-ui-express": "^4.1.4",
     "typeorm": "^0.2.25"
@@ -49,6 +50,7 @@
     "@types/node": "^13.9.1",
     "@types/passport-jwt": "^3.0.3",
     "@types/passport-local": "^1.0.33",
+    "@types/socket.io": "^2.1.10",
     "@types/supertest": "^2.0.8",
     "@typescript-eslint/eslint-plugin": "3.0.2",
     "@typescript-eslint/parser": "3.0.2",

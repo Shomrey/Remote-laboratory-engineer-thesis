@@ -70,11 +70,13 @@ export default function Login() {
                 <Text style={styles.header}> Remote Laboratory </Text>
                 <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
                     <View style={styles.input}>
-                        <TextInput placeholder="Login" onChangeText={text => setLogin(text)}/>
+                        <TextInput placeholder="Login" onChangeText={text => setLogin(text)} autoCapitalize={"none"}
+                                   autoCompleteType={"off"} autoCorrect={false}/>
                     </View>
                     <View style={styles.input}>
                         <TextInput placeholder="Password" onChangeText={text => setPassword(text)}
-                                   secureTextEntry={true}/>
+                                   secureTextEntry={true} autoCapitalize={"none"} autoCompleteType={"off"}
+                                   autoCorrect={false}/>
                     </View>
                 </KeyboardAvoidingView>
                 <View style={styles.buttonWrapper}>

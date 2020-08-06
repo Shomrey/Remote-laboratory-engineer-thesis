@@ -1,6 +1,16 @@
 import 'react-native-gesture-handler';
 import React, {useContext, useState} from 'react';
-import {Alert, Button, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, View} from 'react-native';
+import {
+    Alert,
+    Button,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    View
+} from 'react-native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import socketIOClient from "socket.io-client";
@@ -69,9 +79,12 @@ function LabTerminal() {
     const [token] = useContext(AuthContext);
     const [socket, setSocket] = useState();
 
+    let scrollView;
+
     return (
         <View style={styles.tabContainer}>
-            <View style={styles.terminalWindow}>
+            <ScrollView style={styles.terminalWindow} ref={ref => {scrollView = ref}}
+                        onContentSizeChange={() => scrollView.scrollToEnd({animated: true})}>
                 {sessionStarted ?
                     (
                         <Text style={styles.terminalText}>
@@ -90,24 +103,26 @@ function LabTerminal() {
 
                                 socket.on('output', (data) => {
                                     setTerminalContent(data);
-                                })
+                                });
 
                                 setSessionStarted(true);
                             }}/>
                         </View>
                     )
                 }
-            </View>
+            </ScrollView>
             <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} keyboardVerticalOffset={140}>
                 <View style={styles.inputContainer}>
                     <View style={styles.input}>
+                        <Text style={styles.textInput}>$ </Text>
                         <TextInput style={styles.textInput} placeholder="Write your commands here" onChangeText={
                             (text => setCommand(text))
-                        }/>
+                        } autoCapitalize={"none"} autoCompleteType={"off"} autoCorrect={false} editable={socket !== undefined}/>
                     </View>
                     <Icon name="play-arrow" size={60} onPress={() => {
-                        socket.emit('command', command);
-                        setCommand('');
+                        if (socket) {
+                            socket.emit('command', command);
+                        }
                     }}/>
                 </View>
             </KeyboardAvoidingView>
@@ -127,14 +142,15 @@ const styles = StyleSheet.create({
         borderColor: 'black',
         borderWidth: 1,
         padding: 10,
-        flex: 1
+        flex: 1,
     },
     input: {
         borderColor: 'black',
         borderWidth: 1,
         width: '80%',
-        justifyContent: 'center',
-        paddingLeft: 10
+        alignItems: 'center',
+        paddingLeft: 10,
+        flexDirection: 'row',
     },
     button: {
         justifyContent: 'center',
