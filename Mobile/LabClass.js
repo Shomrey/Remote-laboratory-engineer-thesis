@@ -184,10 +184,12 @@ const styles = StyleSheet.create({
     textInput: {
         fontSize: 16,
         color: 'lightgray',
+        fontFamily: 'SourceCodePro_500Medium'
     },
     terminalText: {
         fontSize: 16,
         color: 'lightgray',
+        fontFamily: 'SourceCodePro_500Medium'
     }
 });
 
