@@ -39,6 +39,9 @@ export default function Login() {
                 setToken(response.data['access_token']);
                 setIsLoggedIn(true);
                 setWaitingForResponse(false);
+                setLogin('');
+                setPassword('');
+                setErrorMessage('');
             })
             .catch(function (error) {
                 setWaitingForResponse(false);

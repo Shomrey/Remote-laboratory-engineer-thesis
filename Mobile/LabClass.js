@@ -37,7 +37,17 @@ export default function LabClass(props) {
                     }
                 ],
             );
-        }}/>
+        }}/>,
+        headerStyle: {
+            borderRadius: 5,
+            shadowColor: "#000000",
+            shadowOffset: {
+                width: 0,
+                height: 2,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 3,
+        }
     });
 
     return (
@@ -83,7 +93,9 @@ function LabTerminal() {
 
     return (
         <View style={styles.tabContainer}>
-            <ScrollView style={styles.terminalWindow} ref={ref => {scrollView = ref}}
+            <ScrollView style={styles.terminalWindow} ref={ref => {
+                scrollView = ref
+            }}
                         onContentSizeChange={() => scrollView.scrollToEnd({animated: true})}>
                 {sessionStarted ?
                     (
@@ -117,7 +129,8 @@ function LabTerminal() {
                         <Text style={styles.textInput}>$ </Text>
                         <TextInput style={styles.textInput} placeholder="Write your commands here" onChangeText={
                             (text => setCommand(text))
-                        } autoCapitalize={"none"} autoCompleteType={"off"} autoCorrect={false} editable={socket !== undefined}/>
+                        } autoCapitalize={"none"} autoCompleteType={"off"} autoCorrect={false}
+                                   editable={socket !== undefined}/>
                     </View>
                     <Icon name="play-arrow" size={60} onPress={() => {
                         if (socket && socket.connected) {
@@ -135,7 +148,8 @@ function LabTerminal() {
 const styles = StyleSheet.create({
     tabContainer: {
         padding: 13,
-        flex: 1
+        flex: 1,
+        marginBottom: 2
     },
     text: {
         fontSize: 16
@@ -145,9 +159,12 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         padding: 10,
         flex: 1,
+        backgroundColor: 'black',
     },
     input: {
         borderColor: 'black',
+        backgroundColor: 'black',
+        color: 'white',
         borderWidth: 1,
         width: '80%',
         alignItems: 'center',
@@ -165,10 +182,12 @@ const styles = StyleSheet.create({
         justifyContent: "space-between"
     },
     textInput: {
-        fontSize: 16
+        fontSize: 16,
+        color: 'lightgray',
     },
     terminalText: {
-        fontSize: 16
+        fontSize: 16,
+        color: 'lightgray',
     }
 });
 

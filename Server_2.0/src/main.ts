@@ -60,16 +60,20 @@ async function initializeSocketIO(logger: Logger) {
         })
 
         socket.on('command', (command) => {
-            logger.debug(`Command: ${command}`);
+            if (!token) {
+                logger.log(`Unauthenticated command from ${socket.id}`);
+            } else {
+                logger.debug(`Command: ${command}`);
 
-            if (command === 'whoami') {
-                command = `${command}\n${token}`;
+                if (command === 'whoami') {
+                    command = `${command}\n${token}`;
+                }
+
+                commands = `${commands}${command}\n`;
+                formattedCommands = `${formattedCommands}> ${command}\n`;
+
+                socket.emit('output', formattedCommands);
             }
-
-            commands = `${commands}${command}\n`;
-            formattedCommands = `${formattedCommands}> ${command}\n`;
-
-            socket.emit('output', formattedCommands);
         })
 
         socket.on('disconnect', () => {

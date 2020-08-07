@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import LabClassCard from './LabClassCard';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -31,30 +31,24 @@ export default function Home() {
 function HomeContent({navigation}) {
     const [token, setToken] = useContext(AuthContext);
     const [labs, setLabs] = useState([]);
-    const [labsDownloaded, setLabsDownloaded] = useState(false);
 
-    const getUserLabs = () => {
-        if (!labsDownloaded) {
-            Axios.get('http://localhost:3000/users/current/labs', {headers: {'Authorization': `Bearer ${token}`}})
-                .then(function (response) {
-                    setLabsDownloaded(true);
-                    setLabs(response.data);
-                })
-                .catch(function (error) {
-                    if (error.response) {
-                        if (error.response.status === 401) {
-                            console.log('Failed to authenticate.')
-                        } else {
-                            console.log('Unknown server error.')
-                        }
+    useEffect(() => {
+        Axios.get('http://localhost:3000/users/current/labs', {headers: {'Authorization': `Bearer ${token}`}})
+            .then(function (response) {
+                setLabs(response.data);
+            })
+            .catch(function (error) {
+                if (error.response) {
+                    if (error.response.status === 401) {
+                        console.log('Failed to authenticate.')
                     } else {
-                        console.log('Failed to connect to the server.')
+                        console.log('Unknown server error.')
                     }
-                });
-        }
-    }
-
-    getUserLabs();
+                } else {
+                    console.log('Failed to connect to the server.')
+                }
+            });
+    }, []);
 
     return (
         <View>
@@ -65,6 +59,13 @@ function HomeContent({navigation}) {
                     }}/>
                 }
                 backgroundColor="white"
+                containerStyle={{
+                    shadowOffset: {
+                        width: 0,
+                        height: 2,
+                    },
+                    shadowOpacity: 0.25,
+                }}
             />
             <ScrollView style={styles.container}>
                 <Text style={styles.labsHeader}>

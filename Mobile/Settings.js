@@ -14,6 +14,13 @@ export default function Settings({ navigation }) {
                     }} />
                 }
                 backgroundColor="white"
+                containerStyle={{
+                    shadowOffset: {
+                        width: 0,
+                        height: 2,
+                    },
+                    shadowOpacity: 0.25,
+                }}
             />
             <View style={styles.pageTitle}>
                 <Text>
