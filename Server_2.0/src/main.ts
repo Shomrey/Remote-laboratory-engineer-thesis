@@ -1,11 +1,10 @@
 import {NestFactory} from '@nestjs/core';
 import {AppModule} from './app.module';
 import {DocumentBuilder, SwaggerModule} from "@nestjs/swagger";
-import {Logger, ValidationPipe} from "@nestjs/common";
+import {INestApplication, Logger, ValidationPipe} from "@nestjs/common";
 import {Connection} from "typeorm";
-import express = require('express');
-import http = require('http');
 import io = require('socket.io');
+import {DEFAULT_PORT} from "./utils/constants";
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule, {
@@ -35,18 +34,16 @@ async function bootstrap() {
     await connection.query('PRAGMA foreign_keys=ON');
 
     /* SocketIO */
-    await initializeSocketIO(logger);
+    await initializeSocketIO(logger, app);
 
     /* Enable CORS from testing in chrome */
     app.enableCors();
 
-    await app.listen(3000);
+    await app.listen(process.env.PORT || DEFAULT_PORT);
 }
 
-async function initializeSocketIO(logger: Logger) {
-    const expressApp = express();
-    const socketIOServer = http.createServer(expressApp);
-    const socketIO = io(socketIOServer);
+async function initializeSocketIO(logger: Logger, app: INestApplication) {
+    const socketIO = io(app.getHttpServer());
 
     logger.setContext('SocketIO');
 
@@ -84,7 +81,7 @@ async function initializeSocketIO(logger: Logger) {
         });
     })
 
-    socketIOServer.listen(3001, () => logger.log(`SocketIO server listening on port 3001`));
+    logger.log(`SocketIO initialized`);
 }
 
 bootstrap();

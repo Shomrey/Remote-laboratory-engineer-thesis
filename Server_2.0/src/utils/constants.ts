@@ -12,3 +12,5 @@ export enum UserType {
 }
 
 export const JWT_SECRET = 'please_dont_hack_me';
+
+export const DEFAULT_PORT = 3000;
