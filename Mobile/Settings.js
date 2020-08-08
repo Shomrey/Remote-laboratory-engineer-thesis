@@ -13,7 +13,7 @@ export default function Settings({ navigation }) {
                         navigation.dispatch(DrawerActions.toggleDrawer())
                     }} />
                 }
-                backgroundColor="white"
+                backgroundColor="#eceff1"
                 containerStyle={{
                     shadowOffset: {
                         width: 0,

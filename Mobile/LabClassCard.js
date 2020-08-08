@@ -22,16 +22,16 @@ export default function LabClassCard(props) {
 
 const styles = StyleSheet.create({
     touchable: {
-        borderRadius: 5,
-        marginTop: 10,
-        backgroundColor: "#e6e6eb",
+        borderRadius: 25,
+        marginTop: 15,
+        backgroundColor: "white",
         shadowColor: "#000000",
         shadowOffset: {
             width: 0,
             height: 2,
         },
         shadowOpacity: 0.25,
-        shadowRadius: 3.84,
+        shadowRadius: 6.84,
         elevation: 6
     },
     content: {

@@ -1,15 +1,15 @@
 import 'react-native-gesture-handler';
-import React, {useState, useContext} from 'react';
+import React, {useContext, useState} from 'react';
 import {
-    StyleSheet,
-    Text,
-    View,
-    TextInput,
-    Button,
     ActivityIndicator,
     Image,
     KeyboardAvoidingView,
-    Platform
+    Platform,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View
 } from 'react-native';
 import Main from './Main';
 import Axios from 'axios';
@@ -64,27 +64,30 @@ export default function Login() {
             :
 
             (<View style={styles.container}>
-                <Image
-                    style={styles.logo}
-                    source={
-                        require('./assets/logo_agh.png')
-                    }
-                />
+                <View style={styles.logoContainer}>
+                    <Image
+                        style={styles.logo}
+                        source={
+                            require('./assets/logo_agh.png')
+                        }
+                    />
+                </View>
                 <Text style={styles.header}> Remote Laboratory </Text>
-                <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
-                    <View style={styles.input}>
-                        <TextInput placeholder="Login" onChangeText={text => setLogin(text)} autoCapitalize={"none"}
-                                   autoCompleteType={"off"} autoCorrect={false}/>
-                    </View>
-                    <View style={styles.input}>
-                        <TextInput placeholder="Password" onChangeText={text => setPassword(text)}
-                                   secureTextEntry={true} autoCapitalize={"none"} autoCompleteType={"off"}
-                                   autoCorrect={false}/>
-                    </View>
+                <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}
+                                      keyboardVerticalOffset={30}
+                                      style={styles.inputsWrapper}>
+                    <TextInput style={styles.input} placeholder="Login" onChangeText={text => setLogin(text)}
+                               autoCapitalize={"none"}
+                               autoCompleteType={"off"} autoCorrect={false}/>
+                    <TextInput style={styles.input} placeholder="Password" onChangeText={text => setPassword(text)}
+                               secureTextEntry={true} autoCapitalize={"none"} autoCompleteType={"off"}
+                               autoCorrect={false}/>
                 </KeyboardAvoidingView>
                 <View style={styles.buttonWrapper}>
-                    <Button title="Log in" color="black" style={styles.button} disabled={waitingForResponse}
-                            onPress={() => logIn()}/>
+                    <TouchableOpacity style={{...styles.button, backgroundColor: waitingForResponse ? 'grey' : 'black'}} disabled={waitingForResponse}
+                                      onPress={() => logIn()}>
+                        <Text style={styles.buttonText}>Log in</Text>
+                    </TouchableOpacity>
                 </View>
                 <Text style={styles.errorMessage}> {errorMessage} </Text>
                 <ActivityIndicator style={styles.loader} animating={waitingForResponse} size="large" color="#000000"/>
@@ -97,27 +100,41 @@ const styles = StyleSheet.create({
     container: {
         padding: 50,
         flex: 1,
-        flexDirection: "column",
         justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: '#eceff1'
     },
     input: {
         marginBottom: 20,
         padding: 10,
+        paddingLeft: 20,
         height: 46,
-        borderWidth: 2,
-        borderRadius: 15
+        borderRadius: 25,
+        backgroundColor: '#cfd8dc',
+        fontSize: 20,
+    },
+    inputsWrapper: {
+        alignSelf: 'stretch'
     },
     buttonWrapper: {
         overflow: "hidden",
-        borderRadius: 15,
+        borderRadius: 25,
+        alignSelf: 'stretch'
     },
     button: {
-        height: 46
+        height: 46,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    buttonText: {
+        fontSize: 20,
+        fontWeight: "600",
+        color: '#eceff1'
     },
     header: {
-        marginLeft: "auto",
-        marginRight: "auto",
-        marginBottom: 100,
+        marginTop: 20,
+        marginBottom: 130,
         textTransform: "uppercase",
         fontWeight: "700",
         fontSize: 18,
@@ -127,16 +144,30 @@ const styles = StyleSheet.create({
     loader: {
         marginTop: 10
     },
-    logo: {
+    logoContainer: {
         marginBottom: 20,
         height: 150,
         width: 150,
-        marginLeft: "auto",
-        marginRight: "auto"
+        shadowColor: "#000000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 10.84,
+    },
+    logo: {
+        flex: 1,
+        width: null,
+        height: null,
+        resizeMode: 'contain',
+        borderRadius: 25
     },
     errorMessage: {
         margin: 10,
         color: 'red',
-        textAlign: "center"
+        textAlign: "center",
+        fontSize: 18,
+        fontWeight: '500'
     }
 });

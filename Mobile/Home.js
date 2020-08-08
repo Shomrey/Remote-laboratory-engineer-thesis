@@ -58,13 +58,15 @@ function HomeContent({navigation}) {
                         navigation.dispatch(DrawerActions.toggleDrawer())
                     }}/>
                 }
-                backgroundColor="white"
+                backgroundColor="#cfd8dc"
                 containerStyle={{
                     shadowOffset: {
                         width: 0,
                         height: 2,
                     },
                     shadowOpacity: 0.25,
+                    shadowRadius: 7,
+                    zIndex: 1,
                 }}
             />
             <ScrollView style={styles.container}>
@@ -84,11 +86,13 @@ const styles = StyleSheet.create({
         display: "flex",
         flexDirection: "column",
         padding: 15,
-        marginBottom: 100
-    },
+        marginBottom: 100,
+        backgroundColor: '#eceff1',
+},
     labsHeader: {
         fontSize: 20,
         fontWeight: "700",
+        marginTop: 20
     },
     labs: {
         flexDirection: "column",
