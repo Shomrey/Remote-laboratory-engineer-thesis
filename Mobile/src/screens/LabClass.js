@@ -107,7 +107,7 @@ function LabTerminal() {
                         <View style={styles.button}>
                             <Button title={'Start session'} onPress={() => {
 
-                                const socket = socketIOClient("http://localhost:3000");
+                                const socket = socketIOClient("https://remote-laboratory.herokuapp.com");
 
                                 socket.emit('access_token', token);
 

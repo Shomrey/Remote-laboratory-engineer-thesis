@@ -10,7 +10,7 @@ export default function Account({navigation}) {
     const [userData, setUserData] = useState(null);
 
     useEffect(() => {
-        Axios.get('http://localhost:3000/users/current', {headers: {'Authorization': `Bearer ${token}`}})
+        Axios.get('https://remote-laboratory.herokuapp.com/users/current', {headers: {'Authorization': `Bearer ${token}`}})
             .then(function (response) {
                 setUserData(response.data);
             })
