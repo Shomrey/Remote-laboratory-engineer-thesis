@@ -1,13 +1,12 @@
 import 'react-native-gesture-handler';
 import React, {useContext, useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import LabClassCard from './LabClassCard';
+import LabClassCard from '../components/LabClassCard';
 import {createStackNavigator} from '@react-navigation/stack';
 import LabClass from './LabClass';
-import {Header, Icon} from 'react-native-elements';
-import {DrawerActions} from '@react-navigation/native';
-import {AuthContext} from './AuthContext';
+import {AuthContext} from '../context/AuthContext';
 import Axios from 'axios';
+import DrawerHeader from "../components/Header";
 
 const Stack = createStackNavigator()
 
@@ -52,23 +51,7 @@ function HomeContent({navigation}) {
 
     return (
         <View>
-            <Header
-                leftComponent={
-                    <Icon name="menu" size={40} onPress={() => {
-                        navigation.dispatch(DrawerActions.toggleDrawer())
-                    }}/>
-                }
-                backgroundColor="#cfd8dc"
-                containerStyle={{
-                    shadowOffset: {
-                        width: 0,
-                        height: 2,
-                    },
-                    shadowOpacity: 0.25,
-                    shadowRadius: 7,
-                    zIndex: 1,
-                }}
-            />
+            <DrawerHeader navigation={navigation} />
             <ScrollView style={styles.container}>
                 <Text style={styles.labsHeader}>
                     Available labs

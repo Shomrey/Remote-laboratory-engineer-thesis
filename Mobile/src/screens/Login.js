@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import Main from './Main';
 import Axios from 'axios';
-import {AuthContext} from './AuthContext'
+import {AuthContext} from '../context/AuthContext'
 
 export default function Login() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -68,7 +68,7 @@ export default function Login() {
                     <Image
                         style={styles.logo}
                         source={
-                            require('./assets/logo_agh.png')
+                            require('../../assets/logo_agh.png')
                         }
                     />
                 </View>

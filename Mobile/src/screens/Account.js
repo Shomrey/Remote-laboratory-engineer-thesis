@@ -1,10 +1,9 @@
 import 'react-native-gesture-handler';
 import React, {useContext, useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import {Header, Icon} from "react-native-elements";
-import {DrawerActions} from "@react-navigation/native";
-import {AuthContext} from "./AuthContext";
+import {AuthContext} from "../context/AuthContext";
 import Axios from "axios";
+import DrawerHeader from "../components/Header";
 
 export default function Account({navigation}) {
     const [token, setToken] = useContext(AuthContext);
@@ -30,21 +29,7 @@ export default function Account({navigation}) {
 
     return (
         <View style={styles.container}>
-            <Header
-                leftComponent={
-                    <Icon name="menu" size={40} onPress={() => {
-                        navigation.dispatch(DrawerActions.toggleDrawer())
-                    }}/>
-                }
-                backgroundColor="#eceff1"
-                containerStyle={{
-                    shadowOffset: {
-                        width: 0,
-                        height: 2,
-                    },
-                    shadowOpacity: 0.25,
-                }}
-            />
+            <DrawerHeader navigation={navigation}/>
             <View style={styles.content}>
                 <Text style={styles.infoHeader}>
                     Account information

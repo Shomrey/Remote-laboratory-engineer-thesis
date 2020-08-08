@@ -14,7 +14,7 @@ import {
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import socketIOClient from "socket.io-client";
-import {AuthContext} from "./AuthContext";
+import {AuthContext} from "../context/AuthContext";
 
 const Tab = createMaterialTopTabNavigator();
 

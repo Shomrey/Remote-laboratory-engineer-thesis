@@ -1,7 +1,7 @@
 import 'react-native-gesture-handler';
 import React from 'react';
-import Login from './Login'
-import {AuthProvider} from './AuthContext'
+import Login from './src/screens/Login'
+import {AuthProvider} from './src/context/AuthContext'
 import {SourceCodePro_500Medium, useFonts} from "@expo-google-fonts/source-code-pro";
 import {AppLoading} from "expo";
 
