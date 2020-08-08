@@ -82,15 +82,21 @@ export default function Login() {
                     <TextInput style={styles.input} placeholder="Password" onChangeText={text => setPassword(text)}
                                secureTextEntry={true} autoCapitalize={"none"} autoCompleteType={"off"}
                                autoCorrect={false}/>
+                    <View style={styles.buttonWrapper}>
+                        <TouchableOpacity
+                            style={{...styles.button, backgroundColor: waitingForResponse ? 'grey' : 'black'}}
+                            disabled={waitingForResponse}
+                            onPress={() => logIn()}>
+                            {waitingForResponse ?
+                                <ActivityIndicator animating={waitingForResponse} size="large" color="#000000"/>
+                                :
+                                <Text style={styles.buttonText}>Log in</Text>
+                            }
+
+                        </TouchableOpacity>
+                    </View>
                 </KeyboardAvoidingView>
-                <View style={styles.buttonWrapper}>
-                    <TouchableOpacity style={{...styles.button, backgroundColor: waitingForResponse ? 'grey' : 'black'}} disabled={waitingForResponse}
-                                      onPress={() => logIn()}>
-                        <Text style={styles.buttonText}>Log in</Text>
-                    </TouchableOpacity>
-                </View>
                 <Text style={styles.errorMessage}> {errorMessage} </Text>
-                <ActivityIndicator style={styles.loader} animating={waitingForResponse} size="large" color="#000000"/>
             </View>)
 
     );
@@ -98,7 +104,7 @@ export default function Login() {
 
 const styles = StyleSheet.create({
     container: {
-        padding: 50,
+        padding: 20,
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
@@ -114,18 +120,30 @@ const styles = StyleSheet.create({
         fontSize: 20,
     },
     inputsWrapper: {
-        alignSelf: 'stretch'
+        alignSelf: 'stretch',
+        backgroundColor: 'white',
+        paddingVertical: 25,
+        paddingHorizontal: 15,
+        shadowColor: "#000000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 10.84,
+        borderRadius: 25
     },
     buttonWrapper: {
         overflow: "hidden",
         borderRadius: 25,
-        alignSelf: 'stretch'
+        alignSelf: 'stretch',
+        marginBottom: 25,
     },
     button: {
         height: 46,
         display: 'flex',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     buttonText: {
         fontSize: 20,
@@ -140,9 +158,6 @@ const styles = StyleSheet.create({
         fontSize: 18,
         lineHeight: 21,
         letterSpacing: 1,
-    },
-    loader: {
-        marginTop: 10
     },
     logoContainer: {
         marginBottom: 20,
@@ -164,10 +179,10 @@ const styles = StyleSheet.create({
         borderRadius: 25
     },
     errorMessage: {
-        margin: 10,
         color: 'red',
         textAlign: "center",
         fontSize: 18,
-        fontWeight: '500'
+        fontWeight: '500',
+        marginTop: 15
     }
 });
