@@ -72,9 +72,10 @@ export default function Login() {
                         }
                     />
                 </View>
-                <Text style={styles.header}> Remote Laboratory </Text>
+                <View>
+                    <Text style={styles.header}> Remote Laboratory </Text>
+                </View>
                 <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}
-                                      keyboardVerticalOffset={30}
                                       style={styles.inputsWrapper}>
                     <TextInput style={styles.input} placeholder="Login" onChangeText={text => setLogin(text)}
                                autoCapitalize={"none"}
@@ -161,6 +162,7 @@ const styles = StyleSheet.create({
     },
     logoContainer: {
         marginBottom: 20,
+        marginTop: 30,
         height: 150,
         width: 150,
         shadowColor: "#000000",
