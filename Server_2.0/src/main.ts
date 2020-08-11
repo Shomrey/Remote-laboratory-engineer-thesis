@@ -28,10 +28,12 @@ async function bootstrap() {
     app.useGlobalPipes(new ValidationPipe());
 
     /* Disable foreign keys for synchronization - SQLite issue */
-    const connection = app.get(Connection);
-    await connection.query('PRAGMA foreign_keys=OFF');
-    await connection.synchronize();
-    await connection.query('PRAGMA foreign_keys=ON');
+    if (!process.env.HEROKU) {
+        const connection = app.get(Connection);
+        await connection.query('PRAGMA foreign_keys=OFF');
+        await connection.synchronize();
+        await connection.query('PRAGMA foreign_keys=ON');
+    }
 
     /* SocketIO */
     await initializeSocketIO(logger, app);

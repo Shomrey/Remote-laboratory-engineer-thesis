@@ -10,11 +10,21 @@ import {AuthModule} from './auth/auth.module';
 
 @Module({
     imports: [
-        TypeOrmModule.forRoot({
+        TypeOrmModule.forRoot(process.env.HEROKU ? {
+            type: "postgres",
+            entities: [User, Lab, Enrollment],
+            logging: 'all',
+            url: process.env.DATABASE_URL,
+            ssl: {
+                rejectUnauthorized: false
+            },
+            synchronize: true
+        } : {
             type: 'sqlite',
             database: 'database',
             entities: [User, Lab, Enrollment],
-            logging: 'all'
+            logging: 'all',
+            synchronize: true
         }),
         UserModule,
         EnrollmentModule,
