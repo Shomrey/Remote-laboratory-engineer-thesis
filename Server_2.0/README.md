@@ -12,9 +12,6 @@ $ npm install
 
 ```bash
 # development
-$ npm run start
-
-# watch mode (hot reload)
 $ npm run start:dev
 
 # production mode
