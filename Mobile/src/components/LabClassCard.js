@@ -24,6 +24,7 @@ const styles = StyleSheet.create({
     touchable: {
         borderRadius: 25,
         marginTop: 15,
+        marginHorizontal: 15,
         backgroundColor: "white",
         shadowColor: "#000000",
         shadowOffset: {
@@ -32,7 +33,7 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.25,
         shadowRadius: 6.84,
-        elevation: 6
+        elevation: 10
     },
     content: {
         padding: 16,

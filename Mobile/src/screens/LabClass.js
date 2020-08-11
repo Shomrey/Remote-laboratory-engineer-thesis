@@ -47,6 +47,7 @@ export default function LabClass(props) {
             },
             shadowOpacity: 0.25,
             shadowRadius: 3,
+            backgroundColor: '#cfd8dc',
         }
     });
 

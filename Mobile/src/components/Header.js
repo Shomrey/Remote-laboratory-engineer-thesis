@@ -11,7 +11,6 @@ export default function DrawerHeader(props) {
                     props.navigation.dispatch(DrawerActions.toggleDrawer())
                 }}/>
             }
-            backgroundColor="#cfd8dc"
             containerStyle={styles.header}
         />
     )
@@ -26,5 +25,8 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 7,
         zIndex: 1,
+        elevation: 10,
+        backgroundColor: "#cfd8dc",
+        shadowColor: 'black',
     }
 });

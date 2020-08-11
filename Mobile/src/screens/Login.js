@@ -128,11 +128,13 @@ const styles = StyleSheet.create({
         shadowColor: "#000000",
         shadowOffset: {
             width: 0,
-            height: 2,
+            height: 0,
         },
         shadowOpacity: 0.25,
         shadowRadius: 10.84,
-        borderRadius: 25
+        borderRadius: 25,
+        elevation: 15,
+        minHeight: 250
     },
     buttonWrapper: {
         overflow: "hidden",
@@ -161,8 +163,8 @@ const styles = StyleSheet.create({
         letterSpacing: 1,
     },
     logoContainer: {
-        marginBottom: 20,
-        marginTop: 30,
+        margin: 30,
+        marginTop: 50,
         height: 150,
         width: 150,
         shadowColor: "#000000",
@@ -172,6 +174,8 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.25,
         shadowRadius: 10.84,
+        elevation: 15,
+        borderRadius: 25
     },
     logo: {
         flex: 1,

@@ -21,7 +21,7 @@ export default function Home() {
             <Stack.Screen
                 name="LabClass"
                 component={LabClass}
-                options={{title: "Laboratory class"}}
+                options={{title: "Laboratory class", headerStyle: {backgroundColor: '#cfd8dc'}}}
             />
         </Stack.Navigator>
     );
@@ -51,7 +51,7 @@ function HomeContent({navigation}) {
 
     return (
         <View>
-            <DrawerHeader navigation={navigation} />
+            <DrawerHeader navigation={navigation}/>
             <ScrollView style={styles.container}>
                 <Text style={styles.labsHeader}>
                     Available labs
@@ -68,16 +68,17 @@ const styles = StyleSheet.create({
     container: {
         display: "flex",
         flexDirection: "column",
-        padding: 15,
-        marginBottom: 100,
         backgroundColor: '#eceff1',
-},
+        height: '100%'
+    },
     labsHeader: {
         fontSize: 20,
         fontWeight: "700",
-        marginTop: 20
+        marginTop: 20,
+        marginHorizontal: 15
     },
     labs: {
         flexDirection: "column",
+        marginBottom: 130,
     }
 });
