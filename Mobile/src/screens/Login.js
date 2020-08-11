@@ -134,13 +134,13 @@ const styles = StyleSheet.create({
         shadowRadius: 10.84,
         borderRadius: 25,
         elevation: 15,
-        minHeight: 250
+        minHeight: 220,
     },
     buttonWrapper: {
         overflow: "hidden",
         borderRadius: 25,
         alignSelf: 'stretch',
-        marginBottom: 25,
+        marginBottom: Platform.OS === 'ios' ? 25 : 0,
     },
     button: {
         height: 46,
