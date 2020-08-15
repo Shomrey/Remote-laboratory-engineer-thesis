@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import React, { useState, createContext } from 'react';
+import React, {createContext, useState} from 'react';
 
 const AuthContext = createContext();
 
@@ -13,4 +13,4 @@ function AuthProvider(props) {
     );
 }
 
-export { AuthContext, AuthProvider };
+export {AuthContext, AuthProvider};
