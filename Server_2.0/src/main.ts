@@ -1,10 +1,10 @@
 import {NestFactory} from '@nestjs/core';
 import {AppModule} from './app.module';
 import {DocumentBuilder, SwaggerModule} from "@nestjs/swagger";
-import {INestApplication, Logger, ValidationPipe} from "@nestjs/common";
+import {Logger, ValidationPipe} from "@nestjs/common";
 import {Connection} from "typeorm";
-import io = require('socket.io');
 import {DEFAULT_PORT} from "./utils/constants";
+import initializeSocketIO from "./socketio/socketio-listener";
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule, {
@@ -13,6 +13,7 @@ async function bootstrap() {
 
     const logger = new Logger();
     app.useLogger(logger);
+    app.setGlobalPrefix('/api');
 
     /* OpenAPI specification */
     const options = new DocumentBuilder()
@@ -42,48 +43,6 @@ async function bootstrap() {
     app.enableCors();
 
     await app.listen(process.env.PORT || DEFAULT_PORT);
-}
-
-async function initializeSocketIO(logger: Logger, app: INestApplication) {
-    const socketIO = io(app.getHttpServer());
-
-    logger.setContext('SocketIO');
-
-    socketIO.on('connection', (socket) => {
-        logger.log(`Client connected, ID: ${socket.id}`);
-
-        let token;
-        let commands = '';
-        let formattedCommands = '';
-
-        socket.on('access_token', (tok) => {
-            logger.log(`Client ${socket.id} authenticated with token: ${tok}`);
-            token = tok;
-        })
-
-        socket.on('command', (command) => {
-            if (!token) {
-                logger.log(`Unauthenticated command from ${socket.id}`);
-            } else {
-                logger.debug(`Command: ${command}`);
-
-                if (command === 'whoami') {
-                    command = `${command}\n${token}`;
-                }
-
-                commands = `${commands}${command}\n`;
-                formattedCommands = `${formattedCommands}> ${command}\n`;
-
-                socket.emit('output', formattedCommands);
-            }
-        })
-
-        socket.on('disconnect', () => {
-            logger.log(`Client ${socket.id} disconnected`);
-        });
-    })
-
-    logger.log(`SocketIO initialized`);
 }
 
 bootstrap();

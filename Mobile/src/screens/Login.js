@@ -31,7 +31,7 @@ export default function Login() {
     const logIn = () => {
         setWaitingForResponse(true);
 
-        Axios.post('https://remote-laboratory.herokuapp.com/auth/login', {
+        Axios.post('https://remote-laboratory.herokuapp.com/api/auth/login', {
             mail: login,
             password: password
         })

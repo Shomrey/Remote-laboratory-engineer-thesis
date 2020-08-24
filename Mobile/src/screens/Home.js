@@ -32,7 +32,7 @@ function HomeContent({navigation}) {
     const [labs, setLabs] = useState([]);
 
     useEffect(() => {
-        Axios.get('https://remote-laboratory.herokuapp.com/users/current/labs', {headers: {'Authorization': `Bearer ${token}`}})
+        Axios.get('https://remote-laboratory.herokuapp.com/api/users/current/labs', {headers: {'Authorization': `Bearer ${token}`}})
             .then(function (response) {
                 setLabs(response.data);
             })

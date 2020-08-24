@@ -24,7 +24,7 @@ import {AuthModule} from './auth/auth.module';
             database: 'database',
             entities: [User, Lab, Enrollment],
             logging: 'all',
-            synchronize: true
+            synchronize: false
         }),
         UserModule,
         EnrollmentModule,
