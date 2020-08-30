@@ -13,7 +13,7 @@ export default async function initializeSocketIO(logger: Logger, app: INestAppli
         raspberry_id: "raspberry_id",
         socket: "socket"
     }}*/
-    let raspberrries = {}
+    let raspberries = {}
     /*{id:{
         id: "id",
         socket: "socket",
@@ -43,7 +43,7 @@ export default async function initializeSocketIO(logger: Logger, app: INestAppli
                 "raspberry_id": raspberry_id,
                 "socket": socket
             }
-            raspberrries[raspberry_id]["user_token"] = token
+            raspberries[raspberry_id]["user_token"] = token
         })
 
         socket.on('command', (command) => {
@@ -64,9 +64,8 @@ export default async function initializeSocketIO(logger: Logger, app: INestAppli
                 commands = `${commands}${command}\n`;
                 formattedCommands = `${formattedCommands}> ${command}\n`;
 
-                let raspberry_socket = raspberrries[users["raspberry_id"]]
-                raspberry_socket.emit('output', formattedCommands);
-                //socket.emit('output', formattedCommands);
+                let raspberry_socket = raspberries[users["raspberry_id"]]
+                raspberry_socket.emit('output', command);
             }
         })
 
@@ -74,7 +73,7 @@ export default async function initializeSocketIO(logger: Logger, app: INestAppli
 
         socket.on('identify_raspberry', (id) => {
             logger.log(`Raspberry ${socket.id} authenticated with id: ${id}`);
-            raspberrries[id] = {
+            raspberries[id] = {
                 "id": id,
                 "socket": socket
             }
@@ -86,9 +85,11 @@ export default async function initializeSocketIO(logger: Logger, app: INestAppli
             } else {
                 logger.debug(`Command: ${message}`);
 
-                formattedCommands = `${formattedCommands}> ${message}\n`;
 
-                let user_socket = users[raspberrries[id]["user_token"]]
+                formattedCommands = `${formattedCommands} ${message}\n`;
+
+
+                let user_socket = users[raspberries[id]["user_token"]]
                 user_socket.emit('output', formattedCommands)
 
             }
