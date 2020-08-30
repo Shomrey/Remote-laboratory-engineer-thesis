@@ -31,11 +31,6 @@ sio.connect(server)
 sio.emit('identify_raspberry', {'id':'malina_1'})
 
 
-@sio.on('server_ack')
-def on_server_ack(data):
-    print("Server initialized connection with: "+ str(data))
-
-
 @sio.on('command')
 def on_command(data):
      # send cmd from server to device
@@ -56,7 +51,7 @@ def listen_device_thread(server, device):
                 print("----------------------------------------------------------------------")
                 message = device_connection.recv(999)
                 print("Received from device: "+  str(message.decode()))
-                server.emit('command', {'cmd' : str(message.decode())})
+                server.emit('raspberry_message', {str(message.decode())})
                 print("Sent to server: "+str(message.decode("utf-8") ))
 
         
