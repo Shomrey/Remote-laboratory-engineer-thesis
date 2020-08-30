@@ -93,7 +93,7 @@ export default async function initializeSocketIO(logger: Logger, app: INestAppli
                 formattedCommands = `${formattedCommands} ${message}\n`;
 
 
-                let user_socket = users[raspberries[id]["user_token"]]
+                let user_socket = users[raspberries[id]["user_token"]]["socket"]
                 user_socket.emit('output', formattedCommands)
 
             }
