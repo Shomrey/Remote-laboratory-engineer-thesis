@@ -35,7 +35,7 @@ export default async function initializeSocketIO(logger: Logger, app: INestAppli
 
 
 
-        socket.on('access_token', (tok, raspberry_id) => {
+        socket.on('access_token', ({tok, raspberry_id}) => {
             logger.log(`Client ${socket.id} authenticated with token: ${tok}`);
             token = tok;
             users[token] = {
