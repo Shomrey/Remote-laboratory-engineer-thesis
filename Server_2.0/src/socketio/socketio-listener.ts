@@ -44,7 +44,7 @@ export default async function initializeSocketIO(logger: Logger, app: INestAppli
                 "socket": socket
             }
             raspberries[raspberry_id]["user_token"] = token;
-            let raspberry_socket = raspberries[users[token]["raspberry_id"]];
+            let raspberry_socket = raspberries[users[token]["raspberry_id"]]["socket"];
             raspberry_socket.emit('start_device');
         })
 
