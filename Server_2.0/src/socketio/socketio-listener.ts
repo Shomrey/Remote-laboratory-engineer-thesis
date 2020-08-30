@@ -71,8 +71,9 @@ export default async function initializeSocketIO(logger: Logger, app: INestAppli
 
         /******************     raspberry connection       *********************/
 
-        socket.on('identify_raspberry', (id) => {
+        socket.on('identify_raspberry', (rasp_id) => {
             logger.log(`Raspberry ${socket.id} authenticated with id: ${id}`);
+            id = rasp_id;
             raspberries[id] = {
                 "id": id,
                 "socket": socket
