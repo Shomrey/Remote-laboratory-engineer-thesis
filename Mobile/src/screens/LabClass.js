@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import React, {useContext, useState} from 'react';
+import React, {useContext, useRef, useState} from 'react';
 import {
     Alert,
     Button,
@@ -48,7 +48,8 @@ export default function LabClass(props) {
             shadowOpacity: 0.25,
             shadowRadius: 3,
             backgroundColor: '#cfd8dc',
-        }
+        },
+        headerBackTitle: "Home"
     });
 
     return (
@@ -89,15 +90,24 @@ function LabTerminal() {
     const [command, setCommand] = useState('');
     const [token] = useContext(AuthContext);
     const [socket, setSocket] = useState();
+    const scrollView = useRef(null);
 
-    let scrollView;
+    const initializeSocketIO = () => {
+        const socket = socketIOClient("https://remote-laboratory.herokuapp.com");
+
+        socket.emit('access_token', {tok: token, raspberry_id: 'malina_1'});
+        socket.on('output', (data) => {
+            setTerminalContent(data);
+        });
+
+        setSocket(socket);
+        setSessionStarted(true);
+    }
 
     return (
         <View style={styles.tabContainer}>
-            <ScrollView style={styles.terminalWindow} ref={ref => {
-                scrollView = ref
-            }}
-                        onContentSizeChange={() => scrollView.scrollToEnd({animated: true})}>
+            <ScrollView style={styles.terminalWindow} ref={scrollView}
+                        onContentSizeChange={() => scrollView.current.scrollToEnd({animated: true})}>
                 {sessionStarted ?
                     (
                         <Text style={styles.terminalText}>
@@ -106,20 +116,7 @@ function LabTerminal() {
                     :
                     (
                         <View style={styles.button}>
-                            <Button title={'Start session'} onPress={() => {
-
-                                const socket = socketIOClient("https://remote-laboratory.herokuapp.com");
-
-                                socket.emit('access_token', token);
-
-                                setSocket(socket);
-
-                                socket.on('output', (data) => {
-                                    setTerminalContent(data);
-                                });
-
-                                setSessionStarted(true);
-                            }}/>
+                            <Button title={'Start session'} onPress={initializeSocketIO}/>
                         </View>
                     )
                 }
@@ -153,7 +150,7 @@ const styles = StyleSheet.create({
         marginBottom: 2
     },
     text: {
-        fontSize: 16
+        fontSize: 20
     },
     terminalWindow: {
         borderColor: 'black',
@@ -175,7 +172,15 @@ const styles = StyleSheet.create({
     button: {
         justifyContent: 'center',
         alignItems: 'center',
-        flex: 1
+        flex: 1,
+        backgroundColor: '#dfe1e6',
+        height: 100,
+        width: 100,
+        borderRadius: 100,
+        alignSelf: 'center',
+        marginTop: 200,
+        elevation: 15,
+        color: 'red'
     },
     inputContainer: {
         marginTop: 25,
