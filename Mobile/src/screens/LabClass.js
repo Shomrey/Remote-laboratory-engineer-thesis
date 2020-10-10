@@ -15,11 +15,14 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import socketIOClient from "socket.io-client";
 import {AuthContext} from "../context/AuthContext";
+import Axios from "axios";
 
 const Tab = createMaterialTopTabNavigator();
 
 export default function LabClass(props) {
     const lab = props.route.params.lab;
+    const [result, setResult] = useState("");
+    const [token, setToken] = useContext(AuthContext);
 
     props.navigation.setOptions({
         headerRight: () => <Icon name={'save'} type={"ionicon"} size={30} style={{marginRight: 10}} onPress={() => {
@@ -33,7 +36,10 @@ export default function LabClass(props) {
                     },
                     {
                         text: "OK",
-                        onPress: () => console.log("OK Pressed")
+                        onPress: () => Axios.patch(
+                            `https://remote-laboratory.herokuapp.com/api/users/current/labs/${lab.id}/result`,
+                            {result}, {headers: {'Authorization': `Bearer ${token}`}}
+                        )
                     }
                 ],
             );
@@ -57,7 +63,7 @@ export default function LabClass(props) {
             <Tab.Screen name={Platform.OS === 'ios' ? "Intro" : "Introduction"} component={LabIntroduction}
                         initialParams={{description: lab.description, topology: lab.topology}}/>
             <Tab.Screen name="Tasks" component={LabTasks} initialParams={{tasks: lab.tasks}}/>
-            <Tab.Screen name="Terminal" component={LabTerminal}/>
+            <Tab.Screen name="Terminal" component={LabTerminal} initialParams={{setResult: setResult}}/>
         </Tab.Navigator>
     )
 }
@@ -84,7 +90,7 @@ function LabTasks(props) {
     )
 }
 
-function LabTerminal() {
+function LabTerminal(props) {
     const [sessionStarted, setSessionStarted] = useState(false);
     const [terminalContent, setTerminalContent] = useState('');
     const [command, setCommand] = useState('');
@@ -92,12 +98,15 @@ function LabTerminal() {
     const [socket, setSocket] = useState();
     const scrollView = useRef(null);
 
+    const setResult = props.route.params.setResult;
+
     const initializeSocketIO = () => {
         const socket = socketIOClient("https://remote-laboratory.herokuapp.com");
 
         socket.emit('access_token', {tok: token, raspberry_id: 'malina_1'});
         socket.on('output', (data) => {
             setTerminalContent(data);
+            setResult(data);
         });
 
         setSocket(socket);
