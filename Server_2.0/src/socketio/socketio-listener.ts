@@ -1,19 +1,35 @@
 import { INestApplication, Logger } from "@nestjs/common";
 import io = require('socket.io');
 import { JwtService } from "@nestjs/jwt";
+import {Socket} from "socket.io";
+
+interface UserConnection {
+    token: string;
+    raspberry_id: string;
+    socket: Socket;
+}
+
+interface RaspberryConnection {
+    id: string;
+    socket: Socket;
+    user_token: string;
+}
+
+type UserConnectionType = Record<string, UserConnection>;
+type RaspberryConnectionType = Record<string, RaspberryConnection>;
 
 export default async function initializeSocketIO(logger: Logger, app: INestApplication): Promise<void> {
     const socketIO = io(app.getHttpServer());
     const jwtService = app.get(JwtService);
 
-    let connected_id = []
-    let users = {}
+    const connected_id = []
+    const users: UserConnectionType = {}
     /*{token:{
         token: "value",
         raspberry_id: "raspberry_id",
         socket: "socket"
     }}*/
-    let raspberries = {}
+    const raspberries: RaspberryConnectionType = {}
     /*{id:{
         id: "id",
         socket: "socket",
@@ -33,19 +49,16 @@ export default async function initializeSocketIO(logger: Logger, app: INestAppli
 
         /******************     mobile connection       ***************/
 
-
-
         socket.on('access_token', ({ tok, raspberry_id }) => {
             logger.log(`Client ${socket.id} authenticated with token: ${tok}`);
             token = tok;
             users[token] = {
-                "token": token,
-                "raspberry_id": raspberry_id,
-                "socket": socket
+                token,
+                raspberry_id,
+                socket
             }
-            raspberries[raspberry_id]["user_token"] = token;
-            let raspberry_socket = raspberries[users[token]["raspberry_id"]]["socket"];
-            raspberry_socket.emit('start_device');
+            raspberries[raspberry_id].user_token = token;
+            raspberries[raspberry_id].socket.emit('start_device');
         })
 
         socket.on('command', (command) => {
@@ -66,7 +79,7 @@ export default async function initializeSocketIO(logger: Logger, app: INestAppli
                 commands = `${commands}${command}\n`;
                 formattedCommands = `${formattedCommands}> ${command}\n`;
 
-                let raspberry_socket = raspberries[users[token]["raspberry_id"]]["socket"]
+                const raspberry_socket = raspberries[users[token]["raspberry_id"]]["socket"]
                 raspberry_socket.emit('output', command);
             }
         })
@@ -78,8 +91,9 @@ export default async function initializeSocketIO(logger: Logger, app: INestAppli
             logger.log(`Raspberry ${socket.id} authenticated with id: ${id}`);
 
             raspberries[id] = {
-                "id": id,
-                "socket": socket
+                id,
+                socket,
+                user_token: null
             }
         })
 
@@ -89,13 +103,9 @@ export default async function initializeSocketIO(logger: Logger, app: INestAppli
             } else {
                 logger.debug(`Command: ${message}`);
 
-
                 formattedCommands = `${formattedCommands} ${message}\n`;
 
-
-                let user_socket = users[raspberries[id]["user_token"]]["socket"]
-                user_socket.emit('output', formattedCommands)
-
+                users[raspberries[id].user_token].socket.emit('output', formattedCommands)
             }
         })
 
