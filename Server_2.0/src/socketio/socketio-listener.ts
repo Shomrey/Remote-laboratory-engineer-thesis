@@ -79,8 +79,7 @@ export default async function initializeSocketIO(logger: Logger, app: INestAppli
                 commands = `${commands}${command}\n`;
                 formattedCommands = `${formattedCommands}> ${command}\n`;
 
-                const raspberry_socket = raspberries[users[token]["raspberry_id"]]["socket"]
-                raspberry_socket.emit('output', command);
+                raspberries[users[token].raspberry_id].socket.emit('output', command);
             }
         })
 
