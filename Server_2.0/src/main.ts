@@ -39,7 +39,7 @@ async function bootstrap() {
     /* SocketIO */
     await initializeSocketIO(logger, app);
 
-    /* Enable CORS from testing in chrome */
+    /* Enable CORS for testing in chrome */
     app.enableCors();
 
     await app.listen(process.env.PORT || DEFAULT_PORT);
