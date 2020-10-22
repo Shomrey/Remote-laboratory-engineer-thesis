@@ -110,8 +110,8 @@ function LabTerminal(props) {
         socket.emit('available_raspberries');
         socket.on('available_raspberries', (data) => {
             setAvailableRaspberries(data);
-            if (availableRaspberries.length > 0) {
-                setSelectedRaspberry(availableRaspberries[0]);
+            if (data.length > 0) {
+                setSelectedRaspberry(data[0]);
             }
         })
 
@@ -144,7 +144,8 @@ function LabTerminal(props) {
                                     selectedValue={selectedRaspberry}
                                     onValueChange={(itemValue) => setSelectedRaspberry(itemValue)}>
                                     {availableRaspberries.map(raspberry => <Picker.Item label={raspberry}
-                                                                                        value={raspberry}/>)}
+                                                                                        value={raspberry}
+                                                                                        key={raspberry} />)}
                                 </Picker>
                                 <View style={styles.button}>
                                     <Button title={'Start session'} onPress={authenticateSocket}/>
