@@ -1,9 +1,11 @@
 import 'react-native-gesture-handler';
-import React, {useContext, useRef, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
+// noinspection JSDeprecatedSymbols
 import {
     Alert,
     Button,
     KeyboardAvoidingView,
+    Picker,
     Platform,
     ScrollView,
     StyleSheet,
@@ -96,20 +98,32 @@ function LabTerminal(props) {
     const [command, setCommand] = useState('');
     const [token] = useContext(AuthContext);
     const [socket, setSocket] = useState();
+    const [availableRaspberries, setAvailableRaspberries] = useState([]);
+    const [selectedRaspberry, setSelectedRaspberry] = useState('');
     const scrollView = useRef(null);
 
     const setResult = props.route.params.setResult;
 
-    const initializeSocketIO = () => {
+    useEffect(() => {
         const socket = socketIOClient("https://remote-laboratory.herokuapp.com");
+        setSocket(socket);
+        socket.emit('available_raspberries');
+        socket.on('available_raspberries', (data) => {
+            setAvailableRaspberries(data);
+            if (availableRaspberries.length > 0) {
+                setSelectedRaspberry(availableRaspberries[0]);
+            }
+        })
 
-        socket.emit('access_token', {tok: token, raspberry_id: 'malina_1'});
+    }, []);
+
+    const authenticateSocket = () => {
+        socket.emit('access_token', {tok: token, raspberry_id: selectedRaspberry});
         socket.on('output', (data) => {
             setTerminalContent(data);
             setResult(data);
         });
 
-        setSocket(socket);
         setSessionStarted(true);
     }
 
@@ -124,9 +138,21 @@ function LabTerminal(props) {
                         </Text>)
                     :
                     (
-                        <View style={styles.button}>
-                            <Button title={'Start session'} onPress={initializeSocketIO}/>
-                        </View>
+                        availableRaspberries.length > 0 ? (
+                            <View>
+                                <Picker style={{backgroundColor: '#dfe1e6', flex: 1}}
+                                    selectedValue={selectedRaspberry}
+                                    onValueChange={(itemValue) => setSelectedRaspberry(itemValue)}>
+                                    {availableRaspberries.map(raspberry => <Picker.Item label={raspberry}
+                                                                                        value={raspberry}/>)}
+                                </Picker>
+                                <View style={styles.button}>
+                                    <Button title={'Start session'} onPress={authenticateSocket}/>
+                                </View>
+                            </View>
+                        ) : (
+                            <Text style={{...styles.text, color: 'red', alignSelf: 'center'}}>No raspberries available</Text>
+                        )
                     )
                 }
             </ScrollView>
@@ -187,7 +213,7 @@ const styles = StyleSheet.create({
         width: 100,
         borderRadius: 100,
         alignSelf: 'center',
-        marginTop: 200,
+        marginTop: 100,
         elevation: 15,
         color: 'red'
     },
