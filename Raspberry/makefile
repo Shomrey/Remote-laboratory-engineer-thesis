@@ -12,7 +12,7 @@ fake-switch-run:
 	docker run -P -d fake-switches
 
 program:
-	python virtual-device.py $(FAKE_SWITCH_ADDR) $(FAKE_SWITCH_PORT)
+	python3 tmp.py $(FAKE_SWITCH_ADDR) $(FAKE_SWITCH_PORT)
 
 all: fake-switch-build, fake-switch-run, program
 	
