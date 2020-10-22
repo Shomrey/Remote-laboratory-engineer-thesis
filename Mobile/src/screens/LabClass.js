@@ -1,9 +1,11 @@
 import 'react-native-gesture-handler';
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
+// noinspection JSDeprecatedSymbols
 import {
     Alert,
     Button,
     KeyboardAvoidingView,
+    Picker,
     Platform,
     ScrollView,
     StyleSheet,
@@ -15,11 +17,14 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import socketIOClient from "socket.io-client";
 import {AuthContext} from "../context/AuthContext";
+import Axios from "axios";
 
 const Tab = createMaterialTopTabNavigator();
 
 export default function LabClass(props) {
     const lab = props.route.params.lab;
+    const [result, setResult] = useState("");
+    const [token, setToken] = useContext(AuthContext);
 
     props.navigation.setOptions({
         headerRight: () => <Icon name={'save'} type={"ionicon"} size={30} style={{marginRight: 10}} onPress={() => {
@@ -33,7 +38,10 @@ export default function LabClass(props) {
                     },
                     {
                         text: "OK",
-                        onPress: () => console.log("OK Pressed")
+                        onPress: () => Axios.patch(
+                            `https://remote-laboratory.herokuapp.com/api/users/current/labs/${lab.id}/result`,
+                            {result}, {headers: {'Authorization': `Bearer ${token}`}}
+                        )
                     }
                 ],
             );
@@ -48,7 +56,8 @@ export default function LabClass(props) {
             shadowOpacity: 0.25,
             shadowRadius: 3,
             backgroundColor: '#cfd8dc',
-        }
+        },
+        headerBackTitle: "Home"
     });
 
     return (
@@ -56,7 +65,7 @@ export default function LabClass(props) {
             <Tab.Screen name={Platform.OS === 'ios' ? "Intro" : "Introduction"} component={LabIntroduction}
                         initialParams={{description: lab.description, topology: lab.topology}}/>
             <Tab.Screen name="Tasks" component={LabTasks} initialParams={{tasks: lab.tasks}}/>
-            <Tab.Screen name="Terminal" component={LabTerminal}/>
+            <Tab.Screen name="Terminal" component={LabTerminal} initialParams={{setResult: setResult}}/>
         </Tab.Navigator>
     )
 }
@@ -83,21 +92,45 @@ function LabTasks(props) {
     )
 }
 
-function LabTerminal() {
+function LabTerminal(props) {
     const [sessionStarted, setSessionStarted] = useState(false);
     const [terminalContent, setTerminalContent] = useState('');
     const [command, setCommand] = useState('');
     const [token] = useContext(AuthContext);
     const [socket, setSocket] = useState();
+    const [availableRaspberries, setAvailableRaspberries] = useState([]);
+    const [selectedRaspberry, setSelectedRaspberry] = useState('');
+    const scrollView = useRef(null);
 
-    let scrollView;
+    const setResult = props.route.params.setResult;
+
+    useEffect(() => {
+        const socket = socketIOClient("https://remote-laboratory.herokuapp.com");
+        setSocket(socket);
+        socket.emit('available_raspberries');
+        socket.on('available_raspberries', (data) => {
+            setAvailableRaspberries(data);
+            if (data.length > 0) {
+                setSelectedRaspberry(data[0]);
+            }
+        })
+
+    }, []);
+
+    const authenticateSocket = () => {
+        socket.emit('access_token', {tok: token, raspberry_id: selectedRaspberry});
+        socket.on('output', (data) => {
+            setTerminalContent(data);
+            setResult(data);
+        });
+
+        setSessionStarted(true);
+    }
 
     return (
         <View style={styles.tabContainer}>
-            <ScrollView style={styles.terminalWindow} ref={ref => {
-                scrollView = ref
-            }}
-                        onContentSizeChange={() => scrollView.scrollToEnd({animated: true})}>
+            <ScrollView style={styles.terminalWindow} ref={scrollView}
+                        onContentSizeChange={() => scrollView.current.scrollToEnd({animated: true})}>
                 {sessionStarted ?
                     (
                         <Text style={styles.terminalText}>
@@ -105,22 +138,22 @@ function LabTerminal() {
                         </Text>)
                     :
                     (
-                        <View style={styles.button}>
-                            <Button title={'Start session'} onPress={() => {
-
-                                const socket = socketIOClient("https://remote-laboratory.herokuapp.com");
-
-                                socket.emit('access_token', token);
-
-                                setSocket(socket);
-
-                                socket.on('output', (data) => {
-                                    setTerminalContent(data);
-                                });
-
-                                setSessionStarted(true);
-                            }}/>
-                        </View>
+                        availableRaspberries.length > 0 ? (
+                            <View>
+                                <Picker style={{backgroundColor: '#dfe1e6', flex: 1}}
+                                    selectedValue={selectedRaspberry}
+                                    onValueChange={(itemValue) => setSelectedRaspberry(itemValue)}>
+                                    {availableRaspberries.map(raspberry => <Picker.Item label={raspberry}
+                                                                                        value={raspberry}
+                                                                                        key={raspberry} />)}
+                                </Picker>
+                                <View style={styles.button}>
+                                    <Button title={'Start session'} onPress={authenticateSocket}/>
+                                </View>
+                            </View>
+                        ) : (
+                            <Text style={{...styles.text, color: 'red', alignSelf: 'center'}}>No raspberries available</Text>
+                        )
                     )
                 }
             </ScrollView>
@@ -153,7 +186,7 @@ const styles = StyleSheet.create({
         marginBottom: 2
     },
     text: {
-        fontSize: 16
+        fontSize: 20
     },
     terminalWindow: {
         borderColor: 'black',
@@ -175,7 +208,15 @@ const styles = StyleSheet.create({
     button: {
         justifyContent: 'center',
         alignItems: 'center',
-        flex: 1
+        flex: 1,
+        backgroundColor: '#dfe1e6',
+        height: 100,
+        width: 100,
+        borderRadius: 100,
+        alignSelf: 'center',
+        marginTop: 100,
+        elevation: 15,
+        color: 'red'
     },
     inputContainer: {
         marginTop: 25,

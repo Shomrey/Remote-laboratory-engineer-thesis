@@ -1,4 +1,4 @@
-import {Controller, Get, Param, ParseIntPipe, Post, UseGuards} from '@nestjs/common';
+import {Body, Controller, Get, Param, ParseIntPipe, Patch, Post, UseGuards} from '@nestjs/common';
 import {UserService} from './user.service';
 import {Routes} from "../utils/constants";
 import {UserResponse} from "./response/user.response";
@@ -8,6 +8,7 @@ import {User} from "./model/user.model";
 import {JwtAuthGuard} from "../auth/guard/jwt-auth.guard";
 import {LabResponse} from "../lab/response/lab.response";
 import {EnrollmentResponse} from "../enrollment/response/enrollment.response";
+import {SaveResultDto} from "../enrollment/dto/save-result.dto";
 
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
@@ -29,6 +30,13 @@ export class UserController {
         const labs = await this.userService.findLabsByIdAndType(currentUser.id, currentUser.userType);
 
         return labs.map(lab => new LabResponse(lab));
+    }
+
+    @Patch(`${Routes.CURRENT}/labs/:labId/result`)
+    @ApiOkResponse({description: 'Saves user\'s lab result'})
+    async saveLabResult(@CurrentUser() currentUser: User, @Body() saveResultDto: SaveResultDto,
+                        @Param('labId', ParseIntPipe) labId: number): Promise<void> {
+        await this.userService.saveUserLabResult(currentUser.id, labId, saveResultDto.result);
     }
 
     @Get()
