@@ -1,15 +1,12 @@
 import paramiko
 import time
 import sys
-
-
-
 import select
 import threading
 from threading import Thread
 import struct
-
 import socketio
+
 
 
 #fake-switches connection setup
@@ -25,45 +22,52 @@ print('Connected to virtual device!')
 
 
 #server connection setup
-server = 'https://remote-laboratory.herokuapp.com'
+server_address = 'http://0.0.0.0:5000'
 sio = socketio.Client()
-sio.connect(server)
-sio.emit('identify_raspberry', {'id':'malina_1'})
+sio.connect(server_address)
+sio.emit('identify_raspberry', 'malina_1')
+print('Connected to server!')
 
 
-@sio.on('server_ack')
-def on_server_ack(data):
-    print("Server initialized connection with: "+ str(data))
 
-
-@sio.on('command')
+@sio.on('output')
 def on_command(data):
      # send cmd from server to device
     print("----------------------------------------------------------------------")
     print("Received from server: "+  str(data))
-    device_connection.send(data)
+    cmd = str(data)+'\n'
+    device_connection.send(cmd.encode(encoding='UTF-8'))
     print("Sent to device: "+str(data))
+
+
+
+
+@sio.on('start_device')
+def on_start_device():
+    print("Starting device")
+    thread = Thread(target = listen_device_thread, args = (sio, device_connection))
+    thread.start()
+
 
 
 def listen_device_thread(server, device):
 
     while True:
+        
         read_list = [device]
         read_ready, write_ready, err = select.select(read_list,[],[])
         for source in read_ready:
             if source == device:
                 # send cmd from device to server
                 print("----------------------------------------------------------------------")
-                message = device_connection.recv(999)
+                time.sleep(2)
+                message = device_connection.recv(1024)
                 print("Received from device: "+  str(message.decode()))
-                server.emit('command', {'cmd' : str(message.decode())})
+                server.emit('raspberry_message',  str(message.decode()))
                 print("Sent to server: "+str(message.decode("utf-8") ))
+        
 
         
 
 
-thread = Thread(target = listen_device_thread, args = (sio, device_connection))
-thread.start()
 
-  
-ssh_client.close 

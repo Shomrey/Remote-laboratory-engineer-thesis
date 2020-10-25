@@ -26,4 +26,11 @@ export class EnrollmentService {
             }
         );
     }
+
+    async saveStudentLabResult(studentId: number, labId: number, result: string): Promise<void> {
+        await this.enrollmentRepository.update({
+            student: {id: studentId},
+            laboratory: {id: labId}
+        }, {result})
+    }
 }

@@ -1,31 +1,36 @@
 import { INestApplication, Logger } from "@nestjs/common";
 import io = require('socket.io');
 import { JwtService } from "@nestjs/jwt";
+import {Socket} from "socket.io";
+
+interface UserConnection {
+    token: string;
+    raspberryId: string;
+    socket: Socket;
+}
+
+interface RaspberryConnection {
+    id: string;
+    socket: Socket;
+    userToken: string;
+}
+
+type UserConnectionType = Record<string, UserConnection>;
+type RaspberryConnectionType = Record<string, RaspberryConnection>;
 
 export default async function initializeSocketIO(logger: Logger, app: INestApplication): Promise<void> {
     const socketIO = io(app.getHttpServer());
     const jwtService = app.get(JwtService);
 
-    let connected_id = []
-    let users = {}
-    /*{token:{
-        token: "value",
-        raspberry_id: "raspberry_id",
-        socket: "socket"
-    }}*/
-    let raspberries = {}
-    /*{id:{
-        id: "id",
-        socket: "socket",
-        user_token: "token"
-    } }*/
+    const users: UserConnectionType = {}
+    const raspberries: RaspberryConnectionType = {}
 
     logger.setContext('SocketIO');
 
     socketIO.on('connection', (socket) => {
 
-        let token;  // mobile user
-        let id;     // raspberry
+        let userToken;  // mobile user
+        let raspberryId;     // raspberry
         let commands = '';
         let formattedCommands = '';
 
@@ -33,28 +38,25 @@ export default async function initializeSocketIO(logger: Logger, app: INestAppli
 
         /******************     mobile connection       ***************/
 
-
-
         socket.on('access_token', ({ tok, raspberry_id }) => {
-            logger.log(`Client ${socket.id} authenticated with token: ${tok}`);
-            token = tok;
-            users[token] = {
-                "token": token,
-                "raspberry_id": raspberry_id,
-                "socket": socket
+            logger.log(`Client ${socket.id} authenticated with token: ${tok} and requested to connect with raspberry: ${raspberry_id}`);
+            userToken = tok;
+            users[userToken] = {
+                token: userToken,
+                raspberryId: raspberry_id,
+                socket
             }
-            raspberries[raspberry_id]["user_token"] = token;
-            let raspberry_socket = raspberries[users[token]["raspberry_id"]]["socket"];
-            raspberry_socket.emit('start_device');
+            raspberries[raspberry_id].userToken = userToken;
+            raspberries[raspberry_id].socket.emit('start_device');
         })
 
         socket.on('command', (command) => {
-            if (!token) {
+            if (!userToken) {
                 logger.log(`Unauthenticated command from ${socket.id}`);
             } else {
                 logger.debug(`Command: ${command}`);
 
-                const user = jwtService.decode(token);
+                const user = jwtService.decode(userToken);
 
                 if (command === 'whoami') {
                     command = `${command}\n${JSON.stringify({
@@ -66,36 +68,32 @@ export default async function initializeSocketIO(logger: Logger, app: INestAppli
                 commands = `${commands}${command}\n`;
                 formattedCommands = `${formattedCommands}> ${command}\n`;
 
-                let raspberry_socket = raspberries[users[token]["raspberry_id"]]["socket"]
-                raspberry_socket.emit('output', command);
+                raspberries[users[userToken].raspberryId].socket.emit('output', command);
             }
         })
 
         /******************     raspberry connection       *********************/
 
         socket.on('identify_raspberry', (rasp_id) => {
-            id = rasp_id;
-            logger.log(`Raspberry ${socket.id} authenticated with id: ${id}`);
+            raspberryId = rasp_id;
+            logger.log(`Raspberry ${socket.id} authenticated with id: ${raspberryId}`);
 
-            raspberries[id] = {
-                "id": id,
-                "socket": socket
+            raspberries[raspberryId] = {
+                id: raspberryId,
+                socket,
+                userToken: null
             }
         })
 
         socket.on('raspberry_message', (message) => {
-            if (!id) {
+            if (!raspberryId) {
                 logger.log(`Unauthenticated command from ${socket.id}`);
             } else {
                 logger.debug(`Command: ${message}`);
 
-
                 formattedCommands = `${formattedCommands} ${message}\n`;
 
-
-                let user_socket = users[raspberries[id]["user_token"]]["socket"]
-                user_socket.emit('output', formattedCommands)
-
+                users[raspberries[raspberryId].userToken].socket.emit('output', formattedCommands)
             }
         })
 
@@ -103,6 +101,25 @@ export default async function initializeSocketIO(logger: Logger, app: INestAppli
 
         socket.on('disconnect', () => {
             logger.log(`Device ${socket.id} disconnected`);
+
+            if (userToken) {
+                raspberries[users[userToken].raspberryId].userToken = null;
+                delete users[userToken];
+            } else if (raspberryId) {
+                delete raspberries[raspberryId];
+            }
+        });
+
+        socket.on('available_raspberries', () => {
+            const availableRaspberries = [];
+
+            for (const raspberry in raspberries) {
+                if (!raspberries[raspberry].userToken) {
+                    availableRaspberries.push(raspberries[raspberry].id);
+                }
+            }
+
+            socket.emit('available_raspberries', availableRaspberries);
         });
     })
 
