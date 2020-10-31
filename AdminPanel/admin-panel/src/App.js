@@ -13,6 +13,7 @@ import CreateNewLectureComponent from './components/lectures/CreateNewLectureCom
 import DisplayStudentsComponent from './components/students/DisplayStudentsComponent';
 import CreateNewUserComponent from './components/students/CreateNewUserComponent';
 import AddStudentToLectureComponent from './components/lectures/AddStudentToLectureComponent';
+import LoginComponent from './components/LoginComponent';
 
 function getToken() { }
 
@@ -39,7 +40,7 @@ class App extends Component {
     this.setState({ tabValue: value })
   }
 
-  componentDidMount() {
+  /*componentDidMount() {
     const credentails = {
       "mail": "teacher@admin.com",
       "password": "adminpassword"
@@ -52,23 +53,33 @@ class App extends Component {
       };
       this.setState({ token: response.data });
     })
+  }*/
+
+  getTokenFromAuth = (tokenValue) => {
+    this.setState({ token: tokenValue });
   }
+
   render() {
     //if (this.state.token == "") return (<div>Loading</div>);
     //else
+    let header;
     let activePage;
     if (this.state.token != "") {
+      header = <SimpleTabs passValueFunction={this.passValueFunction} />
       if (this.state.activeCard == 0) { activePage = <DisplayExistingLecturesComponent /> }
       if (this.state.activeCard == 1) { activePage = <CreateNewLectureComponent /> }
       if (this.state.activeCard == 2) { activePage = <DisplayStudentsComponent /> }
       if (this.state.activeCard == 3) { activePage = <CreateNewUserComponent /> }
       if (this.state.activeCard == 4) { activePage = <AddStudentToLectureComponent /> }
     }
+    else {
+      activePage = <LoginComponent tokenPass={this.getTokenFromAuth} />
+    }
     return (
 
 
       <div>
-        <SimpleTabs passValueFunction={this.passValueFunction} />
+        {header}
         {activePage}
 
 

@@ -1,4 +1,0 @@
-2020.10.18 13:25:05 INFO  started: Metals version 0.9.4 in workspace 'C:\Users\mprzybycien\Desktop\AGH\Thesis\Remote-laboratory-engineer-thesis\AdminPanel\admin-panel' for client vscode.
-2020.10.18 13:25:07 INFO  time: initialize in 2.17s
-2020.10.18 13:25:10 WARN  no build tool detected in workspace 'C:\Users\mprzybycien\Desktop\AGH\Thesis\Remote-laboratory-engineer-thesis\AdminPanel\admin-panel'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. 
-2020.10.18 19:00:48 INFO  shutting down Metals
