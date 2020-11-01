@@ -66,7 +66,7 @@ export class UserController {
     }
 
     @Delete(`:userId/labs/:labId/enroll`)
-    @ApiOkResponse({description: 'Removes user from the given laboratory', type: EnrollmentResponse})
+    @ApiOkResponse({description: 'Removes user from the given laboratory'})
     @ApiNotFoundResponse({description: 'User or lab class with given ID was not found'})
     async removeStudentFromLab(@Param('userId', ParseIntPipe) userId: number, @Param('labId', ParseIntPipe) labId: number): Promise<void> {
         await this.userService.removeStudentFromLab(userId, labId);
