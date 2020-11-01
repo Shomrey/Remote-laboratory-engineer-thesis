@@ -1,7 +1,7 @@
 import {Injectable} from '@nestjs/common';
 import {InjectRepository} from "@nestjs/typeorm";
 import {Enrollment} from "./enrollment.model";
-import {Repository} from "typeorm";
+import {DeleteResult, Repository} from "typeorm";
 import {EnrollmentNotFoundError} from "./error/enrollment-not-found.error";
 
 @Injectable()
@@ -21,6 +21,14 @@ export class EnrollmentService {
 
     async enrollStudentForLab(studentId: number, labId: number): Promise<Enrollment> {
         return this.enrollmentRepository.save({
+                student: {id: studentId},
+                laboratory: {id: labId}
+            }
+        );
+    }
+
+    async removeStudentFromLab(studentId: number, labId: number): Promise<void> {
+        await this.enrollmentRepository.delete({
                 student: {id: studentId},
                 laboratory: {id: labId}
             }

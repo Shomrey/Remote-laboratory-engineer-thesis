@@ -1,4 +1,4 @@
-import {Body, Controller, Get, Param, ParseIntPipe, Patch, Post, UseGuards} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards} from '@nestjs/common';
 import {UserService} from './user.service';
 import {Routes} from "../utils/constants";
 import {UserResponse} from "./response/user.response";
@@ -63,5 +63,12 @@ export class UserController {
         const enrollment = await this.userService.enrollStudentForLab(userId, labId);
 
         return new EnrollmentResponse(enrollment);
+    }
+
+    @Delete(`:userId/labs/:labId/enroll`)
+    @ApiOkResponse({description: 'Removes user from the given laboratory', type: EnrollmentResponse})
+    @ApiNotFoundResponse({description: 'User or lab class with given ID was not found'})
+    async removeStudentFromLab(@Param('userId', ParseIntPipe) userId: number, @Param('labId', ParseIntPipe) labId: number): Promise<void> {
+        await this.userService.removeStudentFromLab(userId, labId);
     }
 }

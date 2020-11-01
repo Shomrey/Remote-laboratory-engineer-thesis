@@ -63,17 +63,17 @@ export class UserService {
     async enrollStudentForLab(studentId: number, labId: number): Promise<Enrollment> {
         const user = await this.findOrFailById(studentId);
 
-        if (!user) {
-            throw new UserNotFoundError(studentId);
-        }
+        const lab = await this.labService.findOrFailById(labId);
+
+        return this.enrollmentService.enrollStudentForLab(user.id, lab.id);
+    }
+
+    async removeStudentFromLab(studentId: number, labId: number): Promise<void> {
+        const user = await this.findOrFailById(studentId);
 
         const lab = await this.labService.findOrFailById(labId);
 
-        if (!lab) {
-            throw new LabNotFoundError(labId);
-        }
-
-        return this.enrollmentService.enrollStudentForLab(studentId, labId);
+        await this.enrollmentService.removeStudentFromLab(user.id, lab.id);
     }
 
     async saveUserLabResult(userId: number, labId: number, result: string): Promise<void> {
