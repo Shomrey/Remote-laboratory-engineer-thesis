@@ -6,7 +6,7 @@ import SimpleTabs from './components/SimpleTab';
 import CreateNewLectureComponent from './components/lectures/CreateNewLectureComponent';
 import DisplayStudentsComponent from './components/students/DisplayStudentsComponent';
 import CreateNewUserComponent from './components/students/CreateNewUserComponent';
-import AddStudentToLectureComponent from './components/lectures/AddStudentToLectureComponent';
+import AddStudentToLectureComponent from './components/lectures/student_in_lab/AddStudentToLectureComponent';
 import LoginComponent from './components/LoginComponent';
 
 class App extends Component {
