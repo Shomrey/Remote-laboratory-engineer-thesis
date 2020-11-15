@@ -15,6 +15,7 @@ export default function ChangeLectureForm(props) {
     const classes = useStyles();
     const [value, setValue] = React.useState('Controlled');
     const [state, setState] = React.useState({
+        "id": props.lab.id,
         "date": props.lab.date,
         "duration": props.lab.duration,
         "title": props.lab.title,
@@ -23,7 +24,7 @@ export default function ChangeLectureForm(props) {
         "tasks": props.lab.tasks,
         "topology": props.lab.topology,
         "maxStudents": props.lab.maxStudents,
-        "teacherId": props.lab.teacherId
+        "teacherId": props.lab.teacher.id
     })
 
     function handleChange(evt) {
@@ -32,7 +33,7 @@ export default function ChangeLectureForm(props) {
             ...state,
             [evt.target.name]: value
         });
-        console.log(state);
+
         props.lectureChange(state);
     }
 

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Axios from 'axios';
 import OneLectureDisplay from './OneLectureDisplay';
 import SplitButton from './LecturesDisplayList';
-import { Grid, Container } from '@material-ui/core';
+import { Grid, Container, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import ChooseLabComponent from '../ChooseLabComponent';
 import ChangeLectureForm from './ChangeLectureForm';
@@ -40,19 +40,36 @@ class DisplayExistingLecturesComponent extends Component {// extends React.Compo
         this.setState({ currentLectureState: lectureState })
     }
 
+    sendRequest = () => {
+        const url = "https://remote-laboratory.herokuapp.com/api/labs/" + this.state.currentLectureState.id;
+        console.log(url);
+        const { id, ...lecture } = this.state.currentLectureState;
+        console.log(lecture);
+        Axios.patch(url, lecture).then(console.log("lab updated")).catch((error) => console.log(error));
+        console.log(this.state.currentLectureState);
+    }
+
 
 
 
     render() {
         let lectureToDisplayGuard;
-        if (this.state.currentLectureIndex != -1) lectureToDisplayGuard = <ChangeLectureForm lectureChange={this.handleLectureChange} lab={this.state.labs[this.state.currentLectureIndex]} />
-        else lectureToDisplayGuard = <ChooseLabComponent labs={this.state.labs} handleChoice={this.handleLectureChoice} />;
+        let submitButton;
+        if (this.state.currentLectureIndex != -1) {
+            submitButton = <Button variant="contained" color="primary" onClick={this.sendRequest}>Submit changes</Button>
+            lectureToDisplayGuard = <ChangeLectureForm lectureChange={this.handleLectureChange} lab={this.state.labs[this.state.currentLectureIndex]} />
+        }
+        else {
+            submitButton = "";
+            lectureToDisplayGuard = <ChooseLabComponent labs={this.state.labs} handleChoice={this.handleLectureChoice} />;
+        }
         const style = {
             paddingLeft: '30px'
         }
         return (
             <Container>
                 {lectureToDisplayGuard}
+                {submitButton}
             </Container>
 
         );
