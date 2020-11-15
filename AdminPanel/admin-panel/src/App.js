@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import './components/lectures/DisplayExistingLecturesComponent';
-import DisplayExistingLecturesComponent from './components/lectures/DisplayExistingLecturesComponent';
+import './components/lectures/display_lectures/DisplayExistingLecturesComponent';
+import DisplayExistingLecturesComponent from './components/lectures/display_lectures/DisplayExistingLecturesComponent';
 import Axios from 'axios';
-import { AppBar, Tabs, Tab } from '@material-ui/core';
+import { AppBar, Tabs, Tab, Grid } from '@material-ui/core';
 import { TabPanel, TabContext } from '@material-ui/lab';
 import SimpleTabs from './components/SimpleTab';
 import Typography from '@material-ui/core/Typography';
@@ -78,14 +78,19 @@ class App extends Component {
     return (
 
 
-      <div>
-        {header}
-        {activePage}
+
+      <Grid container spacing="3" justify="center" direction="column">
+        <Grid item>
+          {header}
+        </Grid>
+        <Grid item>
+          {activePage}
+        </Grid>
+      </Grid>
 
 
 
 
-      </div>
 
       /*<div>
         <AppBar position="static">

@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import Axios from 'axios';
 import OneStudentDisplay from './OneStudentDisplay';
 import SplitButton from './UserDisplayList';
+import { Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
+
 
 
 
@@ -31,19 +33,52 @@ class DisplayExistingLecturesComponent extends Component {// extends React.Compo
         this.setState({ currentUserIndex: index });
     }
 
+    compare = (a, b) => {
+        if (a.surname > b.surname) return 1;
+        if (b.surname > a.surname) return -1;
+        return 0;
+    }
+
 
 
     render() {
         let userToDisplayGuard;
-        if (typeof (this.state.users[this.state.currentUserIndex]) != "undefined") userToDisplayGuard = <OneStudentDisplay userData={this.state.users[this.state.currentUserIndex]} />
+        if (typeof (this.state.users[this.state.currentUserIndex]) != "undefined") {
+            let columns = [{ field: 'firstname', headerName: 'First name', width: 100 },
+            { field: 'surname', headerName: 'Surname', width: 150 },
+            { field: 'mail', headerName: 'Email', width: 150 }];
+            console.log(this.state);
+            userToDisplayGuard = <TableContainer>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell><strong>First name</strong></TableCell>
+                            <TableCell><strong>Last name</strong></TableCell>
+                            <TableCell><strong>Email address</strong></TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {this.state.users.sort(this.compare).map((user, listIndex) => (
+                            <TableRow key={listIndex}>
+                                <TableCell align="left">{user.name}</TableCell>
+                                <TableCell align="left">{user.surname}</TableCell>
+                                <TableCell align="left">{user.mail}</TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        }
+        //<OneStudentDisplay userData={this.state.users[this.state.currentUserIndex]} />
+        //<SplitButton titleList={this.state.users.map(user => user.surname)} handleTitleChoice={this.handleUserChoice} />
+        //<a href="#" onClick={this.handleClick} >
+        //</a>
         else userToDisplayGuard = "";
         return (
-            <div>
-                <SplitButton titleList={this.state.users.map(user => user.surname)} handleTitleChoice={this.handleUserChoice} />
-                <a href="#" onClick={this.handleClick} >
-                </a>
+            <Container>
+
                 {userToDisplayGuard}
-            </div >
+            </Container >
         );
     }
 }
