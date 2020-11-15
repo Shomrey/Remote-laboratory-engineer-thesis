@@ -1,7 +1,10 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import './App.css';
-import './components/lectures/DisplayExistingLecturesComponent';
-import DisplayExistingLecturesComponent from './components/lectures/DisplayExistingLecturesComponent';
+import './components/lectures/display_lectures/DisplayExistingLecturesComponent';
+import DisplayExistingLecturesComponent from './components/lectures/display_lectures/DisplayExistingLecturesComponent';
+import Axios from 'axios';
+import { AppBar, Tabs, Tab, Grid } from '@material-ui/core';
+import { TabPanel, TabContext } from '@material-ui/lab';
 import SimpleTabs from './components/SimpleTab';
 import CreateNewLectureComponent from './components/lectures/CreateNewLectureComponent';
 import DisplayStudentsComponent from './components/students/DisplayStudentsComponent';
@@ -11,50 +14,54 @@ import LoginComponent from './components/LoginComponent';
 
 class App extends Component {
 
-    state = {
-        token: "",
-        tabValue: 0,
-        activeCard: 0
-    }
+  state = {
+    token: "",
+    tabValue: 0,
+    activeCard: 0
+  }
 
-    passValueFunction = (value) => {
-        this.setState({activeCard: value});
-    }
+  passValueFunction = (value) => {
+    this.setState({ activeCard: value });
+  }
 
-    getTokenFromAuth = (tokenValue) => {
-        this.setState({token: tokenValue});
-    }
+  getTokenFromAuth = (tokenValue) => {
+    this.setState({ token: tokenValue });
+  }
 
-    render() {
-        let header;
-        let activePage;
-        if (this.state.token !== "") {
-            header = <SimpleTabs passValueFunction={this.passValueFunction}/>
-            if (this.state.activeCard === 0) {
-                activePage = <DisplayExistingLecturesComponent/>
-            }
-            if (this.state.activeCard === 1) {
-                activePage = <CreateNewLectureComponent/>
-            }
-            if (this.state.activeCard === 2) {
-                activePage = <DisplayStudentsComponent/>
-            }
-            if (this.state.activeCard === 3) {
-                activePage = <CreateNewUserComponent/>
-            }
-            if (this.state.activeCard === 4) {
-                activePage = <AddStudentToLectureComponent/>
-            }
-        } else {
-            activePage = <LoginComponent tokenPass={this.getTokenFromAuth}/>
-        }
-        return (
-            <div>
-                {header}
-                {activePage}
-            </div>
-        );
+  render() {
+    let header;
+    let activePage;
+    if (this.state.token !== "") {
+      header = <SimpleTabs passValueFunction={this.passValueFunction} />
+      if (this.state.activeCard === 0) {
+        activePage = <DisplayExistingLecturesComponent />
+      }
+      if (this.state.activeCard === 1) {
+        activePage = <CreateNewLectureComponent />
+      }
+      if (this.state.activeCard === 2) {
+        activePage = <DisplayStudentsComponent />
+      }
+      if (this.state.activeCard === 3) {
+        activePage = <CreateNewUserComponent />
+      }
+      if (this.state.activeCard === 4) {
+        activePage = <AddStudentToLectureComponent />
+      }
+    } else {
+      activePage = <LoginComponent tokenPass={this.getTokenFromAuth} />
     }
+    return (
+      <Grid container spacing="3" justify="center" direction="column">
+        <Grid item>
+          {header}
+        </Grid>
+        <Grid item>
+          {activePage}
+        </Grid>
+      </Grid>
+    );
+  }
 }
 
 export default App;

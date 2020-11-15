@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import Axios from 'axios';
-import SplitButton from '../LecturesDisplayList';
-import { Button } from '@material-ui/core';
+import SplitButton from '../display_lectures/LecturesDisplayList';
+import { Button, Container, Switch, FormGroup, FormControlLabel } from '@material-ui/core';
 import ChangeStudentStatusInLabComponent from './ChangeStudentStatusInLabComponent';
-import ChooseLabComponent from './ChooseLabComponent';
+import ChooseLabComponent from '../ChooseLabComponent';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
 
 class AddStudentToLectureComponent extends Component {
     state = {
@@ -15,7 +17,8 @@ class AddStudentToLectureComponent extends Component {
         currentLectureIndex: -1,
         oldStudentsInLab: {},
         newStudentsInLab: {},
-        ready: false
+        ready: false,
+        onlyEnrolled: false
     }
 
     handleLectureChoice = (index) => {
@@ -32,8 +35,16 @@ class AddStudentToLectureComponent extends Component {
 
     }
 
+    handleChangeSwitch = (event) => {
+        this.setState({ [event.target.name]: event.target.checked })
+    }
+
     getColor = (id) => {
         return this.state.newStudentsInLab[id] ? "primary" : "secondary";
+    }
+
+    isEnrolled = (id) => {
+        return this.state.newStudentsInLab[id] ? true : false;
     }
 
     componentDidMount() {
@@ -72,26 +83,32 @@ class AddStudentToLectureComponent extends Component {
     render() {
         let display;
         let showSubmitButton;
+        let enrollSwitch;
         if (this.state.currentLectureIndex == -1) {
             display = <ChooseLabComponent labs={this.state.labs} handleChoice={this.handleLectureChoice} />
             showSubmitButton = <div></div>
         }
         else if (this.state.ready) {
-            display = <ul>
-                {this.state.allStudents.map((student, index) => <li><ChangeStudentStatusInLabComponent student={student} index={index} color={this.getColor(student.id)} toggle={this.toggleStudent} /> </li>)}
-            </ul>
+            display = <List>
+                {this.state.allStudents.filter(studentFilter => this.state.onlyEnrolled ? this.isEnrolled(studentFilter.id) : true).map((student, index) => <ListItem><ChangeStudentStatusInLabComponent student={student} index={index} color={this.getColor(student.id)} toggle={this.toggleStudent} /> </ListItem>)}
+            </List>
 
-            showSubmitButton = <Button variant="outlined" onClick={this.calculateAndExecuteChanges}>Submit</Button>
+            showSubmitButton = <Button variant="outlined" color="primary" onClick={this.calculateAndExecuteChanges}>Submit</Button>
+            enrollSwitch = <FormGroup row><FormControlLabel
+                control={<Switch checked={this.state.onlyEnrolled} onChange={this.handleChangeSwitch} name="onlyEnrolled" color="primary" />}
+                label="Only enrolled"
+            /></FormGroup>
         }
 
         else { display = <div></div>; showSubmitButton = <div></div> }
         //<SplitButton titleList={this.state.labs.map(lab => lab.title)} handleTitleChoice={this.handleLectureChoice} />
-        return (
-            <div>
 
+        return (
+            <Container>
+                {enrollSwitch}
                 {display}
                 {showSubmitButton}
-            </div>
+            </Container>
         );
     }
 }
