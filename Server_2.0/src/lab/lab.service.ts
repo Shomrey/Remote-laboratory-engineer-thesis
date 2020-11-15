@@ -43,6 +43,12 @@ export class LabService {
             throw new LabNotFoundError(labId);
         }
 
+        delete (updateLabDto as any).id;
+
+        if (Object.keys(updateLabDto).length === 0) {
+            return;
+        }
+
         if (updateLabDto.teacherId) {
             await this.validateTeacher(updateLabDto.teacherId);
 
