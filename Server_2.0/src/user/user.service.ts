@@ -10,6 +10,7 @@ import {Lab} from "../lab/lab.model";
 import {LabService} from "../lab/lab.service";
 import {EnrollmentService} from "../enrollment/enrollment.service";
 import {Enrollment} from "../enrollment/enrollment.model";
+import {UserAlreadyEnrolledError} from "../enrollment/error/user-already-enrolled.error";
 
 @Injectable()
 export class UserService {
@@ -61,15 +62,18 @@ export class UserService {
 
     async enrollStudentForLab(studentId: number, labId: number): Promise<Enrollment> {
         const user = await this.findOrFailById(studentId);
-
         const lab = await this.labService.findOrFailById(labId);
+        const enrollment = await this.enrollmentService.findByStudentIdAndLabId(studentId, labId);
+
+        if (enrollment) {
+            throw new UserAlreadyEnrolledError(studentId, labId);
+        }
 
         return this.enrollmentService.enrollStudentForLab(user.id, lab.id);
     }
 
     async removeStudentFromLab(studentId: number, labId: number): Promise<void> {
         const user = await this.findOrFailById(studentId);
-
         const lab = await this.labService.findOrFailById(labId);
 
         await this.enrollmentService.removeStudentFromLab(user.id, lab.id);
