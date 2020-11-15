@@ -32,6 +32,7 @@ class AddStudentToLectureComponent extends Component {
             this.state.oldStudentsInLab[student.id] = true
             this.state.newStudentsInLab[student.id] = true
         })
+        console.log(this.state);
 
     }
 
@@ -50,9 +51,10 @@ class AddStudentToLectureComponent extends Component {
     componentDidMount() {
         const urlLabs = "https://remote-laboratory.herokuapp.com/api/labs";
         const urlUsers = "https://remote-laboratory.herokuapp.com/api/users"
-        Axios.get(urlLabs).then(response => this.setState({ labs: response.data, labsLoaded: true, currentLectureStudents: response.data[0].students }));
-        Axios.get(urlUsers).then(response => this.setState({ allStudents: response.data.filter(user => user.userType == "student"), studentsLoaded: true }));
+        Axios.get(urlLabs).then(response => { console.log(response); this.setState({ labs: response.data, labsLoaded: true, currentLectureStudents: response.data[0].students }) });
+        Axios.get(urlUsers).then(response => { console.log(response); this.setState({ allStudents: response.data.filter(user => user.userType == "student"), studentsLoaded: true }) });
         this.setState({ ready: true })
+        console.log(this.state);
     }
 
     toggleStudent = (id) => {
@@ -64,9 +66,10 @@ class AddStudentToLectureComponent extends Component {
     calculateAndExecuteChanges = () => {
         this.state.allStudents.map(student => {
             if (this.state.oldStudentsInLab[student.id] != this.state.newStudentsInLab[student.id]) {
+                console.log("student status change:" + student.id);
                 let url = "https://remote-laboratory.herokuapp.com/api/users/" + student.id + "/labs/" + this.state.currentLectureIndex + "/enroll"
                 if (this.state.newStudentsInLab[student.id] == true) {
-                    Axios.post(url).then(this.setState(prevState => ({ oldStudentsInLab: { ...prevState.oldStudentsInLab, [student.id]: true } })))
+                    Axios.post(url).then(response => { console.log(response); this.setState(prevState => ({ oldStudentsInLab: { ...prevState.oldStudentsInLab, [student.id]: true } })) })
                 }
                 else {
                     Axios.delete(url).then(this.setState(prevState => ({ oldStudentsInLab: { ...prevState.oldStudentsInLab, [student.id]: false } })))
