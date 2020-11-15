@@ -10,8 +10,6 @@ import Popper from '@material-ui/core/Popper';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 
-//const options = ['Create a merge commit', 'Squash and merge', 'Rebase and merge'];
-
 export default function SplitButton(props) {
     const options = props.titleList;
     const [open, setOpen] = React.useState(false);
@@ -54,11 +52,11 @@ export default function SplitButton(props) {
                         aria-haspopup="menu"
                         onClick={handleToggle}
                     >
-                        <ArrowDropDownIcon />
+                        <ArrowDropDownIcon/>
                     </Button>
                 </ButtonGroup>
                 <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
-                    {({ TransitionProps, placement }) => (
+                    {({TransitionProps, placement}) => (
                         <Grow
                             {...TransitionProps}
                             style={{
