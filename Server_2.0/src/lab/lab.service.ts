@@ -8,6 +8,7 @@ import {User} from "../user/model/user.model";
 import {UserNotFoundError} from "../user/error/user-not-found.error";
 import {UserType} from "../utils/constants";
 import {InvalidTeacherError} from "./error/invalid-teacher.error";
+import {UpdateLabDto} from "./dto/update-lab.dto";
 
 @Injectable()
 export class LabService {
@@ -30,20 +31,41 @@ export class LabService {
     }
 
     async create(createLabDto: CreateLabDto): Promise<Lab> {
-        const teacher = await this.userRepository.findOne({id: createLabDto.teacherId});
+        await this.validateTeacher(createLabDto.teacherId);
+
+        return this.labRepository.save({...createLabDto, teacher: {id: createLabDto.teacherId}});
+    }
+
+    async update(labId: number, updateLabDto: UpdateLabDto): Promise<void> {
+        const lab = this.labRepository.findOne({id: labId});
+
+        if (!lab) {
+            throw new LabNotFoundError(labId);
+        }
+
+        if (updateLabDto.teacherId) {
+            await this.validateTeacher(updateLabDto.teacherId);
+
+            const {teacherId, ...updatedData} = updateLabDto;
+            await this.labRepository.update(labId, {...updatedData, teacher: {id: teacherId}});
+        } else {
+            await this.labRepository.update(labId, updateLabDto);
+        }
+    }
+
+    async findAll(): Promise<Lab[]> {
+        return this.labRepository.find({relations: ['enrollments', 'enrollments.student', 'teacher']});
+    }
+
+    private async validateTeacher(teacherId: number): Promise<void> {
+        const teacher = await this.userRepository.findOne({id: teacherId});
 
         if (!teacher) {
-            throw new UserNotFoundError(createLabDto.teacherId);
+            throw new UserNotFoundError(teacherId);
         }
 
         if (teacher.userType == UserType.STUDENT) {
             throw new InvalidTeacherError();
         }
-
-        return this.labRepository.save({...createLabDto, teacher: {id: createLabDto.teacherId}});
-    }
-
-    async findAll(): Promise<Lab[]> {
-        return this.labRepository.find({relations: ['enrollments', 'enrollments.student', 'teacher']});
     }
 }

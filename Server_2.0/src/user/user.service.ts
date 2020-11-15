@@ -10,7 +10,6 @@ import {Lab} from "../lab/lab.model";
 import {LabService} from "../lab/lab.service";
 import {EnrollmentService} from "../enrollment/enrollment.service";
 import {Enrollment} from "../enrollment/enrollment.model";
-import {LabNotFoundError} from "../lab/error/lab-not-found.error";
 
 @Injectable()
 export class UserService {

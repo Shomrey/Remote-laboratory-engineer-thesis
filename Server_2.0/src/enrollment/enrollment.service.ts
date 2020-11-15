@@ -1,7 +1,7 @@
 import {Injectable} from '@nestjs/common';
 import {InjectRepository} from "@nestjs/typeorm";
 import {Enrollment} from "./enrollment.model";
-import {DeleteResult, Repository} from "typeorm";
+import {Repository} from "typeorm";
 import {EnrollmentNotFoundError} from "./error/enrollment-not-found.error";
 
 @Injectable()

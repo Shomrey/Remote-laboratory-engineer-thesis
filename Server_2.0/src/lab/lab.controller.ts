@@ -1,10 +1,11 @@
-import {Body, Controller, Get, Post, UseGuards} from '@nestjs/common';
+import {Body, Controller, Get, Param, ParseIntPipe, Patch, Post, UseGuards} from '@nestjs/common';
 import {Routes} from "../utils/constants";
 import {ApiBearerAuth, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags} from "@nestjs/swagger";
 import {LabService} from "./lab.service";
 import {JwtAuthGuard} from "../auth/guard/jwt-auth.guard";
 import {CreateLabDto} from "./dto/create-lab.dto";
 import {LabResponse} from "./response/lab.response";
+import {UpdateLabDto} from "./dto/update-lab.dto";
 
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
@@ -30,5 +31,12 @@ export class LabController {
         const lab = await this.labService.create(createLabDto);
 
         return new LabResponse(lab);
+    }
+
+    @Patch(':labId')
+    @ApiCreatedResponse({description: 'Updates a lab class'})
+    @ApiNotFoundResponse({description: 'Teacher or lab class with given ID was not found'})
+    async updateLab(@Param('labId', ParseIntPipe) labId: number, @Body() updateLabDto: UpdateLabDto): Promise<void> {
+        await this.labService.update(labId, updateLabDto);
     }
 }
