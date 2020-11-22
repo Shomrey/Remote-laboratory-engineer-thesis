@@ -3,6 +3,7 @@ import Axios from 'axios';
 import OneStudentDisplay from './OneStudentDisplay';
 import SplitButton from './UserDisplayList';
 import { Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
+import TextField from '@material-ui/core/TextField';
 
 
 
@@ -15,7 +16,10 @@ class DisplayExistingLecturesComponent extends Component {// extends React.Compo
     state = {
         users: [],
         usersLoaded: false,
-        currentUserIndex: 0
+        currentUserIndex: 0,
+        nameSearchBar: "",
+        surnameSearchBar: "",
+        mailSearchBar: ""
     }
     componentDidMount() {
         const url = "https://remote-laboratory.herokuapp.com/api/users";
@@ -39,6 +43,14 @@ class DisplayExistingLecturesComponent extends Component {// extends React.Compo
         return 0;
     }
 
+    handleSearchBarChange = (evt) => {
+        let name = [evt.target.name];
+        let field = name + "SearchBar";
+        console.log(field);
+        console.log(this.state[field])
+        this.setState({ [field]: evt.target.value })
+    }
+
 
 
     render() {
@@ -52,19 +64,23 @@ class DisplayExistingLecturesComponent extends Component {// extends React.Compo
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell><strong>First name</strong></TableCell>
-                            <TableCell><strong>Last name</strong></TableCell>
-                            <TableCell><strong>Email address</strong></TableCell>
+                            <TableCell><TextField name="name" onChange={this.handleSearchBarChange} label="First name" /></TableCell>
+                            <TableCell><TextField name="surname" onChange={this.handleSearchBarChange} label="Surname" /></TableCell>
+                            <TableCell><TextField name="mail" onChange={this.handleSearchBarChange} label="Mail" /></TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {this.state.users.sort(this.compare).map((user, listIndex) => (
-                            <TableRow key={listIndex}>
-                                <TableCell align="left">{user.name}</TableCell>
-                                <TableCell align="left">{user.surname}</TableCell>
-                                <TableCell align="left">{user.mail}</TableCell>
-                            </TableRow>
-                        ))}
+                        {this.state.users.sort(this.compare)
+                            .filter(user => user.name.includes(this.state.nameSearchBar))
+                            .filter(user => user.surname.includes(this.state.surnameSearchBar))
+                            .filter(user => user.mail.includes(this.state.mailSearchBar))
+                            .map((user, listIndex) => (
+                                <TableRow key={listIndex}>
+                                    <TableCell align="left">{user.name}</TableCell>
+                                    <TableCell align="left">{user.surname}</TableCell>
+                                    <TableCell align="left">{user.mail}</TableCell>
+                                </TableRow>
+                            ))}
                     </TableBody>
                 </Table>
             </TableContainer>
@@ -73,6 +89,11 @@ class DisplayExistingLecturesComponent extends Component {// extends React.Compo
         //<SplitButton titleList={this.state.users.map(user => user.surname)} handleTitleChoice={this.handleUserChoice} />
         //<a href="#" onClick={this.handleClick} >
         //</a>
+        //<TableRow>
+        //                  <TableCell><strong>First name</strong></TableCell>
+        //                <TableCell><strong>Last name</strong></TableCell>
+        //              <TableCell><strong>Email address</strong></TableCell>
+        //        </TableRow>
         else userToDisplayGuard = "";
         return (
             <Container>

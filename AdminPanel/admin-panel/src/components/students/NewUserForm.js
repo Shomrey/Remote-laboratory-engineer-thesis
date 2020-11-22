@@ -1,6 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
+import { Container, InputLabel, MenuItem, FormControl, Select } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -9,6 +10,11 @@ const useStyles = makeStyles((theme) => ({
             width: '25ch',
         },
     },
+    formControl: {
+        margin: theme.spacing(1),
+        minWidth: '25ch',
+    }
+
 }));
 
 export default function MultilineTextFields(props) {
@@ -21,6 +27,37 @@ export default function MultilineTextFields(props) {
         "passwordHash": "",
         "userType": ""
     })
+
+    let userTypes = ["admin", "teacher", "student"];
+    let adminField = props.isAdmin ?
+        <div>
+            <FormControl variant="filled" className={classes.formControl}>
+                <InputLabel id="select-label">User type</InputLabel>
+                <Select
+                    labelId="select-label"
+                    id="select"
+                    value={state.userType}
+                    onChange={handleChange}
+                    name="userType"
+                    variant="outlined"
+                >
+                    {userTypes.map((type, index) => <MenuItem value={index}>{type}</MenuItem>)}
+                </Select>
+            </FormControl>
+        </div> : ""
+    /*= props.isAdmin ?
+        <div>
+            <TextField
+                id="outlined-passwordHash"
+                label="User type"
+                onChange={handleChange}
+                rows={1}
+                variant="outlined"
+                name="userType"
+            />
+        </div>
+        : ""*/
+
 
     function handleChange(evt) {
         const value = evt.target.value;
@@ -71,6 +108,9 @@ export default function MultilineTextFields(props) {
                         name="passwordHash"
                     />
                 </div>
+                {adminField}
+
+
             </div>
         </form>
     );

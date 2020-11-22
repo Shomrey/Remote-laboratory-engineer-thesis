@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
     },
     formControl: {
         margin: theme.spacing(1),
-        minWidth: 120,
+        minWidth: '25ch',
     },
 }));
 
@@ -39,12 +39,17 @@ export default function ChangeLectureForm(props) {
 
     function handleChange(evt) {
         const value = evt.target.value;
+        let tmpState = state;
         setState({
             ...state,
             [evt.target.name]: value
         });
+        tmpState[evt.target.name] = value
+        console.log(evt);
+        console.log(tmpState);
+        console.log(evt.target.name + ": " + evt.target.value);
 
-        props.lectureChange(state);
+        props.lectureChange(tmpState);
     }
 
     return (
@@ -60,6 +65,8 @@ export default function ChangeLectureForm(props) {
                         name="date"
                         defaultValue={state.date}
                     />
+                </Container>
+                <Container>
                     <TextField
                         id="outlined-duration"
                         label="Duration"
@@ -70,6 +77,8 @@ export default function ChangeLectureForm(props) {
                         name="duration"
                         defaultValue={state.duration}
                     />
+                </Container>
+                <Container>
                     <TextField
                         id="outlined-title"
                         label="Title"
@@ -78,6 +87,8 @@ export default function ChangeLectureForm(props) {
                         name="title"
                         defaultValue={state.title}
                     />
+                </Container>
+                <Container>
                     <TextField
                         id="outlined-maxStudents"
                         label="Max students"
@@ -99,6 +110,8 @@ export default function ChangeLectureForm(props) {
                         name="tasks"
                         defaultValue={state.tasks}
                     />
+                </Container>
+                <Container>
                     <TextField
                         id="outlined-topology"
                         label="Topology"
@@ -109,6 +122,8 @@ export default function ChangeLectureForm(props) {
                         name="topology"
                         defaultValue={state.topology}
                     />
+                </Container>
+                <Container>
                     <TextField
                         id="outlined-configuration"
                         label="Configuration"
@@ -119,6 +134,8 @@ export default function ChangeLectureForm(props) {
                         name="configuration"
                         defaultValue={state.configuration}
                     />
+                </Container>
+                <Container>
                     <TextField
                         id="outlined-description"
                         label="Description"
@@ -132,17 +149,22 @@ export default function ChangeLectureForm(props) {
 
                 </Container>
             </form>
-            <FormControl className={classes.formControl}>
-                <InputLabel id="select-label">Teacher</InputLabel>
-                <Select
-                    labelId="select-label"
-                    id="select"
-                    value={teacherId}
-                    onChange={handleTeacherChange}
-                >
-                    {props.teachers.map(teacher => <MenuItem value={teacher.id}>{teacher.name} {teacher.surname}</MenuItem>)}
-                </Select>
-            </FormControl>
-        </Container>
+            <Container>
+                <FormControl variant="filled" className={classes.formControl}>
+                    <InputLabel id="select-label">Teacher</InputLabel>
+                    <Select
+                        labelId="select-label"
+                        id="select"
+                        value={state.teacherId}
+                        //defaultValue={props.teachers.filter(teacher => teacher.id === state.teacherId)[0]}
+                        onChange={handleChange}
+                        name="teacherId"
+                        variant="outlined"
+                    >
+                        {props.teachers.map(teacher => <MenuItem value={teacher.id}>{teacher.name} {teacher.surname}</MenuItem>)}
+                    </Select>
+                </FormControl>
+            </Container>
+        </Container >
     );
 }
