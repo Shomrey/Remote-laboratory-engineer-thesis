@@ -85,4 +85,11 @@ export class UserService {
 
         await this.enrollmentService.saveStudentLabResult(user.id, lab.id, result);
     }
+
+    async getUserLabResult(userId: number, labId: number): Promise<Enrollment> {
+        const user = await this.findOrFailById(userId);
+        const lab = await this.labService.findOrFailById(labId);
+
+        return this.enrollmentService.findByStudentIdAndLabId(user.id, lab.id);
+    }
 }

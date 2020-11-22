@@ -9,11 +9,13 @@ import {UserNotFoundError} from "../user/error/user-not-found.error";
 import {UserType} from "../utils/constants";
 import {InvalidTeacherError} from "./error/invalid-teacher.error";
 import {UpdateLabDto} from "./dto/update-lab.dto";
+import {Enrollment} from "../enrollment/enrollment.model";
 
 @Injectable()
 export class LabService {
     constructor(@InjectRepository(Lab) private readonly labRepository: Repository<Lab>,
-                @InjectRepository(User) private readonly userRepository: Repository<User>) {
+                @InjectRepository(User) private readonly userRepository: Repository<User>,
+                @InjectRepository(Enrollment) private readonly enrollmentRepository: Repository<Enrollment>) {
     }
 
     async findOrFailById(labId: number): Promise<Lab> {
@@ -61,6 +63,10 @@ export class LabService {
 
     async findAll(): Promise<Lab[]> {
         return this.labRepository.find({relations: ['enrollments', 'enrollments.student', 'teacher']});
+    }
+
+    async getLabResults(labId: number): Promise<Enrollment[]> {
+        return this.enrollmentRepository.find({where: {id: labId}});
     }
 
     private async validateTeacher(teacherId: number): Promise<void> {

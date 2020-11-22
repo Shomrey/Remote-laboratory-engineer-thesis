@@ -9,6 +9,7 @@ import {JwtAuthGuard} from "../auth/guard/jwt-auth.guard";
 import {LabResponse} from "../lab/response/lab.response";
 import {EnrollmentResponse} from "../enrollment/response/enrollment.response";
 import {SaveResultDto} from "../enrollment/dto/save-result.dto";
+import {LabResultResponse} from "../enrollment/response/lab-result.response";
 
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
@@ -37,6 +38,15 @@ export class UserController {
     async saveLabResult(@CurrentUser() currentUser: User, @Body() saveResultDto: SaveResultDto,
                         @Param('labId', ParseIntPipe) labId: number): Promise<void> {
         await this.userService.saveUserLabResult(currentUser.id, labId, saveResultDto.result);
+    }
+
+    @Get(`${Routes.CURRENT}/labs/:labId/result`)
+    @ApiOkResponse({description: 'Fetches user\'s lab result'})
+    async getLabResult(@CurrentUser() currentUser: User,
+                       @Param('labId', ParseIntPipe) labId: number): Promise<LabResultResponse> {
+        const enrollment = await this.userService.getUserLabResult(currentUser.id, labId);
+
+        return new LabResultResponse(enrollment);
     }
 
     @Get()
