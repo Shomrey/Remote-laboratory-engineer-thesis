@@ -66,7 +66,7 @@ export class LabService {
     }
 
     async getLabResults(labId: number): Promise<Enrollment[]> {
-        return this.enrollmentRepository.find({where: {id: labId}});
+        return this.enrollmentRepository.find({where: {laboratory: {id: labId}}, relations: ['laboratory', 'student']});
     }
 
     private async validateTeacher(teacherId: number): Promise<void> {

@@ -11,6 +11,8 @@ import {LabService} from "../lab/lab.service";
 import {EnrollmentService} from "../enrollment/enrollment.service";
 import {Enrollment} from "../enrollment/enrollment.model";
 import {UserAlreadyEnrolledError} from "../enrollment/error/user-already-enrolled.error";
+import {EnrollmentNotFoundError} from "../enrollment/error/enrollment-not-found.error";
+import {UserNotEnrolledError} from "../enrollment/error/user-not-enrolled.error";
 
 @Injectable()
 export class UserService {
@@ -80,16 +82,22 @@ export class UserService {
     }
 
     async saveUserLabResult(userId: number, labId: number, result: string): Promise<void> {
-        const user = await this.findOrFailById(userId);
-        const lab = await this.labService.findOrFailById(labId);
+        const enrollment = await this.enrollmentService.findByStudentIdAndLabId(userId, labId);
 
-        await this.enrollmentService.saveStudentLabResult(user.id, lab.id, result);
+        if (!enrollment) {
+            throw new UserNotEnrolledError(userId, labId)
+        }
+
+        await this.enrollmentService.saveStudentLabResult(userId, labId, result);
     }
 
     async getUserLabResult(userId: number, labId: number): Promise<Enrollment> {
-        const user = await this.findOrFailById(userId);
-        const lab = await this.labService.findOrFailById(labId);
+        const enrollment = await this.enrollmentService.findByStudentIdAndLabId(userId, labId);
 
-        return this.enrollmentService.findByStudentIdAndLabId(user.id, lab.id);
+        if (!enrollment) {
+            throw new UserNotEnrolledError(userId, labId)
+        }
+
+        return this.enrollmentService.findByStudentIdAndLabId(userId, labId);
     }
 }
