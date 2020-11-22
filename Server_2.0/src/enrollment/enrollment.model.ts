@@ -1,8 +1,9 @@
-import {Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Unique} from "typeorm";
 import {User} from "../user/model/user.model";
 import {Lab} from "../lab/lab.model";
 
 @Entity()
+@Unique(['student', 'laboratory'])
 export class Enrollment {
 
     @PrimaryGeneratedColumn()
