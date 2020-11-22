@@ -39,11 +39,7 @@ export class LabService {
     }
 
     async update(labId: number, updateLabDto: UpdateLabDto): Promise<void> {
-        const lab = this.labRepository.findOne({id: labId});
-
-        if (!lab) {
-            throw new LabNotFoundError(labId);
-        }
+        await this.findOrFailById(labId);
 
         delete (updateLabDto as any).id;
 
@@ -66,7 +62,12 @@ export class LabService {
     }
 
     async getLabResults(labId: number): Promise<Enrollment[]> {
-        return this.enrollmentRepository.find({where: {laboratory: {id: labId}}, relations: ['laboratory', 'student']});
+        const lab = await this.findOrFailById(labId);
+
+        return this.enrollmentRepository.find({
+            where: {laboratory: {id: lab.id}},
+            relations: ['laboratory', 'student']
+        });
     }
 
     private async validateTeacher(teacherId: number): Promise<void> {

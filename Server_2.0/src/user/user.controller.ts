@@ -2,7 +2,7 @@ import {Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuar
 import {UserService} from './user.service';
 import {Routes} from "../utils/constants";
 import {UserResponse} from "./response/user.response";
-import {ApiBearerAuth, ApiNotFoundResponse, ApiOkResponse, ApiTags} from "@nestjs/swagger";
+import {ApiBadRequestResponse, ApiBearerAuth, ApiNotFoundResponse, ApiOkResponse, ApiTags} from "@nestjs/swagger";
 import {CurrentUser} from "../auth/decorator/current-user.decorator";
 import {User} from "./model/user.model";
 import {JwtAuthGuard} from "../auth/guard/jwt-auth.guard";
@@ -10,6 +10,7 @@ import {LabResponse} from "../lab/response/lab.response";
 import {EnrollmentResponse} from "../enrollment/response/enrollment.response";
 import {SaveResultDto} from "../enrollment/dto/save-result.dto";
 import {LabResultResponse} from "../enrollment/response/lab-result.response";
+import EnrollWithCodeDto from "../enrollment/dto/enroll-with-code.dto";
 
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
@@ -45,6 +46,18 @@ export class UserController {
     async getLabResult(@CurrentUser() currentUser: User,
                        @Param('labId', ParseIntPipe) labId: number): Promise<LabResultResponse> {
         const enrollment = await this.userService.getUserLabResult(currentUser.id, labId);
+
+        return new LabResultResponse(enrollment);
+    }
+
+    @Post(`${Routes.CURRENT}/labs/:labId/enroll-with-code`)
+    @ApiOkResponse({description: 'Enrolls user to given laboratory using enrollment code'})
+    @ApiNotFoundResponse({description: 'Lab class with given ID was not found'})
+    @ApiBadRequestResponse({description: 'Enrollment with code failed'})
+    async enrollWithCode(@CurrentUser() currentUser: User,
+                         @Param('labId', ParseIntPipe) labId: number,
+                         @Body() codeDto: EnrollWithCodeDto): Promise<LabResultResponse> {
+        const enrollment = await this.userService.enrollStudentWithCode(currentUser.id, labId, codeDto.enrollmentCode);
 
         return new LabResultResponse(enrollment);
     }

@@ -32,6 +32,9 @@ export class Lab {
     @Column({name: 'max_students', default: 1})
     maxStudents: number;
 
+    @Column({name: 'enrollment_code', nullable: true})
+    enrollmentCode: string;
+
     @ManyToOne(type => User)
     teacher: User;
 
