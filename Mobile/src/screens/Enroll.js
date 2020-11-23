@@ -1,38 +1,17 @@
-import 'react-native-gesture-handler';
-import React, {useContext, useEffect, useState} from 'react';
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import LabClassCard from '../components/LabClassCard';
-import {createStackNavigator} from '@react-navigation/stack';
-import LabClass from './LabClass';
-import {AuthContext} from '../context/AuthContext';
-import Axios from 'axios';
+import React, {useContext, useEffect, useState} from "react";
+import {AuthContext} from "../context/AuthContext";
+import Axios from "axios";
+import {ScrollView, StyleSheet, Text, View} from "react-native";
 import DrawerHeader from "../components/Header";
+import LabClassCard from "../components/LabClassCard";
 
-const Stack = createStackNavigator()
-
-export default function Home() {
-    return (
-        <Stack.Navigator initialRouteName="HomeContent" mode="modal">
-            <Stack.Screen
-                name="HomeContent"
-                component={HomeContent}
-                options={{headerShown: false}}
-            />
-            <Stack.Screen
-                name="LabClass"
-                component={LabClass}
-                options={{title: "Laboratory class", headerStyle: {backgroundColor: '#cfd8dc'}}}
-            />
-        </Stack.Navigator>
-    );
-}
-
-function HomeContent({navigation}) {
+export default function Enroll({navigation}) {
     const [token, setToken] = useContext(AuthContext);
     const [labs, setLabs] = useState([]);
 
     useEffect(() => {
-        Axios.get('https://remote-laboratory.herokuapp.com/api/users/current/labs', {headers: {'Authorization': `Bearer ${token}`}, params: {enrolled: true}})
+        Axios.get('https://remote-laboratory.herokuapp.com/api/users/current/labs',
+            {headers: {'Authorization': `Bearer ${token}`}, params: {enrolled: false}})
             .then(function (response) {
                 setLabs(response.data);
             })
@@ -54,10 +33,10 @@ function HomeContent({navigation}) {
             <DrawerHeader navigation={navigation}/>
             <ScrollView style={styles.container}>
                 <Text style={styles.labsHeader}>
-                    Upcoming laboratory classes
+                    Enroll to laboratories
                 </Text>
                 <View style={styles.labs}>
-                    {labs.map(lab => <LabClassCard lab={lab} key={lab.id} navigation={navigation}/>)}
+                    {labs.map(lab => <LabClassCard lab={lab} key={lab.id} navigation={navigation} enroll={true}/>)}
                 </View>
             </ScrollView>
         </View>
