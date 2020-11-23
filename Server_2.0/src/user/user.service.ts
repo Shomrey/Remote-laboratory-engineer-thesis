@@ -67,7 +67,9 @@ export class UserService {
         const user = await this.findByIdWithEnrolledLabs(userId);
         const labs = await this.labService.findAll();
 
-        return labs.filter(lab => !user.enrollments.some(enrollment => enrollment.laboratory.id === lab.id));
+        return labs.filter(lab => !user.enrollments.some(enrollment => enrollment.laboratory.id === lab.id)
+            && lab.enrollmentCode !== null
+            && lab.enrollmentCode !== '');
     }
 
     async enrollStudentForLab(studentId: number, labId: number): Promise<Enrollment> {
@@ -91,7 +93,7 @@ export class UserService {
             throw new UserAlreadyEnrolledError(studentId, labId);
         }
 
-        if (!lab.enrollmentCode) {
+        if (!lab.enrollmentCode || lab.enrollmentCode === '') {
             throw new CannotEnrollWithCodeError();
         }
 
