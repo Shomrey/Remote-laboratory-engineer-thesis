@@ -63,6 +63,13 @@ export class UserService {
             this.labService.findByTeacherId(userId);
     }
 
+    async getEnrollableLabs(userId: number): Promise<Lab[]> {
+        const user = await this.findByIdWithEnrolledLabs(userId);
+        const labs = await this.labService.findAll();
+
+        return labs.filter(lab => !user.enrollments.some(enrollment => enrollment.laboratory.id === lab.id));
+    }
+
     async enrollStudentForLab(studentId: number, labId: number): Promise<Enrollment> {
         const user = await this.findOrFailById(studentId);
         const lab = await this.labService.findOrFailById(labId);

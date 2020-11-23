@@ -1,4 +1,15 @@
-import {Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards} from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    ParseBoolPipe,
+    ParseIntPipe,
+    Patch,
+    Post, Query,
+    UseGuards
+} from '@nestjs/common';
 import {UserService} from './user.service';
 import {Routes} from "../utils/constants";
 import {UserResponse} from "./response/user.response";
@@ -28,10 +39,17 @@ export class UserController {
 
     @Get(`${Routes.CURRENT}/labs`)
     @ApiOkResponse({description: 'Fetches current user\'s labs', type: [LabResponse]})
-    async findUserLabs(@CurrentUser() currentUser: User): Promise<LabResponse[]> {
-        const labs = await this.userService.findLabsByIdAndType(currentUser.id, currentUser.userType);
+    async findUserLabs(@CurrentUser() currentUser: User,
+                       @Query('enrolled', ParseBoolPipe) enrolled: boolean): Promise<LabResponse[]> {
+        if (enrolled) {
+            const labs = await this.userService.findLabsByIdAndType(currentUser.id, currentUser.userType);
 
-        return labs.map(lab => new LabResponse(lab));
+            return labs.map(lab => new LabResponse(lab));
+        } else {
+            const labs = await this.userService.getEnrollableLabs(currentUser.id);
+
+            return labs.map(lab => new LabResponse(lab));
+        }
     }
 
     @Patch(`${Routes.CURRENT}/labs/:labId/result`)
