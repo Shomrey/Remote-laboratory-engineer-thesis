@@ -5,11 +5,11 @@ import {ScrollView, StyleSheet, Text, View} from "react-native";
 import DrawerHeader from "../components/Header";
 import LabClassCard from "../components/LabClassCard";
 
-export default function Enroll({navigation}) {
+export default function Enroll({navigation, updateMain}) {
     const [token, setToken] = useContext(AuthContext);
     const [labs, setLabs] = useState([]);
 
-    useEffect(() => {
+    const fetchLabs = () => {
         Axios.get('https://remote-laboratory.herokuapp.com/api/users/current/labs',
             {headers: {'Authorization': `Bearer ${token}`}, params: {enrolled: false}})
             .then(function (response) {
@@ -26,7 +26,16 @@ export default function Enroll({navigation}) {
                     console.log('Failed to connect to the server.')
                 }
             });
+    }
+
+    useEffect(() => {
+        fetchLabs();
     }, []);
+
+    const refresh = () => {
+        fetchLabs();
+        updateMain();
+    }
 
     return (
         <View>
@@ -36,7 +45,8 @@ export default function Enroll({navigation}) {
                     Enroll to laboratories
                 </Text>
                 <View style={styles.labs}>
-                    {labs.map(lab => <LabClassCard lab={lab} key={lab.id} navigation={navigation} enroll={true}/>)}
+                    {labs.map(lab => <LabClassCard lab={lab} key={lab.id} navigation={navigation} enroll={true}
+                                                   updateLabs={refresh}/>)}
                 </View>
             </ScrollView>
         </View>

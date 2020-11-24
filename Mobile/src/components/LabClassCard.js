@@ -49,6 +49,7 @@ export default function LabClassCard(props) {
                         {headers: {'Authorization': `Bearer ${token}`}})
                         .then(function (response) {
                             setDialogVisible(false);
+                            props.updateLabs();
                         })
                         .catch(function (error) {
                             setEnrollButtonEnabled(true);
