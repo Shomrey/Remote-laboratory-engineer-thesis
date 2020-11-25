@@ -21,6 +21,9 @@ export class Lab {
     configuration: string;
 
     @Column()
+    collectResultsCommands: string;
+
+    @Column()
     description: string;
 
     @Column()

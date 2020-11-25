@@ -21,6 +21,10 @@ export class CreateLabDto {
 
     @ApiProperty()
     @IsString()
+    collectResultsCommands: string;
+
+    @ApiProperty()
+    @IsString()
     description: string;
 
     @ApiProperty()
