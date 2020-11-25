@@ -176,6 +176,7 @@ function LabTerminal(props) {
             setTerminalContent(terminalContent => terminalContent + data + '\n');
             setResult(result => result + data + '\n');
         });
+        socket.on('re_auth', () => socket.emit('access_token', {tok: token, raspberry_id: selectedRaspberry}));
 
         setSessionStarted(true);
     }

@@ -54,6 +54,7 @@ export default async function initializeSocketIO(logger: Logger, app: INestAppli
         socket.on('command', (command) => {
             if (!userToken) {
                 logger.log(`Unauthenticated command from ${socket.id}`);
+                socket.emit('re_auth');
             } else {
                 logger.debug(`Command: ${command}`);
 
@@ -101,7 +102,9 @@ export default async function initializeSocketIO(logger: Logger, app: INestAppli
             logger.log(`Device ${socket.id} disconnected`);
 
             if (userToken) {
-                raspberries[users[userToken].raspberryId].userToken = null;
+                if (raspberries[users[userToken].raspberryId]) {
+                    raspberries[users[userToken].raspberryId].userToken = null;
+                }
                 delete users[userToken];
             } else if (raspberryId) {
                 delete raspberries[raspberryId];
