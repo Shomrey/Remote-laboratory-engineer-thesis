@@ -20,6 +20,9 @@ export class Lab {
     @Column()
     configuration: string;
 
+    @Column({default: ''})
+    collectResultsCommands: string;
+
     @Column()
     description: string;
 
