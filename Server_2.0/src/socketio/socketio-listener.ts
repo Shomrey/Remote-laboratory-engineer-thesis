@@ -62,7 +62,11 @@ export default async function initializeSocketIO(logger: Logger, app: INestAppli
 
                 adminSockets.forEach(adminSocket => adminSocket.emit('spy', user['mail'] + ': ' + command))
 
-                raspberries[users[userToken].raspberryId].socket.emit('output', command);
+                if (raspberries[users[userToken].raspberryId]) {
+                    raspberries[users[userToken].raspberryId].socket.emit('output', command);
+                } else {
+                    socket.emit('output', 'Device disconnected. Please try again later.')
+                }
             }
         })
 
