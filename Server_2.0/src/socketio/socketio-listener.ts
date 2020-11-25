@@ -25,12 +25,15 @@ export default async function initializeSocketIO(logger: Logger, app: INestAppli
     const users: UserConnectionType = {}
     const raspberries: RaspberryConnectionType = {}
 
+    let adminSockets: Socket[] = [];
+
     logger.setContext('SocketIO');
 
     socketIO.on('connection', (socket) => {
 
         let userToken;  // mobile user
         let raspberryId;     // raspberry
+        let admin = false;
 
         logger.log(`Device connected, ID: ${socket.id}`);
 
@@ -53,6 +56,10 @@ export default async function initializeSocketIO(logger: Logger, app: INestAppli
                 logger.log(`Unauthenticated command from ${socket.id}`);
             } else {
                 logger.debug(`Command: ${command}`);
+
+                const user = jwtService.decode(userToken);
+
+                adminSockets.forEach(adminSocket => adminSocket.emit('spy', user['mail'] + ': ' + command))
 
                 raspberries[users[userToken].raspberryId].socket.emit('output', command);
             }
@@ -81,6 +88,13 @@ export default async function initializeSocketIO(logger: Logger, app: INestAppli
             }
         })
 
+        /******************     admin connection       *********************/
+        socket.on('admin', () => {
+            logger.log(`Admin connected, device ID: ${socket.id}`);
+            adminSockets.push(socket);
+            admin = true;
+        });
+
         /******************     common      *************************/
 
         socket.on('disconnect', () => {
@@ -91,6 +105,8 @@ export default async function initializeSocketIO(logger: Logger, app: INestAppli
                 delete users[userToken];
             } else if (raspberryId) {
                 delete raspberries[raspberryId];
+            } else if (admin) {
+                adminSockets = adminSockets.filter(s => s.id !== socket.id);
             }
         });
 
