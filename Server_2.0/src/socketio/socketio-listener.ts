@@ -31,8 +31,6 @@ export default async function initializeSocketIO(logger: Logger, app: INestAppli
 
         let userToken;  // mobile user
         let raspberryId;     // raspberry
-        let commands = '';
-        let formattedCommands = '';
 
         logger.log(`Device connected, ID: ${socket.id}`);
 
@@ -55,18 +53,6 @@ export default async function initializeSocketIO(logger: Logger, app: INestAppli
                 logger.log(`Unauthenticated command from ${socket.id}`);
             } else {
                 logger.debug(`Command: ${command}`);
-
-                const user = jwtService.decode(userToken);
-
-                if (command === 'whoami') {
-                    command = `${command}\n${JSON.stringify({
-                        mail: user['mail'],
-                        id: user['sub']
-                    })}`;
-                }
-
-                commands = `${commands}${command}\n`;
-                formattedCommands = `${formattedCommands}> ${command}\n`;
 
                 raspberries[users[userToken].raspberryId].socket.emit('output', command);
             }
@@ -91,9 +77,7 @@ export default async function initializeSocketIO(logger: Logger, app: INestAppli
             } else {
                 logger.debug(`Command: ${message}`);
 
-                formattedCommands = `${formattedCommands} ${message}\n`;
-
-                users[raspberries[raspberryId].userToken].socket.emit('output', formattedCommands)
+                users[raspberries[raspberryId].userToken].socket.emit('output', message)
             }
         })
 
