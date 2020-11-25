@@ -23,6 +23,9 @@ export class LabResponse {
     description: string;
 
     @ApiProperty()
+    collectResultsCommands: string;
+
+    @ApiProperty()
     tasks: string;
 
     @ApiProperty()
@@ -46,6 +49,7 @@ export class LabResponse {
         this.duration = lab.duration;
         this.title = lab.title;
         this.configuration = lab.configuration;
+        this.collectResultsCommands = lab.collectResultsCommands;
         this.description = lab.description;
         this.tasks = lab.tasks;
         this.topology = lab.topology;
