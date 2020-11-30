@@ -19,6 +19,16 @@ export class EnrollmentService {
         return enrollment;
     }
 
+    async findByStudentIdAndLabId(studentId: number, labId: number): Promise<Enrollment> {
+        return this.enrollmentRepository.findOne({
+            where: {
+                student: {id: studentId},
+                laboratory: {id: labId},
+            },
+            relations: ['student', 'laboratory']
+        });
+    }
+
     async enrollStudentForLab(studentId: number, labId: number): Promise<Enrollment> {
         return this.enrollmentRepository.save({
                 student: {id: studentId},

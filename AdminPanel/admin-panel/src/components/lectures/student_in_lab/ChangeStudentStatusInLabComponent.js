@@ -1,21 +1,20 @@
 import React, { Component } from 'react';
 import Axios from 'axios';
-import { Button } from '@material-ui/core';
+import { Button, Checkbox } from '@material-ui/core';
 
 class ChangeStudentStatusInLabComponent extends Component {
     state = {
-        color: this.props.color
+        enrolled: this.props.enrolled
     }
 
     handleClick = (id) => {
         console.log("change student id: " + id);
-        let currColor = this.state.color;
-        let newColor = currColor == "primary" ? "secondary" : "primary"
-        this.setState({ color: newColor })
+        let currEnrolled = this.state.enrolled;
+        this.setState({ enrolled: !currEnrolled })
         this.props.toggle(id);
     }
     render() {
-        return (<Button variant="contained" color={this.props.color} id={this.props.student.id} onClick={() => this.handleClick(this.props.student.id)}>{this.props.student.name} {this.props.student.surname}</Button>);
+        return (<Checkbox onChange={() => this.handleClick(this.props.student.id)} checked={this.state.enrolled} id={this.props.student.id} />);
     }
 }
 

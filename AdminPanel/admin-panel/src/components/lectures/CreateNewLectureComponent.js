@@ -7,7 +7,8 @@ class CreateNewLectureComponent extends Component {
     state = {
         newLectureData: {},
         currentUser: {},
-        userLoaded: false
+        userLoaded: false,
+        teachers: []
     }
 
     handleDataPass = (state) => {
@@ -29,12 +30,15 @@ class CreateNewLectureComponent extends Component {
         console.log("getting current user");
         Axios.get(url).then(response => this.setState({ currentUser: response.data }));
         this.setState({ userLoaded: true });
+        const urlTeachers = "https://remote-laboratory.herokuapp.com/api/users";
+        console.log("getting teachers");
+        Axios.get(urlTeachers).then(response => { console.log(response); this.setState({ teachers: response.data.filter(user => user.userType == "teacher") }) });
     }
 
     render() {
         return (
             <div>
-                <MultilineTextFields passNewLectureData={this.handleDataPass} />
+                <MultilineTextFields teachers={this.state.teachers} passNewLectureData={this.handleDataPass} />
                 <Button disabled={!this.state.userLoaded} variant="contained" color="primary" onClick={this.sendRequest}>Create lecture</Button>
             </div>
         );

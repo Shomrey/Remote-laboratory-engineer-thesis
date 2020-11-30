@@ -20,6 +20,9 @@ export class Lab {
     @Column()
     configuration: string;
 
+    @Column({default: ''})
+    collectResultsCommands: string;
+
     @Column()
     description: string;
 
@@ -31,6 +34,9 @@ export class Lab {
 
     @Column({name: 'max_students', default: 1})
     maxStudents: number;
+
+    @Column({name: 'enrollment_code', nullable: true})
+    enrollmentCode: string;
 
     @ManyToOne(type => User)
     teacher: User;

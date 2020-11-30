@@ -23,6 +23,9 @@ export class LabResponse {
     description: string;
 
     @ApiProperty()
+    collectResultsCommands: string;
+
+    @ApiProperty()
     tasks: string;
 
     @ApiProperty()
@@ -30,6 +33,9 @@ export class LabResponse {
 
     @ApiProperty()
     maxStudents: number;
+
+    @ApiProperty()
+    enrollmentCode: string;
 
     @ApiProperty({type: UserResponse})
     teacher: UserResponse;
@@ -43,10 +49,12 @@ export class LabResponse {
         this.duration = lab.duration;
         this.title = lab.title;
         this.configuration = lab.configuration;
+        this.collectResultsCommands = lab.collectResultsCommands;
         this.description = lab.description;
         this.tasks = lab.tasks;
         this.topology = lab.topology;
         this.maxStudents = lab.maxStudents;
+        this.enrollmentCode = lab.enrollmentCode;
         this.teacher = lab.teacher ? new UserResponse(lab.teacher) : null;
         this.students = lab.enrollments ? lab.enrollments.map(enrollment => new UserResponse(enrollment.student)) : null;
     }

@@ -7,6 +7,7 @@ import Home from './Home';
 import Settings from './Settings';
 import {Icon} from "react-native-elements";
 import Account from "./Account";
+import Enroll from "./Enroll";
 
 const Drawer = createDrawerNavigator();
 
@@ -15,7 +16,14 @@ export default function Main({navigation, logOut}) {
     return (
         <NavigationContainer>
             <Drawer.Navigator initialRouteName="Home">
-                <Drawer.Screen name="Home" component={Home} options={{drawerIcon: () => (<Icon name='home'/>)}}/>
+                <Drawer.Screen name="Home" component={Home} options={{
+                    drawerIcon: () => (<Icon name='home'/>),
+                    unmountOnBlur: true
+                }}/>
+                <Drawer.Screen name="Enroll" component={Enroll} options={{
+                    drawerIcon: () => (<Icon name='assignment'/>),
+                    unmountOnBlur: true
+                }}/>
                 <Drawer.Screen name="Account" component={Account}
                                options={{drawerIcon: () => (<Icon name='account-circle' type='material'/>)}}/>
                 <Drawer.Screen name="Settings" component={Settings}

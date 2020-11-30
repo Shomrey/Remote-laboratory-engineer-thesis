@@ -16,6 +16,7 @@ class DisplayExistingLecturesComponent extends Component {// extends React.Compo
 
     state = {
         labs: [],
+        teachers: [],
         labsLoaded: false,
         currentLectureIndex: -1,
         currentLectureState: {}
@@ -24,6 +25,9 @@ class DisplayExistingLecturesComponent extends Component {// extends React.Compo
         const url = "https://remote-laboratory.herokuapp.com/api/labs";
         console.log("getting labs");
         Axios.get(url).then(response => this.setState({ labs: response.data }));
+        const urlTeachers = "https://remote-laboratory.herokuapp.com/api/users";
+        console.log("getting teachers");
+        Axios.get(urlTeachers).then(response => { console.log(response); this.setState({ teachers: response.data.filter(user => user.userType == "teacher") }) });
         this.setState({ labsLoaded: true });
     }
 
@@ -55,9 +59,10 @@ class DisplayExistingLecturesComponent extends Component {// extends React.Compo
     render() {
         let lectureToDisplayGuard;
         let submitButton;
+        console.log(this.state.teachers);
         if (this.state.currentLectureIndex != -1) {
             submitButton = <Button variant="contained" color="primary" onClick={this.sendRequest}>Submit changes</Button>
-            lectureToDisplayGuard = <ChangeLectureForm lectureChange={this.handleLectureChange} lab={this.state.labs[this.state.currentLectureIndex]} />
+            lectureToDisplayGuard = <ChangeLectureForm lectureChange={this.handleLectureChange} lab={this.state.labs[this.state.currentLectureIndex]} teachers={this.state.teachers} />
         }
         else {
             submitButton = "";

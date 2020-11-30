@@ -21,6 +21,10 @@ export class CreateLabDto {
 
     @ApiProperty()
     @IsString()
+    collectResultsCommands: string;
+
+    @ApiProperty()
+    @IsString()
     description: string;
 
     @ApiProperty()
@@ -38,4 +42,8 @@ export class CreateLabDto {
     @ApiProperty()
     @IsNumber()
     teacherId: number;
+
+    @ApiProperty()
+    @IsString()
+    enrollmentCode: string;
 }
