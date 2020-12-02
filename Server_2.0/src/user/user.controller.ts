@@ -69,13 +69,6 @@ export class UserController {
         return new LabResultResponse(enrollment);
     }
 
-    @Patch(`${Routes.CURRENT}/labs/:labId/grade`)
-    @ApiOkResponse({description: 'Grades user\'s lab result'})
-    async gradeLabResult(@CurrentUser() currentUser: User, @Body() gradeResultDto: GradeResultDto,
-                        @Param('labId', ParseIntPipe) labId: number): Promise<void> {
-        await this.userService.gradeUserLabResult(currentUser.id, labId, gradeResultDto.score);
-    }
-
     @Post(`${Routes.CURRENT}/labs/:labId/enroll-with-code`)
     @ApiOkResponse({description: 'Enrolls user to given laboratory using enrollment code'})
     @ApiNotFoundResponse({description: 'Lab class with given ID was not found'})
@@ -112,6 +105,13 @@ export class UserController {
         const enrollment = await this.userService.enrollStudentForLab(userId, labId);
 
         return new EnrollmentResponse(enrollment);
+    }
+
+    @Patch(`:userId/labs/:labId/grade`)
+    @ApiOkResponse({description: 'Grades user\'s lab result'})
+    async gradeLabResult(@Body() gradeResultDto: GradeResultDto, @Param('userId', ParseIntPipe) userId: number,
+                         @Param('labId', ParseIntPipe) labId: number): Promise<void> {
+        await this.userService.gradeUserLabResult(userId, labId, gradeResultDto.score);
     }
 
     @Delete(`:userId/labs/:labId/enroll`)
