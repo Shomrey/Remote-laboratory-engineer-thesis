@@ -35,12 +35,17 @@ export default function LabResult(props) {
         labResult ?
             <View style={styles.container}>
                 <Text style={styles.score}>Score: {labResult.score}</Text>
-                <Text style={styles.score}>Submitted result:</Text>
-                <ScrollView style={styles.resultContainer}>
-                    <Text style={styles.resultText}>
-                        {labResult.result}
-                    </Text>
-                </ScrollView>
+                {labResult.result ? (
+                    <View style={{flex: 1}}>
+                        <Text style={styles.score}>Submitted result:</Text>
+                        <ScrollView style={styles.resultContainer}>
+                            <Text style={styles.resultText}>
+                                {labResult.result}
+                            </Text>
+                        </ScrollView>
+                    </View>
+                ) : (
+                    <Text style={styles.score}>You didn't submit any results to this laboratory</Text>)}
             </View>
             :
             <View/>
