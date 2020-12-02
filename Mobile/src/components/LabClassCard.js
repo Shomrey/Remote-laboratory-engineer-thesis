@@ -13,7 +13,9 @@ export default function LabClassCard(props) {
     const [errorMessage, setErrorMessage] = useState(null);
 
     const onPress = () => {
-        if (props.enroll) {
+        if (props.result) {
+            props.navigation.navigate('LabResult', {lab: props.lab})
+        } else if (props.enroll) {
             setDialogVisible(true);
         } else {
             props.navigation.navigate('LabClass', {lab: props.lab});

@@ -22,6 +22,7 @@ import {EnrollmentResponse} from "../enrollment/response/enrollment.response";
 import {SaveResultDto} from "../enrollment/dto/save-result.dto";
 import {LabResultResponse} from "../enrollment/response/lab-result.response";
 import EnrollWithCodeDto from "../enrollment/dto/enroll-with-code.dto";
+import {GradeResultDto} from "../enrollment/dto/grade-result.dto";
 
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
@@ -33,7 +34,7 @@ export class UserController {
 
     @Get(Routes.CURRENT)
     @ApiOkResponse({description: 'Fetches current user\'s details', type: UserResponse})
-    async findCurrentUser(@CurrentUser() currentUser: User) {
+    async findCurrentUser(@CurrentUser() currentUser: User): Promise<UserResponse> {
         return new UserResponse(currentUser);
     }
 
@@ -66,6 +67,13 @@ export class UserController {
         const enrollment = await this.userService.getUserLabResult(currentUser.id, labId);
 
         return new LabResultResponse(enrollment);
+    }
+
+    @Patch(`${Routes.CURRENT}/labs/:labId/grade`)
+    @ApiOkResponse({description: 'Grades user\'s lab result'})
+    async gradeLabResult(@CurrentUser() currentUser: User, @Body() gradeResultDto: GradeResultDto,
+                        @Param('labId', ParseIntPipe) labId: number): Promise<void> {
+        await this.userService.gradeUserLabResult(currentUser.id, labId, gradeResultDto.score);
     }
 
     @Post(`${Routes.CURRENT}/labs/:labId/enroll-with-code`)

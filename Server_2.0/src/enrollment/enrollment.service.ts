@@ -51,4 +51,11 @@ export class EnrollmentService {
             laboratory: {id: labId}
         }, {result})
     }
+
+    async gradeStudentLabResult(studentId: number, labId: number, score: number): Promise<void> {
+        await this.enrollmentRepository.update({
+            student: {id: studentId},
+            laboratory: {id: labId}
+        }, {score})
+    }
 }

@@ -4,14 +4,35 @@ import Axios from "axios";
 import {ScrollView, StyleSheet, Text, View} from "react-native";
 import DrawerHeader from "../components/Header";
 import LabClassCard from "../components/LabClassCard";
+import LabResult from "./LabResult";
+import {createStackNavigator} from "@react-navigation/stack";
 
-export default function Enroll({navigation}) {
+const Stack = createStackNavigator()
+
+export default function Results() {
+    return (
+        <Stack.Navigator initialRouteName="ResultsContent" mode="modal">
+            <Stack.Screen
+                name="ResultsContent"
+                component={ResultsContent}
+                options={{headerShown: false}}
+            />
+            <Stack.Screen
+                name="LabResult"
+                component={LabResult}
+                options={{title: "Laboratory class", headerStyle: {backgroundColor: '#cfd8dc'}}}
+            />
+        </Stack.Navigator>
+    )
+}
+
+function ResultsContent({navigation}) {
     const [token, setToken] = useContext(AuthContext);
     const [labs, setLabs] = useState([]);
 
     const fetchLabs = () => {
         Axios.get('https://remote-laboratory.herokuapp.com/api/users/current/labs',
-            {headers: {'Authorization': `Bearer ${token}`}, params: {enrolled: false}})
+            {headers: {'Authorization': `Bearer ${token}`}, params: {enrolled: true}})
             .then(function (response) {
                 setLabs(response.data);
             })
@@ -32,24 +53,19 @@ export default function Enroll({navigation}) {
         fetchLabs();
     }, []);
 
-    const refresh = () => {
-        fetchLabs();
-    }
-
     return (
         <View>
             <DrawerHeader navigation={navigation}/>
             <ScrollView style={styles.container}>
                 <Text style={styles.labsHeader}>
-                    Enroll to laboratories
+                    View laboratory results
                 </Text>
                 <View style={styles.labs}>
-                    {labs.map(lab => <LabClassCard lab={lab} key={lab.id} navigation={navigation} enroll={true}
-                                                   updateLabs={refresh}/>)}
+                    {labs.map(lab => <LabClassCard lab={lab} key={lab.id} navigation={navigation} enroll={true} result={true}/> )}
                 </View>
             </ScrollView>
         </View>
-    )
+    );
 }
 
 const styles = StyleSheet.create({

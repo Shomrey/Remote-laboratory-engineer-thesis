@@ -8,10 +8,11 @@ import Settings from './Settings';
 import {Icon} from "react-native-elements";
 import Account from "./Account";
 import Enroll from "./Enroll";
+import Results from "./Results";
 
 const Drawer = createDrawerNavigator();
 
-export default function Main({navigation, logOut}) {
+export default function Main({logOut}) {
 
     return (
         <NavigationContainer>
@@ -24,6 +25,10 @@ export default function Main({navigation, logOut}) {
                     drawerIcon: () => (<Icon name='assignment'/>),
                     unmountOnBlur: true
                 }}/>
+                <Drawer.Screen name="Results" component={Results} options={{
+                    drawerIcon: () => (<Icon name='assignment'/>),
+                    unmountOnBlur: true
+                }}/>
                 <Drawer.Screen name="Account" component={Account}
                                options={{drawerIcon: () => (<Icon name='account-circle' type='material'/>)}}/>
                 <Drawer.Screen name="Settings" component={Settings}
@@ -31,7 +36,7 @@ export default function Main({navigation, logOut}) {
                 <Drawer.Screen name="Log out" component={Settings}
                                options={{drawerIcon: () => (<Icon name='logout-variant' type={"material-community"}/>)}}
                                listeners={props => {
-                                   logOut();
+                                   setTimeout(logOut, 300);
                                }}/>
             </Drawer.Navigator>
         </NavigationContainer>
