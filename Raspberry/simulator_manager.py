@@ -2,14 +2,14 @@ import paramiko
 import time
 import sys
 import select
-import threading
 from threading import Thread
-import struct
 import socketio
 
 # fake-switches connection setup
 docker_address = str(sys.argv[1])
 docker_port = int(sys.argv[2])
+
+
 fake_switch_username = 'root'
 fake_switch_password = 'root'
 ssh_client = paramiko.SSHClient()
@@ -20,7 +20,10 @@ device_connection = ssh_client.invoke_shell()
 print('Connected to device!')
 
 # server connection setup
-server_address = 'https://remote-laboratory.herokuapp.com/'
+# server_address = 'https://remote-laboratory.herokuapp.com/'
+# device_id = 'malina_1'
+server_address = sys.argv[3]
+device_id = sys.argv[4]
 sio = socketio.Client()
 sio.connect(server_address)
 sio.emit('identify_raspberry', 'malina_1')

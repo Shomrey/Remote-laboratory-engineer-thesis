@@ -130,4 +130,14 @@ export class UserService {
 
         return this.enrollmentService.findByStudentIdAndLabId(userId, labId);
     }
+
+    async gradeUserLabResult(userId: number, labId: number, score: number): Promise<void> {
+        const enrollment = await this.enrollmentService.findByStudentIdAndLabId(userId, labId);
+
+        if (!enrollment) {
+            throw new UserNotEnrolledError(userId, labId)
+        }
+
+        await this.enrollmentService.gradeStudentLabResult(userId, labId, score);
+    }
 }
