@@ -2,6 +2,7 @@ import {Header as RNElementsHeader, Icon} from "react-native-elements";
 import {DrawerActions} from "@react-navigation/native";
 import React from "react";
 import {StyleSheet} from "react-native";
+import HeaderTitle from "@react-navigation/stack/src/views/Header/HeaderTitle";
 
 export default function DrawerHeader(props) {
     return (
@@ -11,6 +12,7 @@ export default function DrawerHeader(props) {
                     props.navigation.dispatch(DrawerActions.toggleDrawer())
                 }}/>
             }
+            centerComponent={() => <HeaderTitle>{props.title}</HeaderTitle>}
             containerStyle={styles.header}
         />
     )

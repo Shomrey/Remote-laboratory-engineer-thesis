@@ -29,7 +29,7 @@ export default function Account({navigation}) {
 
     return (
         <View style={styles.container}>
-            <DrawerHeader navigation={navigation}/>
+            <DrawerHeader navigation={navigation} title={"Account"}/>
             <View style={styles.content}>
                 <Text style={styles.infoHeader}>
                     Account information

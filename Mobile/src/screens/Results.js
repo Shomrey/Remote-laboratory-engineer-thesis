@@ -20,7 +20,7 @@ export default function Results() {
             <Stack.Screen
                 name="LabResult"
                 component={LabResult}
-                options={{title: "Laboratory class", headerStyle: {backgroundColor: '#cfd8dc'}}}
+                options={{title: "Laboratory results", headerStyle: {backgroundColor: '#cfd8dc'}}}
             />
         </Stack.Navigator>
     )
@@ -54,16 +54,26 @@ function ResultsContent({navigation}) {
     }, []);
 
     return (
-        <View>
-            <DrawerHeader navigation={navigation}/>
-            <ScrollView style={styles.container}>
-                <Text style={styles.labsHeader}>
-                    View laboratory results
-                </Text>
-                <View style={styles.labs}>
-                    {labs.map(lab => <LabClassCard lab={lab} key={lab.id} navigation={navigation} enroll={true} result={true}/> )}
-                </View>
-            </ScrollView>
+        <View style={{backgroundColor: '#eceff1', height: '100%'}}>
+            <DrawerHeader navigation={navigation} title="Results"/>
+            <Text style={styles.labsHeader}>
+                View laboratory results
+            </Text>
+            {
+                labs.length > 0 ?
+                    <ScrollView style={styles.container}>
+                        <View style={styles.labs}>
+                            {labs.map(lab => <LabClassCard lab={lab} key={lab.id} navigation={navigation} enroll={true}
+                                                           result={true}/>)}
+                        </View>
+                    </ScrollView>
+                    :
+                    <View style={styles.container2}>
+                        <View style={styles.pageTitle}>
+                            <Text>No laboratory classes available</Text>
+                        </View>
+                    </View>
+            }
         </View>
     );
 }
@@ -84,5 +94,16 @@ const styles = StyleSheet.create({
     labs: {
         flexDirection: "column",
         marginBottom: 130,
-    }
+    },
+    pageTitle: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    container2: {
+        display: "flex",
+        flexDirection: "column",
+        backgroundColor: '#eceff1',
+        height: '75%',
+    },
 });

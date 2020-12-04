@@ -6,7 +6,7 @@ import DrawerHeader from "../components/Header";
 export default function Settings({navigation}) {
     return (
         <View style={styles.container}>
-            <DrawerHeader navigation={navigation}/>
+            <DrawerHeader navigation={navigation} title={"Settings"}/>
             <View style={styles.pageTitle}>
                 <Text>
                     Settings

@@ -32,7 +32,10 @@ function HomeContent({navigation}) {
     const [labs, setLabs] = useState([]);
 
     useEffect(() => {
-        Axios.get('https://remote-laboratory.herokuapp.com/api/users/current/labs', {headers: {'Authorization': `Bearer ${token}`}, params: {enrolled: true}})
+        Axios.get('https://remote-laboratory.herokuapp.com/api/users/current/labs', {
+            headers: {'Authorization': `Bearer ${token}`},
+            params: {enrolled: true}
+        })
             .then(function (response) {
                 setLabs(response.data);
             })
@@ -50,16 +53,25 @@ function HomeContent({navigation}) {
     }, []);
 
     return (
-        <View>
-            <DrawerHeader navigation={navigation}/>
-            <ScrollView style={styles.container}>
-                <Text style={styles.labsHeader}>
-                    Upcoming laboratory classes
-                </Text>
-                <View style={styles.labs}>
-                    {labs.map(lab => <LabClassCard lab={lab} key={lab.id} navigation={navigation}/>)}
-                </View>
-            </ScrollView>
+        <View style={{backgroundColor: '#eceff1', height: '100%'}}>
+            <DrawerHeader navigation={navigation} title="Home"/>
+            <Text style={styles.labsHeader}>
+                Upcoming laboratory classes
+            </Text>
+            {
+                labs.length > 0 ?
+                    <ScrollView style={styles.container}>
+                        <View style={styles.labs}>
+                            {labs.map(lab => <LabClassCard lab={lab} key={lab.id} navigation={navigation}/>)}
+                        </View>
+                    </ScrollView>
+                    :
+                    <View style={styles.container2}>
+                        <View style={styles.pageTitle}>
+                            <Text>No laboratory classes available</Text>
+                        </View>
+                    </View>
+            }
         </View>
     )
 }
@@ -80,5 +92,16 @@ const styles = StyleSheet.create({
     labs: {
         flexDirection: "column",
         marginBottom: 130,
-    }
+    },
+    pageTitle: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    container2: {
+        display: "flex",
+        flexDirection: "column",
+        backgroundColor: '#eceff1',
+        height: '75%',
+    },
 });
