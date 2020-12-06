@@ -18,6 +18,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import socketIOClient from "socket.io-client";
 import {AuthContext} from "../context/AuthContext";
 import Axios from "axios";
+import {HeaderBackButton} from "@react-navigation/stack";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -25,27 +26,29 @@ export default function LabClass(props) {
     const lab = props.route.params.lab;
     const [result, setResult] = useState([]);
     const [token, setToken] = useContext(AuthContext);
-    const [sendResultFunction, setSendResultFunction] = useState(() => () => {
-    });
+    const [sendResultFunction, setSendResultFunction] = useState(null);
+    const [socket, setSocket] = useState(null);
 
     props.navigation.setOptions({
         headerRight: () =>
             <View style={styles.headerRight}>
-                <Icon name={'save'} type={"ionicon"} size={30} style={{marginRight: 10}} onPress={() => {
-                    Alert.alert(
-                        'Save configuration',
-                        'Do you want to save and send your configuration?',
-                        [
-                            {
-                                text: "Cancel",
-                                style: "cancel"
-                            },
-                            {
-                                text: "OK",
-                                onPress: () => sendResultFunction()
-                            }
-                        ],
-                    );
+                <Icon name={'save'} type={"ionicon"} size={30} style={{marginRight: 10}} color={sendResultFunction ? 'black' : 'gray'} onPress={() => {
+                    if (sendResultFunction) {
+                        Alert.alert(
+                            'Save configuration',
+                            'Do you want to save and send your configuration?',
+                            [
+                                {
+                                    text: "Cancel",
+                                    style: "cancel"
+                                },
+                                {
+                                    text: "OK",
+                                    onPress: () => sendResultFunction()
+                                }
+                            ],
+                        );
+                    }
                 }}/>
             </View>,
         headerStyle: {
@@ -60,7 +63,26 @@ export default function LabClass(props) {
             backgroundColor: '#cfd8dc',
         },
         headerBackTitle: "Home",
+        headerLeft: (props) => (
+            <HeaderBackButton
+                {...props}
+                onPress={() => {
+                    if (socket) {
+                        socket.disconnect();
+                    }
+                    props.onPress()
+                }}
+            />
+        )
     });
+
+    useEffect(() => {
+        props.navigation.addListener('beforeRemove', (e) => {
+            if (socket) {
+                socket.disconnect();
+            }
+        });
+    })
 
     return (
         <Tab.Navigator>
@@ -70,7 +92,7 @@ export default function LabClass(props) {
             <Tab.Screen name="Terminal" component={LabTerminal} initialParams={{
                 setResult: setResult,
                 configuration: lab.configuration, collectResultsCommands: lab.collectResultsCommands,
-                setSendResultFunction, labId: lab.id
+                setSendResultFunction, labId: lab.id, setSocket
             }}/>
         </Tab.Navigator>
     )
@@ -113,10 +135,12 @@ function LabTerminal(props) {
     const configuration = props.route.params.configuration;
     const collectResultsCommands = props.route.params.collectResultsCommands;
     const labId = props.route.params.labId;
+    const setSocket2 = props.route.params.setSocket;
 
     useEffect(() => {
         const socket = socketIOClient("https://remote-laboratory.herokuapp.com");
         setSocket(socket);
+        setSocket2(socket);
         socket.emit('available_raspberries');
         socket.on('available_raspberries', (data) => {
             setAvailableRaspberries(data);
@@ -213,22 +237,27 @@ function LabTerminal(props) {
                 }
             </ScrollView>
             <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} keyboardVerticalOffset={140}>
-                <View style={styles.inputContainer}>
-                    <View style={styles.input}>
-                        <Text style={styles.textInput}>$ </Text>
-                        <TextInput style={styles.textInput} placeholder="Write your commands here" onChangeText={
-                            (text => setCommand(text))
-                        } autoCapitalize={"none"} autoCompleteType={"off"} autoCorrect={false}
-                                   editable={socket !== undefined}/>
-                    </View>
-                    <Icon name="play-arrow" size={60} onPress={() => {
-                        if (socket && socket.connected) {
-                            socket.emit('command', command);
-                            setTerminalContent(terminalContent => terminalContent + '> ' + command + '\n');
-                        } else {
-                            setTerminalContent('Failed to connect to the server');
-                        }
-                    }}/>
+                <View style={styles.inputPlaceholder}>
+                    {sessionStarted ? (
+                        <View style={styles.inputContainer}>
+                            <View style={styles.input}>
+                                <Text style={styles.textInput}>$ </Text>
+                                <TextInput style={styles.textInput} placeholder="Write your commands here"
+                                           onChangeText={
+                                               (text => setCommand(text))
+                                           } autoCapitalize={"none"} autoCompleteType={"off"} autoCorrect={false}
+                                           editable={sessionStarted}/>
+                            </View>
+                            <Icon name="play-arrow" size={60} onPress={() => {
+                                if (sessionStarted) {
+                                    socket.emit('command', command);
+                                    setTerminalContent(terminalContent => terminalContent + '> ' + command + '\n');
+                                } else if (!socket.connected) {
+                                    setTerminalContent('Failed to connect to the server');
+                                }
+                            }}/>
+                        </View>
+                    ) : null}
                 </View>
             </KeyboardAvoidingView>
         </View>
@@ -274,8 +303,10 @@ const styles = StyleSheet.create({
         elevation: 15,
         color: 'red'
     },
+    inputPlaceholder: {
+        marginTop: 25
+    },
     inputContainer: {
-        marginTop: 25,
         flexDirection: 'row',
         justifyContent: "space-between"
     },

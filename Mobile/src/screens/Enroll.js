@@ -5,7 +5,7 @@ import {ScrollView, StyleSheet, Text, View} from "react-native";
 import DrawerHeader from "../components/Header";
 import LabClassCard from "../components/LabClassCard";
 
-export default function Enroll({navigation, updateMain}) {
+export default function Enroll({navigation}) {
     const [token, setToken] = useContext(AuthContext);
     const [labs, setLabs] = useState([]);
 
@@ -34,21 +34,28 @@ export default function Enroll({navigation, updateMain}) {
 
     const refresh = () => {
         fetchLabs();
-        updateMain();
     }
 
     return (
-        <View>
-            <DrawerHeader navigation={navigation}/>
-            <ScrollView style={styles.container}>
-                <Text style={styles.labsHeader}>
-                    Enroll to laboratories
-                </Text>
-                <View style={styles.labs}>
-                    {labs.map(lab => <LabClassCard lab={lab} key={lab.id} navigation={navigation} enroll={true}
-                                                   updateLabs={refresh}/>)}
+        <View style={{backgroundColor: '#eceff1', height: '100%'}}>
+            <DrawerHeader navigation={navigation} title="Enroll"/>
+            <Text style={styles.labsHeader}>
+                Enroll to laboratories
+            </Text>
+            {labs.length > 0 ?
+                <ScrollView style={styles.container}>
+                    <View style={styles.labs}>
+                        {labs.map(lab => <LabClassCard lab={lab} key={lab.id} navigation={navigation} enroll={true}
+                                                       updateLabs={refresh}/>)}
+                    </View>
+                </ScrollView>
+                :
+                <View style={styles.container2}>
+                    <View style={styles.pageTitle}>
+                        <Text>No laboratory classes available</Text>
+                    </View>
                 </View>
-            </ScrollView>
+            }
         </View>
     )
 }
@@ -58,7 +65,7 @@ const styles = StyleSheet.create({
         display: "flex",
         flexDirection: "column",
         backgroundColor: '#eceff1',
-        height: '100%'
+        height: '100%',
     },
     labsHeader: {
         fontSize: 20,
@@ -69,5 +76,17 @@ const styles = StyleSheet.create({
     labs: {
         flexDirection: "column",
         marginBottom: 130,
-    }
+        flex: 1,
+    },
+    pageTitle: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    container2: {
+        display: "flex",
+        flexDirection: "column",
+        backgroundColor: '#eceff1',
+        height: '75%',
+    },
 });
