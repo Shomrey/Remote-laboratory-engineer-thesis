@@ -76,6 +76,14 @@ export default function LabClass(props) {
         )
     });
 
+    useEffect(() => {
+        props.navigation.addListener('beforeRemove', (e) => {
+            if (socket) {
+                socket.disconnect();
+            }
+        });
+    })
+
     return (
         <Tab.Navigator>
             <Tab.Screen name={Platform.OS === 'ios' ? "Intro" : "Introduction"} component={LabIntroduction}
