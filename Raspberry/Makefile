@@ -1,6 +1,3 @@
-include envfile
-export $(shell sed 's/=.*//' envfile)
-
 SERVER_ADDR = https://remote-laboratory.herokuapp.com/
 DEVICE_ID = malina_1
 
@@ -26,5 +23,10 @@ simulator: stop_containers rm_containers run_simulator
 	python3 simulator_manager.py $(FAKE_SWITCH_ADDR) $(FAKE_SWITCH_PORT) $(SERVER_ADDR) $(DEVICE_ID)
 
 device:
-    python3 device_manager.py $(DEVICE) $(DEVICE_ID) $(SERVER_ADDR)
+	python3 device_manager.py $(DEVICE) $(DEVICE_ID) $(SERVER_ADDR)
+
+host:
+	python3 host_manager.py $(DEVICE_ID) $(SERVER_ADDR)
+
+
 
