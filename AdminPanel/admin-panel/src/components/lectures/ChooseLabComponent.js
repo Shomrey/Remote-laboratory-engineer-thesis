@@ -7,15 +7,12 @@ import ListItem from '@material-ui/core/ListItem';
 class ChooseLabComponent extends Component {
     state = {}
 
-    handleClick = (index) => {
+    handleClick = (index, type) => {
         console.log(index);
         console.log("from chooselab: " + index);
-        this.props.handleChoice(index);
+        this.props.handleChoice(index, type);
     }
     render() {
-        let columns = [{ field: 'firstname', headerName: 'First name', width: 50 },
-        { field: 'surname', headerName: 'Surname', width: 50 },
-        { field: 'mail', headerName: 'Email', width: 50 }];
         return (
             <Container>
                 <TableContainer>
@@ -34,7 +31,7 @@ class ChooseLabComponent extends Component {
                                     <TableCell align="left">{lecture.title}</TableCell>
                                     <TableCell align="left">{lecture.date}</TableCell>
                                     <TableCell align="left">{lecture.teacher.name} {lecture.teacher.surname}</TableCell>
-                                    <TableCell align="left"> <Button variant="contained" color="primary" id={index} onClick={() => this.handleClick(index)}>Edit</Button></TableCell>
+                                    <TableCell align="left"> <Button variant="contained" color="primary" id={index} onClick={() => this.handleClick(index, 'edit')}>Edit</Button><Button variant="contained" color="primary" id={index} onClick={() => this.handleClick(index, 'enroll')}>Enroll</Button></TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>

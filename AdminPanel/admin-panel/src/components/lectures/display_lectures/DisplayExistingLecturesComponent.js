@@ -6,6 +6,8 @@ import { Grid, Container, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import ChooseLabComponent from '../ChooseLabComponent';
 import ChangeLectureForm from './ChangeLectureForm';
+import CreateNewLectureComponent from '../CreateNewLectureComponent';
+import AddStudentToLectureComponent from '../student_in_lab/AddStudentToLectureComponent';
 
 
 
@@ -19,7 +21,9 @@ class DisplayExistingLecturesComponent extends Component {// extends React.Compo
         teachers: [],
         labsLoaded: false,
         currentLectureIndex: -1,
-        currentLectureState: {}
+        currentLectureState: {},
+        createLab: false,
+        lectureEditionType: ''
     }
     componentDidMount() {
         const url = "https://remote-laboratory.herokuapp.com/api/labs";
@@ -36,8 +40,8 @@ class DisplayExistingLecturesComponent extends Component {// extends React.Compo
         this.state.labs.map(lab => console.log(lab))
     }
 
-    handleLectureChoice = (index) => {
-        this.setState({ currentLectureIndex: index });
+    handleLectureChoice = (index, type) => {
+        this.setState({ currentLectureIndex: index, lectureEditionType: type });
     }
 
     handleLectureChange = (lectureState) => {
@@ -53,19 +57,36 @@ class DisplayExistingLecturesComponent extends Component {// extends React.Compo
         console.log(this.state.currentLectureState);
     }
 
+    toggleCreate = () => {
+        let tmp = this.state.createLab;
+        this.setState({ createLab: !tmp });
+        console.log('toggle create');
+    }
+
 
 
 
     render() {
         let lectureToDisplayGuard;
         let submitButton;
-        console.log(this.state.teachers);
+        //console.log(this.state.teachers);
         if (this.state.currentLectureIndex != -1) {
-            submitButton = <Button variant="contained" color="primary" onClick={this.sendRequest}>Submit changes</Button>
-            lectureToDisplayGuard = <ChangeLectureForm lectureChange={this.handleLectureChange} lab={this.state.labs[this.state.currentLectureIndex]} teachers={this.state.teachers} />
+            if (this.state.lectureEditionType == 'enroll') {
+                submitButton = <span>why?</span>
+                lectureToDisplayGuard = <AddStudentToLectureComponent lectureId={this.state.currentLectureIndex} />
+
+            } else {
+                submitButton = <Button variant="contained" color="primary" onClick={this.sendRequest}>Submit changes</Button>
+                lectureToDisplayGuard = <ChangeLectureForm lectureChange={this.handleLectureChange} lab={this.state.labs[this.state.currentLectureIndex]} teachers={this.state.teachers} />
+
+            }
+        }
+        else if (this.state.createLab) {
+            lectureToDisplayGuard = <CreateNewLectureComponent />
+            submitButton = <Button variant="contained" color="primary" onClick={this.toggleCreate}>Cancel</Button>
         }
         else {
-            submitButton = "";
+            submitButton = <Button variant="contained" color="primary" onClick={this.toggleCreate}>Create new laboratory</Button>
             lectureToDisplayGuard = <ChooseLabComponent labs={this.state.labs} handleChoice={this.handleLectureChoice} />;
         }
         const style = {

@@ -15,7 +15,7 @@ class AddStudentToLectureComponent extends Component {
         labs: [],
         labsLoaded: false,
         studentsLoaded: false,
-        currentLectureIndex: -1,
+        currentLectureIndex: this.props.lectureId,
         oldStudentsInLab: {},
         newStudentsInLab: {},
         ready: false,
@@ -25,7 +25,7 @@ class AddStudentToLectureComponent extends Component {
         mailSearchBar: ""
     }
 
-    handleLectureChoice = (index) => {
+    /*handleLectureChoice = (index) => {
         console.log(index)
         this.state.allStudents.map(student => {
             this.state.oldStudentsInLab[student.id] = false
@@ -38,7 +38,7 @@ class AddStudentToLectureComponent extends Component {
         })
         console.log(this.state);
 
-    }
+    }*/
 
     handleChangeSwitch = (event) => {
         this.setState({ [event.target.name]: event.target.checked })
@@ -55,9 +55,28 @@ class AddStudentToLectureComponent extends Component {
     componentDidMount() {
         const urlLabs = "https://remote-laboratory.herokuapp.com/api/labs";
         const urlUsers = "https://remote-laboratory.herokuapp.com/api/users"
-        Axios.get(urlLabs).then(response => { console.log(response); this.setState({ labs: response.data, labsLoaded: true, currentLectureStudents: response.data[0].students }) });
-        Axios.get(urlUsers).then(response => { console.log(response); this.setState({ allStudents: response.data.filter(user => user.userType == "student"), studentsLoaded: true }) });
-        this.setState({ ready: true })
+        console.log('id of enrolled lecture: ' + this.props.lectureId);
+        Axios.get(urlLabs).then(response => {
+            this.setState({ labs: response.data, labsLoaded: true, currentLectureStudents: response.data[this.props.lectureId].students })
+        });
+        Axios.get(urlUsers).then(response => {
+            console.log(response);
+            let responseAllStudents = response.data.filter(user => user.userType == "student")
+            let tmpCurrentStudents = this.state.labs[this.props.lectureId].students
+            this.setState({ currentLectureStudents: tmpCurrentStudents, allStudents: responseAllStudents, studentsLoaded: true })
+            responseAllStudents.map(student => {
+                this.state.oldStudentsInLab[student.id] = false
+                this.state.newStudentsInLab[student.id] = false
+            })
+            tmpCurrentStudents.map(student => {
+                this.state.oldStudentsInLab[student.id] = true
+                this.state.newStudentsInLab[student.id] = true
+            })
+        })
+            .then(response => {
+                this.setState({ ready: true })
+            })
+
         console.log(this.state);
     }
 
@@ -97,14 +116,11 @@ class AddStudentToLectureComponent extends Component {
         this.setState({ [field]: evt.target.value })
     }
     render() {
+        console.log('render addstudent');
         let display;
         let showSubmitButton;
         let enrollSwitch;
-        if (this.state.currentLectureIndex == -1) {
-            display = <ChooseLabComponent labs={this.state.labs} handleChoice={this.handleLectureChoice} />
-            showSubmitButton = <div></div>
-        }
-        else if (this.state.ready) {
+        if (this.state.ready) {
             //<List>
             //    {this.state.allStudents.filter(studentFilter => this.state.onlyEnrolled ? this.isEnrolled(studentFilter.id) : true).map((student, index) => <ListItem><ChangeStudentStatusInLabComponent student={student} index={index} color={this.getColor(student.id)} toggle={this.toggleStudent} /> </ListItem>)}
             //</List>
@@ -148,6 +164,7 @@ class AddStudentToLectureComponent extends Component {
         else { display = <div></div>; showSubmitButton = <div></div> }
         //<SplitButton titleList={this.state.labs.map(lab => lab.title)} handleTitleChoice={this.handleLectureChoice} />
 
+        console.log('add students current lecture:' + this.state.currentLectureIndex);
         return (
             <Container>
                 {enrollSwitch}

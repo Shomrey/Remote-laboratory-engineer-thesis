@@ -3,7 +3,7 @@ import './App.css';
 import './components/lectures/display_lectures/DisplayExistingLecturesComponent';
 import DisplayExistingLecturesComponent from './components/lectures/display_lectures/DisplayExistingLecturesComponent';
 import Axios from 'axios';
-import { AppBar, Tabs, Tab, Grid } from '@material-ui/core';
+import { AppBar, Tabs, Tab, Grid, Container } from '@material-ui/core';
 import { TabPanel, TabContext } from '@material-ui/lab';
 import SimpleTabs from './components/SimpleTab';
 import CreateNewLectureComponent from './components/lectures/CreateNewLectureComponent';
@@ -11,6 +11,7 @@ import DisplayStudentsComponent from './components/students/DisplayStudentsCompo
 import CreateNewUserComponent from './components/students/CreateNewUserComponent';
 import AddStudentToLectureComponent from './components/lectures/student_in_lab/AddStudentToLectureComponent';
 import LoginComponent from './components/LoginComponent';
+import NavigationComponent from './components/NavigationComponent';
 
 class App extends Component {
 
@@ -31,6 +32,7 @@ class App extends Component {
   render() {
     let header;
     let activePage;
+    let page;
     if (this.state.token !== "") {
       header = <SimpleTabs passValueFunction={this.passValueFunction} />
       if (this.state.activeCard === 0) {
@@ -48,18 +50,25 @@ class App extends Component {
       if (this.state.activeCard === 4) {
         activePage = <AddStudentToLectureComponent />
       }
-    } else {
-      activePage = <LoginComponent tokenPass={this.getTokenFromAuth} />
-    }
-    return (
-      <Grid container spacing="3" justify="center" direction="column">
-        <Grid item>
-          {header}
+      page = <Grid container spacing={0} >
+        <Grid item xs={12} ><div style={{ backgroundColor: "blue", height: '80px', margin: 0, padding: 0, width: 'auto' }}>Header</div></Grid>
+        <Grid item xs={2}>
+          {
+            //header
+            <NavigationComponent passValueFunction={this.passValueFunction} />
+          }
         </Grid>
-        <Grid item>
+        <Grid item xs={10}>
           {activePage}
         </Grid>
       </Grid>
+    } else {
+      page = <LoginComponent tokenPass={this.getTokenFromAuth} />
+    }
+    return (
+      <div styles={{ margin: 0, padding: 0 }}>
+        { page}
+      </div>
     );
   }
 }
