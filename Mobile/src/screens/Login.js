@@ -22,6 +22,8 @@ export default function Login() {
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [token, setToken] = useContext(AuthContext);
+    const [loginFocus, setLoginFocus] = useState(false);
+    const [passwordFocus, setPasswordFocus] = useState(false);
 
     const logOut = () => {
         setIsLoggedIn(false);
@@ -42,6 +44,8 @@ export default function Login() {
                 setLogin('');
                 setPassword('');
                 setErrorMessage('');
+                setLoginFocus(false);
+                setPasswordFocus(false);
             })
             .catch(function (error) {
                 setWaitingForResponse(false);
@@ -77,12 +81,12 @@ export default function Login() {
                 </View>
                 <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}
                                       style={styles.inputsWrapper}>
-                    <TextInput style={styles.input} placeholder="Login" onChangeText={text => setLogin(text)}
-                               autoCapitalize={"none"}
-                               autoCompleteType={"off"} autoCorrect={false}/>
-                    <TextInput style={styles.input} placeholder="Password" onChangeText={text => setPassword(text)}
+                    <TextInput style={{...styles.input, borderWidth: loginFocus ? 3 : 0}} placeholder="Login" onChangeText={text => setLogin(text)}
+                               autoCapitalize={"none"} onFocus={() => setLoginFocus(true)} onBlur={() => setLoginFocus(false)}
+                               autoCompleteType={"off"} autoCorrect={false} />
+                    <TextInput style={{...styles.input, borderWidth: passwordFocus ? 3 : 0}} placeholder="Password" onChangeText={text => setPassword(text)}
                                secureTextEntry={true} autoCapitalize={"none"} autoCompleteType={"off"}
-                               autoCorrect={false}/>
+                               autoCorrect={false} onFocus={() => setPasswordFocus(true)} onBlur={() => setPasswordFocus(false)} />
                     <View style={styles.buttonWrapper}>
                         <TouchableOpacity
                             style={{...styles.button, backgroundColor: waitingForResponse ? 'grey' : 'black'}}
@@ -119,6 +123,7 @@ const styles = StyleSheet.create({
         borderRadius: 25,
         backgroundColor: '#cfd8dc',
         fontSize: 20,
+        borderColor: 'gray'
     },
     inputsWrapper: {
         alignSelf: 'stretch',

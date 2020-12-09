@@ -1,41 +1,38 @@
-import 'react-native-gesture-handler';
-import React, {useContext, useEffect, useState} from 'react';
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import LabClassCard from '../components/LabClassCard';
-import {createStackNavigator} from '@react-navigation/stack';
-import LabClass from './LabClass';
-import {AuthContext} from '../context/AuthContext';
-import Axios from 'axios';
+import React, {useContext, useEffect, useState} from "react";
+import {AuthContext} from "../context/AuthContext";
+import Axios from "axios";
+import {ScrollView, StyleSheet, Text, View} from "react-native";
 import DrawerHeader from "../components/Header";
+import LabClassCard from "../components/LabClassCard";
+import LabResult from "./LabResult";
+import {createStackNavigator} from "@react-navigation/stack";
 
 const Stack = createStackNavigator()
 
-export default function Home() {
+export default function Results() {
     return (
-        <Stack.Navigator initialRouteName="HomeContent" mode="modal">
+        <Stack.Navigator initialRouteName="ResultsContent" mode="modal">
             <Stack.Screen
-                name="HomeContent"
-                component={HomeContent}
+                name="ResultsContent"
+                component={ResultsContent}
                 options={{headerShown: false}}
             />
             <Stack.Screen
-                name="LabClass"
-                component={LabClass}
-                options={{title: "Laboratory class", headerStyle: {backgroundColor: '#cfd8dc'}}}
+                name="LabResult"
+                component={LabResult}
+                options={{title: "Laboratory results", headerStyle: {backgroundColor: '#cfd8dc'}}}
             />
         </Stack.Navigator>
-    );
+    )
 }
 
-function HomeContent({navigation}) {
+function ResultsContent({navigation}) {
     const [token, setToken] = useContext(AuthContext);
     const [labs, setLabs] = useState([]);
 
-    useEffect(() => {
-        Axios.get('https://remote-laboratory.herokuapp.com/api/users/current/labs', {
-            headers: {'Authorization': `Bearer ${token}`},
-            params: {enrolled: true}
-        })
+    const fetchLabs = () => {
+        Axios.get('https://remote-laboratory.herokuapp.com/api/users/current/labs',
+            {headers: {'Authorization': `Bearer ${token}`}, params: {enrolled: true}})
             .then(function (response) {
                 setLabs(response.data);
             })
@@ -50,19 +47,24 @@ function HomeContent({navigation}) {
                     console.log('Failed to connect to the server.')
                 }
             });
+    }
+
+    useEffect(() => {
+        fetchLabs();
     }, []);
 
     return (
         <View style={{backgroundColor: '#eceff1', height: '100%'}}>
-            <DrawerHeader navigation={navigation} title="Home"/>
+            <DrawerHeader navigation={navigation} title="Results"/>
             <Text style={styles.labsHeader}>
-                Upcoming laboratory classes
+                View laboratory results
             </Text>
             {
                 labs.length > 0 ?
                     <ScrollView style={styles.container}>
                         <View style={styles.labs}>
-                            {labs.map(lab => <LabClassCard lab={lab} key={lab.id} navigation={navigation}/>)}
+                            {labs.map(lab => <LabClassCard lab={lab} key={lab.id} navigation={navigation} enroll={true}
+                                                           result={true}/>)}
                         </View>
                     </ScrollView>
                     :
@@ -73,7 +75,7 @@ function HomeContent({navigation}) {
                     </View>
             }
         </View>
-    )
+    );
 }
 
 const styles = StyleSheet.create({

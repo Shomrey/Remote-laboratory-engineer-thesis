@@ -1,23 +1,73 @@
 import 'react-native-gesture-handler';
-import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {useContext, useState} from 'react';
+import {Text, TouchableOpacity, View, StyleSheet} from 'react-native';
+import Dialog from 'react-native-dialog';
+import Axios from 'axios';
+import {AuthContext} from "../context/AuthContext";
 
 export default function LabClassCard(props) {
+    const [dialogVisible, setDialogVisible] = useState(false);
+    const [enrollmentCode, setEnrollmentCode] = useState('');
+    const [token, setToken] = useContext(AuthContext);
+    const [enrollButtonEnabled, setEnrollButtonEnabled] = useState(true);
+    const [errorMessage, setErrorMessage] = useState(null);
+
+    const onPress = () => {
+        if (props.result) {
+            props.navigation.navigate('LabResult', {lab: props.lab})
+        } else if (props.enroll) {
+            setDialogVisible(true);
+        } else {
+            props.navigation.navigate('LabClass', {lab: props.lab});
+        }
+    }
+
     return (
-        <TouchableOpacity onPress={() => props.navigation.navigate('LabClass', {lab: props.lab})}
-                          style={styles.touchable}>
-            <View style={styles.content}>
-                <Text style={styles.profName}>
-                    {`${props.lab.teacher.name} ${props.lab.teacher.surname}`}
-                </Text>
-                <Text style={styles.labName}>
-                    {props.lab.title}
-                </Text>
-                <Text style={styles.subject}>
-                    {props.lab.date}
-                </Text>
-            </View>
-        </TouchableOpacity>
+        <View>
+            <TouchableOpacity onPress={onPress}
+                              style={styles.touchable}>
+                <View style={styles.content}>
+                    <Text style={styles.profName}>
+                        {`${props.lab.teacher.name} ${props.lab.teacher.surname}`}
+                    </Text>
+                    <Text style={styles.labName}>
+                        {props.lab.title}
+                    </Text>
+                    <Text style={styles.subject}>
+                        {props.lab.date}
+                    </Text>
+                </View>
+            </TouchableOpacity>
+            <Dialog.Container visible={dialogVisible}>
+                <Dialog.Title>Enroll to laboratory</Dialog.Title>
+                <Dialog.Input placeholder="enrollment code" autoCapitalize={"none"} onChangeText={text => setEnrollmentCode(text)}/>
+                {errorMessage ? <Dialog.Description>{errorMessage}</Dialog.Description>: ''}
+                <Dialog.Button label="Cancel" onPress={() => setDialogVisible(false)}/>
+                <Dialog.Button label="Enroll" disabled={!enrollButtonEnabled} onPress={() => {
+                    setEnrollButtonEnabled(false);
+
+                    Axios.post(`https://remote-laboratory.herokuapp.com/api/users/current/labs/${props.lab.id}/enroll-with-code`,
+                        {enrollmentCode},
+                        {headers: {'Authorization': `Bearer ${token}`}})
+                        .then(function (response) {
+                            setDialogVisible(false);
+                            props.updateLabs();
+                        })
+                        .catch(function (error) {
+                            setEnrollButtonEnabled(true);
+                            if (error.response) {
+                                if (error.response.status === 400) {
+                                    setErrorMessage('Incorrect code');
+                                } else {
+                                    setErrorMessage('Failed to enroll');
+                                }
+                            } else {
+                                setErrorMessage('Failed to enroll');
+                            }
+                        });
+                }}/>
+            </Dialog.Container>
+        </View>
     )
 }
 

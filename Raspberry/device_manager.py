@@ -1,17 +1,24 @@
 import serial
 import time
 import select
+import sys
 from threading import Thread
 import socketio
 
 sleep_time = 0.5
 
+# device = 'ttyUSB0'
+# device_id = 'malina_1'
+
+device = str(sys.argv[1])
+device_id = str(sys.argv[2])
+server_address = str(sys.argv[2])
 # fake-switches connection setup
 ser = serial.Serial('/dev/ttyUSB0')
 print('Connected to device!')
 
 # server connection setup
-server_address = 'https://remote-laboratory.herokuapp.com/'
+# server_address = 'https://remote-laboratory.herokuapp.com/'
 sio = socketio.Client()
 sio.connect(server_address)
 sio.emit('identify_raspberry', 'malina_1')
@@ -32,16 +39,12 @@ def get_message(source):
 
 @sio.on('output')
 def on_command(data):
-    # send cmd from server to device
     print("-------------------------------------------------------")
     print("Received from server: " + str(data))
     cmd = str(data) + '\n\r'
     ser.write(str.encode(cmd))
-    # ser.write(str.encode(data + '\r\n'))
     ser.reset_output_buffer()
-    # device_connection.send(cmd.encode(encoding='UTF-8'))
-    print("Sent to device: ")
-    print(str.encode(cmd))
+    print("Sent to device: " + str(str.encode(cmd)))
 
 
 @sio.on('start_device')
