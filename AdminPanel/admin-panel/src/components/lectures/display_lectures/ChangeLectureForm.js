@@ -7,13 +7,17 @@ const useStyles = makeStyles((theme) => ({
     root: {
         '& .MuiTextField-root': {
             margin: theme.spacing(1),
-            width: '25ch',
+            width: '100%',
         },
     },
     formControl: {
         margin: theme.spacing(1),
         minWidth: '25ch',
     },
+    container: {
+        //backgroundColor: "red",
+        width: "100%"
+    }
 }));
 
 export default function ChangeLectureForm(props) {
@@ -34,7 +38,9 @@ export default function ChangeLectureForm(props) {
         "tasks": props.lab.tasks,
         "topology": props.lab.topology,
         "maxStudents": props.lab.maxStudents,
-        "teacherId": props.lab.teacher.id
+        "teacherId": props.lab.teacher.id,
+        "enrollmentCode": props.lab.enrollmentCode,
+        "collectResultsCommands": props.lab.collectResultsCommands
     })
 
     function handleChange(evt) {
@@ -53,7 +59,7 @@ export default function ChangeLectureForm(props) {
     }
 
     return (
-        <Container>
+        <div className={classes.container}>
             <form className={classes.root} noValidate autoComplete="off">
                 <Container>
                     <TextField
@@ -148,6 +154,28 @@ export default function ChangeLectureForm(props) {
                     />
 
                 </Container>
+                <Container>
+                    <TextField
+                        id="outlined-enrollmentCode"
+                        label="Enrollment code"
+                        rowsMax={1}
+                        onChange={handleChange}
+                        placeholder="Code used by students to self-enroll to laboratory"
+                        variant="outlined"
+                        name="enrollmentCode"
+                    />
+                </Container>
+                <Container>
+                    <TextField
+                        id="outlined-collectResultsCommands"
+                        label="Results commands"
+                        rowsMax={1}
+                        onChange={handleChange}
+                        placeholder="Commands for switch that return final configurtion"
+                        variant="outlined"
+                        name="collectResultsCommands"
+                    />
+                </Container>
             </form>
             <Container>
                 <FormControl variant="filled" className={classes.formControl}>
@@ -165,6 +193,6 @@ export default function ChangeLectureForm(props) {
                     </Select>
                 </FormControl>
             </Container>
-        </Container >
+        </div >
     );
 }

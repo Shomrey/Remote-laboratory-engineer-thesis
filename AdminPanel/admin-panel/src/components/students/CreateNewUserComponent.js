@@ -31,8 +31,9 @@ class CreateNewLectureComponent extends Component {
         return (
             <div>
                 <MultilineTextFields passNewUserData={this.handleDataPass} isAdmin={this.state.currentUser.userType === "admin"} />
-                <Button disabled={!this.state.userLoaded} variant="contained" color="primary"
+                <Button style={{ margin: '1ch' }} variant="contained" color="primary"
                     onClick={this.sendRequest}>Create user</Button>
+                <Button variant="contained" color="primary" onClick={this.props.cancelFunction}>Cancel</Button>
             </div>
         );
     }

@@ -5,6 +5,7 @@ import DisplayExistingLecturesComponent from './components/lectures/display_lect
 import Axios from 'axios';
 import { AppBar, Tabs, Tab, Grid, Container } from '@material-ui/core';
 import { TabPanel, TabContext } from '@material-ui/lab';
+import { withStyles } from '@material-ui/styles';
 import SimpleTabs from './components/SimpleTab';
 import CreateNewLectureComponent from './components/lectures/CreateNewLectureComponent';
 import DisplayStudentsComponent from './components/students/DisplayStudentsComponent';
@@ -13,15 +14,23 @@ import AddStudentToLectureComponent from './components/lectures/student_in_lab/A
 import LoginComponent from './components/LoginComponent';
 import NavigationComponent from './components/NavigationComponent';
 
+/*const HeaderDiv = withStyles(theme => ({
+  header: {
+    backgroundColor: theme.palette.secondary.main
+  }
+}))(Container)*/
+
 class App extends Component {
 
   state = {
     token: "",
     tabValue: 0,
-    activeCard: 0
+    activeCard: 0,
+    counter: 0
   }
 
   passValueFunction = (value) => {
+    console.log(value);
     this.setState({ activeCard: value });
   }
 
@@ -30,6 +39,7 @@ class App extends Component {
   }
 
   render() {
+    //console.log(styles);
     let header;
     let activePage;
     let page;
@@ -50,8 +60,9 @@ class App extends Component {
       if (this.state.activeCard === 4) {
         activePage = <AddStudentToLectureComponent />
       }
-      page = <Grid container spacing={0} >
-        <Grid item xs={12} ><div style={{ backgroundColor: "blue", height: '80px', margin: 0, padding: 0, width: 'auto' }}>Header</div></Grid>
+      page = <Grid container spacing={0}  >
+
+        <Grid item xs={12} ><div style={{ backgroundColor: "#f44336", height: '80px', margin: 0, padding: 0, width: 'auto' }}>Header</div></Grid>
         <Grid item xs={2}>
           {
             //header
@@ -66,7 +77,7 @@ class App extends Component {
       page = <LoginComponent tokenPass={this.getTokenFromAuth} />
     }
     return (
-      <div styles={{ margin: 0, padding: 0 }}>
+      <div styles={{ margin: 0, padding: 0, height: "100%", minHeight: "100%" }}>
         { page}
       </div>
     );

@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
 import Axios from 'axios';
 import MultilineTextFields from './NewLectureForm';
-import { Button, Grid } from '@material-ui/core';
+import { Button, Grid, Container } from '@material-ui/core';
 
 class CreateNewLectureComponent extends Component {
+    constructor(props) {
+        super(props);
+    }
+
     state = {
         newLectureData: {},
         currentUser: {},
@@ -25,6 +29,11 @@ class CreateNewLectureComponent extends Component {
         Axios.post(url, lecture).then(response => console.log(response));
     }
 
+    onClickCancel = () => {
+        console.log('cancel');
+        console.log(this.props);
+        this.props.cancelFunction();
+    }
     componentDidMount() {
         const url = "https://remote-laboratory.herokuapp.com/api/users/current";
         console.log("getting current user");
@@ -39,10 +48,12 @@ class CreateNewLectureComponent extends Component {
         return (
             <Grid container
                 direction="column"
-                justify="center"
-                alignItems="center">
+            >
                 <MultilineTextFields teachers={this.state.teachers} passNewLectureData={this.handleDataPass} />
-                <Button disabled={!this.state.userLoaded} variant="contained" color="primary" onClick={this.sendRequest}>Create lecture</Button>
+                <Container>
+                    <Button style={{ width: '22ch', margin: '1ch' }} variant="contained" color="primary" onClick={this.sendRequest}>Create lecture</Button>
+                    <Button style={{ width: '14ch' }} variant="contained" color="primary" onClick={this.onClickCancel}>Cancel</Button>
+                </Container>
             </Grid>
         );
     }

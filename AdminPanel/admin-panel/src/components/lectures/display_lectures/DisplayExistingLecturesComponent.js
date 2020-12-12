@@ -72,8 +72,8 @@ class DisplayExistingLecturesComponent extends Component {// extends React.Compo
         //console.log(this.state.teachers);
         if (this.state.currentLectureIndex != -1) {
             if (this.state.lectureEditionType == 'enroll') {
-                submitButton = <span>why?</span>
-                lectureToDisplayGuard = <AddStudentToLectureComponent lectureId={this.state.currentLectureIndex} />
+                submitButton = ""
+                lectureToDisplayGuard = <AddStudentToLectureComponent cancelFunction={() => this.handleLectureChoice(-1, "")} lectureId={this.state.currentLectureIndex} />
 
             } else {
                 submitButton = <Button variant="contained" color="primary" onClick={this.sendRequest}>Submit changes</Button>
@@ -82,11 +82,11 @@ class DisplayExistingLecturesComponent extends Component {// extends React.Compo
             }
         }
         else if (this.state.createLab) {
-            lectureToDisplayGuard = <CreateNewLectureComponent />
-            submitButton = <Button variant="contained" color="primary" onClick={this.toggleCreate}>Cancel</Button>
+            lectureToDisplayGuard = <CreateNewLectureComponent cancelFunction={this.toggleCreate} />
+            submitButton = ""
         }
         else {
-            submitButton = <Button variant="contained" color="primary" onClick={this.toggleCreate}>Create new laboratory</Button>
+            submitButton = <Button style={{ margin: '1ch' }} variant="contained" color="primary" onClick={this.toggleCreate}>Create new laboratory</Button>
             lectureToDisplayGuard = <ChooseLabComponent labs={this.state.labs} handleChoice={this.handleLectureChoice} />;
         }
         const style = {

@@ -64,17 +64,14 @@ class DisplayExistingLecturesComponent extends Component {// extends React.Compo
     render() {
         let userToDisplayGuard;
         if (this.state.createUser) {
-            userToDisplayGuard = <div><CreateNewUserComponent />
-                <Button variant="contained" color="primary" onClick={this.toggleCreate}>Cancel</Button>
+            userToDisplayGuard = <div><CreateNewUserComponent cancelFunction={this.toggleCreate} />
+
             </div>
         }
         else if (typeof (this.state.users[this.state.currentUserIndex]) != "undefined") {
-            let columns = [{ field: 'firstname', headerName: 'First name', width: 100 },
-            { field: 'surname', headerName: 'Surname', width: 150 },
-            { field: 'mail', headerName: 'Email', width: 150 }];
             console.log(this.state);
             userToDisplayGuard = <div>
-                <Button variant="contained" color="primary" onClick={this.toggleCreate}>Create new createUser</Button>
+                <Button style={{ margin: "1ch" }} variant="contained" color="primary" onClick={this.toggleCreate}>Create new user</Button>
                 <TableContainer>
                     <Table>
                         <TableHead>

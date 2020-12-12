@@ -58,21 +58,22 @@ class AddStudentToLectureComponent extends Component {
         console.log('id of enrolled lecture: ' + this.props.lectureId);
         Axios.get(urlLabs).then(response => {
             this.setState({ labs: response.data, labsLoaded: true, currentLectureStudents: response.data[this.props.lectureId].students })
-        });
-        Axios.get(urlUsers).then(response => {
-            console.log(response);
-            let responseAllStudents = response.data.filter(user => user.userType == "student")
-            let tmpCurrentStudents = this.state.labs[this.props.lectureId].students
-            this.setState({ currentLectureStudents: tmpCurrentStudents, allStudents: responseAllStudents, studentsLoaded: true })
-            responseAllStudents.map(student => {
-                this.state.oldStudentsInLab[student.id] = false
-                this.state.newStudentsInLab[student.id] = false
-            })
-            tmpCurrentStudents.map(student => {
-                this.state.oldStudentsInLab[student.id] = true
-                this.state.newStudentsInLab[student.id] = true
-            })
         })
+            .then(response =>
+                Axios.get(urlUsers)).then(response => {
+                    console.log(response);
+                    let responseAllStudents = response.data.filter(user => user.userType == "student")
+                    let tmpCurrentStudents = this.state.labs[this.props.lectureId].students
+                    this.setState({ currentLectureStudents: tmpCurrentStudents, allStudents: responseAllStudents, studentsLoaded: true })
+                    responseAllStudents.map(student => {
+                        this.state.oldStudentsInLab[student.id] = false
+                        this.state.newStudentsInLab[student.id] = false
+                    })
+                    tmpCurrentStudents.map(student => {
+                        this.state.oldStudentsInLab[student.id] = true
+                        this.state.newStudentsInLab[student.id] = true
+                    })
+                })
             .then(response => {
                 this.setState({ ready: true })
             })
@@ -154,7 +155,10 @@ class AddStudentToLectureComponent extends Component {
                 </Table>
             </TableContainer>
             //<ChangeStudentStatusInLabComponent student={student} index={index} enrolled={this.isEnrolled(student.id)} toggle={this.toggleStudent} />
-            showSubmitButton = <Button variant="outlined" color="primary" onClick={this.calculateAndExecuteChanges}>Submit</Button>
+            showSubmitButton = <div>
+                <Button style={{ margin: '1ch' }} variant="outlined" color="primary" onClick={this.calculateAndExecuteChanges}>Submit</Button>
+                <Button style={{ width: '14ch' }} variant="contained" color="primary" onClick={this.props.cancelFunction}>Cancel</Button>
+            </div>
             enrollSwitch = <FormGroup row><FormControlLabel
                 control={<Switch checked={this.state.onlyEnrolled} onChange={this.handleChangeSwitch} name="onlyEnrolled" color="primary" />}
                 label="Only enrolled"
@@ -168,8 +172,8 @@ class AddStudentToLectureComponent extends Component {
         return (
             <Container>
                 {enrollSwitch}
-                {display}
                 {showSubmitButton}
+                {display}
             </Container>
         );
     }
