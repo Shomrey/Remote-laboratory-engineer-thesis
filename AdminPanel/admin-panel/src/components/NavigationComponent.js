@@ -6,8 +6,8 @@ class NavigationComponent extends Component {
     render() {
         return (<div style={{ backgroundColor: "#757de8", height: "100%", fontColor: "white" }}><MenuList color='primary'>
             <MenuItem button onClick={() => this.props.passValueFunction(0)}>Lectures</MenuItem>
-            <MenuItem button onClick={() => this.props.passValueFunction(2)}>Students</MenuItem>
-            <MenuItem>Live</MenuItem>
+            <MenuItem button onClick={() => this.props.passValueFunction(1)}>Students</MenuItem>
+            <MenuItem button onClick={() => this.props.passValueFunction(2)}>Live</MenuItem>
         </MenuList></div>);
     }
 }

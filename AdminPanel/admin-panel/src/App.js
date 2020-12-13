@@ -13,6 +13,7 @@ import CreateNewUserComponent from './components/students/CreateNewUserComponent
 import AddStudentToLectureComponent from './components/lectures/student_in_lab/AddStudentToLectureComponent';
 import LoginComponent from './components/LoginComponent';
 import NavigationComponent from './components/NavigationComponent';
+import LiveComponent from './components/lectures/live/LiveComponent';
 
 /*const HeaderDiv = withStyles(theme => ({
   header: {
@@ -48,11 +49,14 @@ class App extends Component {
       if (this.state.activeCard === 0) {
         activePage = <DisplayExistingLecturesComponent />
       }
-      if (this.state.activeCard === 1) {
+      if (this.state.activeCard === -1) {
         activePage = <CreateNewLectureComponent />
       }
-      if (this.state.activeCard === 2) {
+      if (this.state.activeCard === 1) {
         activePage = <DisplayStudentsComponent />
+      }
+      if (this.state.activeCard === 2) {
+        activePage = <LiveComponent />
       }
       if (this.state.activeCard === 3) {
         activePage = <CreateNewUserComponent />
