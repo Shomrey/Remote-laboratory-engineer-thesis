@@ -8,6 +8,7 @@ import ChooseLabComponent from '../ChooseLabComponent';
 import ChangeLectureForm from './ChangeLectureForm';
 import CreateNewLectureComponent from '../CreateNewLectureComponent';
 import AddStudentToLectureComponent from '../student_in_lab/AddStudentToLectureComponent';
+import DisplayResultsComponent from './DisplayResultsComponent';
 
 
 
@@ -75,7 +76,12 @@ class DisplayExistingLecturesComponent extends Component {// extends React.Compo
                 submitButton = ""
                 lectureToDisplayGuard = <AddStudentToLectureComponent cancelFunction={() => this.handleLectureChoice(-1, "")} lectureId={this.state.currentLectureIndex} />
 
-            } else {
+            }
+            else if (this.state.lectureEditionType == 'results') {
+                submitButton = "";
+                lectureToDisplayGuard = <DisplayResultsComponent labId={this.state.labs[this.state.currentLectureIndex].id} />
+            }
+            else {
                 submitButton = <Button variant="contained" color="primary" onClick={this.sendRequest}>Submit changes</Button>
                 lectureToDisplayGuard = <ChangeLectureForm lectureChange={this.handleLectureChange} lab={this.state.labs[this.state.currentLectureIndex]} teachers={this.state.teachers} />
 

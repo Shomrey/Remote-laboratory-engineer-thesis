@@ -5,9 +5,10 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Axios from 'axios';
+import logo from '../resources/agh_logo.jpg';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -33,8 +34,10 @@ export default function SignIn(props) {
     const classes = useStyles();
     const [state, setState] = React.useState({
         "email": "",
-        "password": ""
+        "password": "",
+        "failedLogin": ""
     })
+    const [failedLogin, setFailedLogin] = React.useState("")
 
     function handleChange(evt) {
         const value = evt.target.value;
@@ -63,22 +66,26 @@ export default function SignIn(props) {
             })
             .catch(error => {
                 console.log(error);
+                setState({ failedLogin: 'Wrong email or password, try again', email: '', password: '' })
             })
 
     }
 
+    /*<Avatar alt="Agh logo" src={logo} className={classes.avatar}>
+
+                </Avatar> */
     return (
         <Container component="main" maxWidth="xs">
-            <CssBaseline/>
+            <CssBaseline />
             <div className={classes.paper}>
-                <Avatar className={classes.avatar}>
-                    <LockOutlinedIcon/>
-                </Avatar>
+                <img src={logo} />
+
                 <Typography component="h1" variant="h5">
                     Sign in
                 </Typography>
                 <form className={classes.form} noValidate>
                     <TextField
+                        value={state.email}
                         variant="outlined"
                         margin="normal"
                         required
@@ -91,6 +98,7 @@ export default function SignIn(props) {
                         onChange={handleChange}
                     />
                     <TextField
+                        value={state.password}
                         variant="outlined"
                         margin="normal"
                         required
@@ -102,6 +110,7 @@ export default function SignIn(props) {
                         autoComplete="current-password"
                         onChange={handleChange}
                     />
+                    <span>{state.failedLogin}</span>
                     <Button
                         type="submit"
                         fullWidth
