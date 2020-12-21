@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
             justifyContent: "center",
             textAlign: "center",
             //backgroundColor: "yellow"
-        },
+        }
     },
     formControl: {
         margin: theme.spacing(1),
@@ -37,7 +37,8 @@ export default function MultilineTextFields(props) {
         "maxStudents": 0,
         "teacherId": 0,
         "enrollmentCode": "",
-        "collectResultsCommands": ""
+        "collectResultsCommands": "",
+        "expectedConfiguration": ""
     })
 
     function handleChange(evt) {
@@ -167,6 +168,18 @@ export default function MultilineTextFields(props) {
                         placeholder="Commands for switch that return final configurtion"
                         variant="outlined"
                         name="collectResultsCommands"
+                    />
+                </Container>
+                <Container>
+                    <TextField
+                        id="outlined-expectedConfiguration"
+                        label="Expected configuration"
+                        onChange={handleChange}
+                        multiline
+                        rows={7}
+                        variant="outlined"
+                        name="expectedConfiguration"
+                        defaultValue={state.expectedConfiguration}
                     />
                 </Container>
                 <Container>

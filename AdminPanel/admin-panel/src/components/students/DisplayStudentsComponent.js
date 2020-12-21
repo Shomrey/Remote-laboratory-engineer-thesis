@@ -5,6 +5,7 @@ import SplitButton from './UserDisplayList';
 import { Button, Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import CreateNewUserComponent from './CreateNewUserComponent';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 
 
@@ -59,6 +60,14 @@ class DisplayExistingLecturesComponent extends Component {// extends React.Compo
         console.log('toggle create');
     }
 
+    handleUserDelete = (userId) => {
+        const url = "https://remote-laboratory.herokuapp.com/api/users/" + userId;
+        Axios.delete(url);
+        let tmpUsers = this.state.users.filter(user => user.id !== userId);
+        this.setState({ users: tmpUsers });
+        console.log('Delete user: ' + userId);
+    }
+
 
 
     render() {
@@ -91,6 +100,7 @@ class DisplayExistingLecturesComponent extends Component {// extends React.Compo
                                         <TableCell align="left">{user.name}</TableCell>
                                         <TableCell align="left">{user.surname}</TableCell>
                                         <TableCell align="left">{user.mail}</TableCell>
+                                        <TableCell align="left"><Button onClick={() => this.handleUserDelete(user.id)}><DeleteIcon /></Button></TableCell>
                                     </TableRow>
                                 ))}
                         </TableBody>

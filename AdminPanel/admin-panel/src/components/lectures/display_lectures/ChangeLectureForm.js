@@ -40,7 +40,8 @@ export default function ChangeLectureForm(props) {
         "maxStudents": props.lab.maxStudents,
         "teacherId": props.lab.teacher.id,
         "enrollmentCode": props.lab.enrollmentCode,
-        "collectResultsCommands": props.lab.collectResultsCommands
+        "collectResultsCommands": props.lab.collectResultsCommands,
+        "expectedConfiguration": props.lab.expectedConfiguration
     })
 
     function handleChange(evt) {
@@ -152,7 +153,6 @@ export default function ChangeLectureForm(props) {
                         name="description"
                         defaultValue={state.description}
                     />
-
                 </Container>
                 <Container>
                     <TextField
@@ -174,6 +174,18 @@ export default function ChangeLectureForm(props) {
                         placeholder="Commands for switch that return final configurtion"
                         variant="outlined"
                         name="collectResultsCommands"
+                    />
+                </Container>
+                <Container>
+                    <TextField
+                        id="outlined-expectedConfiguration"
+                        label="Expected configuration"
+                        onChange={handleChange}
+                        multiline
+                        rows={7}
+                        variant="outlined"
+                        name="expectedConfiguration"
+                        defaultValue={state.expectedConfiguration}
                     />
                 </Container>
             </form>

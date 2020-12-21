@@ -42,7 +42,7 @@ class DisplayExistingLecturesComponent extends Component {// extends React.Compo
     }
 
     handleLectureChoice = (index, type) => {
-        this.setState({ currentLectureIndex: index, lectureEditionType: type });
+        this.setState({ currentLectureIndex: index, lectureEditionType: type, currentLectureState: this.state.labs[index] });
     }
 
     handleLectureChange = (lectureState) => {
@@ -56,6 +56,14 @@ class DisplayExistingLecturesComponent extends Component {// extends React.Compo
         console.log(lecture);
         Axios.patch(url, lecture).then(console.log("lab updated")).catch((error) => console.log(error));
         console.log(this.state.currentLectureState);
+    }
+
+    deleteLaboratory = () => {
+        let labId = this.state.currentLectureState.id;
+        const url = "https://remote-laboratory.herokuapp.com/api/labs/" + labId;
+        Axios.delete(url).then(console.log("lab deleted"));//.catch((error) => console.log(error));
+        let tmpLabs = this.state.labs.filter(lab => lab.Id !== labId);
+        this.setState({ labs: tmpLabs, currentLectureIndex: -1, currentLectureState: {} });
     }
 
     toggleCreate = () => {
@@ -82,7 +90,8 @@ class DisplayExistingLecturesComponent extends Component {// extends React.Compo
                 lectureToDisplayGuard = <DisplayResultsComponent labId={this.state.labs[this.state.currentLectureIndex].id} />
             }
             else {
-                submitButton = <Button variant="contained" color="primary" onClick={this.sendRequest}>Submit changes</Button>
+
+                submitButton = <div><Button style={{ margin: '1ch' }} variant="contained" color="primary" onClick={this.sendRequest}>Submit changes</Button><Button style={{ margin: '1ch' }} variant="contained" color="primary" onClick={this.deleteLaboratory}>Delete laboratory</Button></div>
                 lectureToDisplayGuard = <ChangeLectureForm lectureChange={this.handleLectureChange} lab={this.state.labs[this.state.currentLectureIndex]} teachers={this.state.teachers} />
 
             }

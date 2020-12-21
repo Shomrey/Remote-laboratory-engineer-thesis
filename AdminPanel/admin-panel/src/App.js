@@ -74,9 +74,9 @@ class App extends Component {
         activePage = <AddStudentToLectureComponent />
       }
       page = <Grid container spacing={0}  >
-        <Grid item xs={2}><div style={{ backgroundColor: '#757de8', height: '80px' }}>{this.state.userNameReady ? this.state.userName : ""}</div></Grid>
-        <Grid item xs={9}><div style={{ backgroundColor: '#757de8', height: '80px' }}></div></Grid>
-        <Grid item xs={1} ><div style={{ height: '80px', margin: 0, padding: 0, width: 'auto', alignItems: 'right', justifyContent: 'right' }}><img style={{ margin: '2px', alignItems: 'right' }} src={logo} /></div></Grid>
+        <Grid item xs={2}><div style={{ backgroundColor: '#eceff1', height: '80px', borderBottom: '1px solid #aaa' }}>{this.state.userNameReady ? this.state.userName : ""}</div></Grid>
+        <Grid item xs={9}><div style={{ backgroundColor: '#eceff1', height: '80px', borderBottom: '1px solid #aaa' }}></div></Grid>
+        <Grid item xs={1} ><div style={{ height: '80px', margin: 0, padding: 0, width: 'auto', alignItems: 'right', justifyContent: 'right', borderBottom: '1px solid #aaa' }}><img style={{ margin: '2px', alignItems: 'right' }} src={logo} /></div></Grid>
         <Grid item xs={2}>
           {
             //header

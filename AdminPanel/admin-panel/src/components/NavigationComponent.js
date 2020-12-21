@@ -4,9 +4,9 @@ import { MenuList, MenuItem } from '@material-ui/core'
 class NavigationComponent extends Component {
     state = {}
     render() {
-        return (<div style={{ backgroundColor: "#757de8", height: "100%", fontColor: "white" }}><MenuList color='primary'>
-            <MenuItem button onClick={() => this.props.passValueFunction(0)}>Lectures</MenuItem>
-            <MenuItem button onClick={() => this.props.passValueFunction(1)}>Students</MenuItem>
+        return (<div style={{ backgroundColor: "#eceff1", height: "100%", fontColor: "white" }}><MenuList color='primary'>
+            <MenuItem button onClick={() => this.props.passValueFunction(0)}>Laboratory classes</MenuItem>
+            <MenuItem button onClick={() => this.props.passValueFunction(1)}>Users</MenuItem>
             <MenuItem button onClick={() => this.props.passValueFunction(2)}>Live</MenuItem>
         </MenuList></div>);
     }
