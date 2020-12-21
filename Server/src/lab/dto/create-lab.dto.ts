@@ -46,4 +46,8 @@ export class CreateLabDto {
     @ApiProperty()
     @IsString()
     enrollmentCode: string;
+
+    @ApiProperty()
+    @IsString()
+    expectedConfiguration: string;
 }

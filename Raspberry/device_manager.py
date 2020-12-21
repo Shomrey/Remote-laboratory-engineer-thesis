@@ -6,19 +6,15 @@ from threading import Thread
 import socketio
 
 sleep_time = 0.5
-
-# device = 'ttyUSB0'
-# device_id = 'malina_1'
-
 device = str(sys.argv[1])
 device_id = str(sys.argv[2])
-server_address = str(sys.argv[2])
+server_address = str(sys.argv[3])
+
 # fake-switches connection setup
-ser = serial.Serial('/dev/ttyUSB0')
+ser = serial.Serial('/dev/'+device)
 print('Connected to device!')
 
 # server connection setup
-# server_address = 'https://remote-laboratory.herokuapp.com/'
 sio = socketio.Client()
 sio.connect(server_address)
 sio.emit('identify_raspberry', 'malina_1')

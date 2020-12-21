@@ -9,11 +9,11 @@ export class Enrollment {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(type => User, user => user.enrollments)
+    @ManyToOne(type => User, user => user.enrollments, {onDelete: 'CASCADE'})
     @JoinColumn()
     student: User;
 
-    @ManyToOne(type => Lab, lab => lab.enrollments)
+    @ManyToOne(type => Lab, lab => lab.enrollments, {onDelete: 'CASCADE'})
     @JoinColumn()
     laboratory: Lab;
 

@@ -2,7 +2,7 @@ import {
     Body,
     Controller,
     Delete,
-    Get,
+    Get, HttpCode, HttpStatus,
     Param,
     ParseBoolPipe,
     ParseIntPipe,
@@ -13,7 +13,14 @@ import {
 import {UserService} from './user.service';
 import {Routes} from "../utils/constants";
 import {UserResponse} from "./response/user.response";
-import {ApiBadRequestResponse, ApiBearerAuth, ApiNotFoundResponse, ApiOkResponse, ApiTags} from "@nestjs/swagger";
+import {
+    ApiBadRequestResponse,
+    ApiBearerAuth,
+    ApiNoContentResponse,
+    ApiNotFoundResponse,
+    ApiOkResponse,
+    ApiTags
+} from "@nestjs/swagger";
 import {CurrentUser} from "../auth/decorator/current-user.decorator";
 import {User} from "./model/user.model";
 import {JwtAuthGuard} from "../auth/guard/jwt-auth.guard";
@@ -96,6 +103,14 @@ export class UserController {
         const user = await this.userService.findOrFailById(userId);
 
         return new UserResponse(user);
+    }
+
+    @Delete(':userId')
+    @HttpCode(HttpStatus.NO_CONTENT)
+    @ApiNoContentResponse({description: 'User successfully deleted'})
+    @ApiNotFoundResponse({description: 'User with given ID was not found'})
+    async delete(@Param('userId', ParseIntPipe) userId: number): Promise<void> {
+        await this.userService.deleteUser(userId);
     }
 
     @Post(`:userId/labs/:labId/enroll`)

@@ -57,6 +57,12 @@ export class LabService {
         }
     }
 
+    async delete(labId: number): Promise<void> {
+        const lab = await this.findOrFailById(labId);
+
+        await this.labRepository.remove(lab);
+    }
+
     async findAll(): Promise<Lab[]> {
         return this.labRepository.find({relations: ['enrollments', 'enrollments.student', 'teacher']});
     }
