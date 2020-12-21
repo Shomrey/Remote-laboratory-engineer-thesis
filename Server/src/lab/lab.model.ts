@@ -20,6 +20,9 @@ export class Lab {
     @Column()
     configuration: string;
 
+    @Column({nullable: true})
+    expectedConfiguration: string;
+
     @Column({default: ''})
     collectResultsCommands: string;
 
@@ -38,7 +41,7 @@ export class Lab {
     @Column({name: 'enrollment_code', nullable: true})
     enrollmentCode: string;
 
-    @ManyToOne(type => User)
+    @ManyToOne(type => User, {onDelete: 'CASCADE'})
     teacher: User;
 
     @OneToMany(type => Enrollment, enrollment => enrollment.laboratory)

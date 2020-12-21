@@ -43,6 +43,9 @@ export class LabResponse {
     @ApiProperty({type: UserResponse, isArray: true})
     students: UserResponse[];
 
+    @ApiProperty()
+    expectedConfiguration: string;
+
     constructor(lab: Lab) {
         this.id = lab.id;
         this.date = lab.date;
@@ -57,5 +60,6 @@ export class LabResponse {
         this.enrollmentCode = lab.enrollmentCode;
         this.teacher = lab.teacher ? new UserResponse(lab.teacher) : null;
         this.students = lab.enrollments ? lab.enrollments.map(enrollment => new UserResponse(enrollment.student)) : null;
+        this.expectedConfiguration = lab.expectedConfiguration;
     }
 }

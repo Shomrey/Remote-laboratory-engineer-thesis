@@ -1,6 +1,25 @@
-import {Body, Controller, Get, Param, ParseIntPipe, Patch, Post, UseGuards} from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    HttpCode,
+    HttpStatus,
+    Param,
+    ParseIntPipe,
+    Patch,
+    Post,
+    UseGuards
+} from '@nestjs/common';
 import {Routes} from "../utils/constants";
-import {ApiBearerAuth, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags} from "@nestjs/swagger";
+import {
+    ApiBearerAuth,
+    ApiCreatedResponse,
+    ApiNoContentResponse,
+    ApiNotFoundResponse,
+    ApiOkResponse,
+    ApiTags
+} from "@nestjs/swagger";
 import {LabService} from "./lab.service";
 import {JwtAuthGuard} from "../auth/guard/jwt-auth.guard";
 import {CreateLabDto} from "./dto/create-lab.dto";
@@ -39,6 +58,14 @@ export class LabController {
     @ApiNotFoundResponse({description: 'Teacher or lab class with given ID was not found'})
     async updateLab(@Param('labId', ParseIntPipe) labId: number, @Body() updateLabDto: UpdateLabDto): Promise<void> {
         await this.labService.update(labId, updateLabDto);
+    }
+
+    @Delete(':labId')
+    @HttpCode(HttpStatus.NO_CONTENT)
+    @ApiNoContentResponse({description: 'Lab successfully removed'})
+    @ApiNotFoundResponse({description: 'Lab class with given ID was not found'})
+    async deleteLab(@Param('labId', ParseIntPipe) labId: number): Promise<void> {
+        await this.labService.delete(labId);
     }
 
     @Get(':labId/results')
