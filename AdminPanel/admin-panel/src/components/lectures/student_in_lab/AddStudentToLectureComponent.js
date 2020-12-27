@@ -101,6 +101,7 @@ class AddStudentToLectureComponent extends Component {
                 }
             }
         })
+        this.props.cancelFunction();
     }
 
     addUserToLecture = (event) => {
@@ -156,7 +157,7 @@ class AddStudentToLectureComponent extends Component {
             </TableContainer>
             //<ChangeStudentStatusInLabComponent student={student} index={index} enrolled={this.isEnrolled(student.id)} toggle={this.toggleStudent} />
             showSubmitButton = <div>
-                <Button style={{ margin: '1ch' }} variant="outlined" color="primary" onClick={this.calculateAndExecuteChanges}>Submit</Button>
+                <Button style={{ margin: '1ch' }} variant="contained" color="primary" onClick={this.calculateAndExecuteChanges}>Submit</Button>
                 <Button style={{ width: '14ch' }} variant="contained" color="primary" onClick={this.props.cancelFunction}>Cancel</Button>
             </div>
             enrollSwitch = <FormGroup row><FormControlLabel

@@ -23,7 +23,7 @@ class CreateNewLectureComponent extends Component {
         const teacherId = this.state.currentUser.id;
         const url = "https://remote-laboratory.herokuapp.com/api/labs";
         let lecture = this.state.newLectureData;
-        lecture.teacherId = teacherId;
+        lecture.teacherId = parseInt(lecture.teacherId);
         lecture.duration = parseInt(lecture.duration);
         lecture.maxStudents = parseInt(lecture.maxStudents);
         Axios.post(url, lecture).then(response => console.log(response));

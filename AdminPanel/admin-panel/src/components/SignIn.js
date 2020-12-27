@@ -78,7 +78,7 @@ export default function SignIn(props) {
         <Container component="main" maxWidth="xs">
             <CssBaseline />
             <div className={classes.paper}>
-                <img src={logo} />
+                <img style={{ boxShadow: '1px 1px 1px 1px #ccc' }} src={logo} />
 
                 <Typography component="h1" variant="h5">
                     Sign in

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, FormControl, InputLabel, Select, MenuItem, TextField, Button } from '@material-ui/core';
+import { Container, FormControl, InputLabel, Select, MenuItem, TextField, Button, Grid } from '@material-ui/core';
 import Axios from 'axios';
 
 class DisplayResultsComponent extends Component {
@@ -67,39 +67,47 @@ class DisplayResultsComponent extends Component {
     render() {
         return (
             <div>
-                <Container>
-                    <FormControl style={{ margin: '1ch' }} variant="filled" >
-                        <InputLabel id="select-label">Student</InputLabel>
-                        <Select
-                            labelId="select-label"
-                            id="select"
-                            value={this.state.currentStudentId}
-                            //defaultValue={props.teachers.filter(teacher => teacher.id === state.teacherId)[0]}
-                            onChange={this.handleChange}
-                            name="teacherId"
-                            variant="outlined"
-                        >
-                            {this.state.results.map(result => <MenuItem value={result.studentId}>{this.getStudentName(result.studentId)}</MenuItem>)}
-                        </Select>
-                    </FormControl>
-                    <TextField
-                        id="outlined-grade"
-                        label="Grade"
-                        onChange={this.handleGrade}
-                        variant="outlined"
-                        name="grade"
-                        defaultValue={this.state.grade}
-                        style={{ margin: '1ch' }}
-                    />
-                    <Button style={{ margin: '1ch' }} onClick={this.sendGrade} variant="contained" color="primary">Send grade</Button>
-                </Container>
-                <Container style={{ whiteSpace: 'pre-wrap' }}>
-                    {this.getStudentResult(this.state.currentStudentId)}
-                </Container>
-                <Container style={{ whiteSpace: 'pre-wrap', backgroundColor: 'lightgreen' }}>
-                    {this.state.expectedConfiguration}
-                </Container>
-
+                <Grid container spacing={0}>
+                    <Grid item xs={12}>
+                        <Container>
+                            <FormControl style={{ margin: '1ch' }} variant="filled" >
+                                <InputLabel id="select-label">Student</InputLabel>
+                                <Select
+                                    labelId="select-label"
+                                    id="select"
+                                    value={this.state.currentStudentId}
+                                    //defaultValue={props.teachers.filter(teacher => teacher.id === state.teacherId)[0]}
+                                    onChange={this.handleChange}
+                                    name="teacherId"
+                                    variant="outlined"
+                                >
+                                    {this.state.results.map(result => <MenuItem value={result.studentId}>{this.getStudentName(result.studentId)}</MenuItem>)}
+                                </Select>
+                            </FormControl>
+                            <TextField
+                                id="outlined-grade"
+                                label="Grade"
+                                onChange={this.handleGrade}
+                                variant="outlined"
+                                name="grade"
+                                defaultValue={this.state.grade}
+                                style={{ margin: '1ch' }}
+                            />
+                            <Button style={{ margin: '1ch' }} onClick={this.sendGrade} variant="contained" color="primary">Send grade</Button>
+                            <Button style={{ margin: '1ch' }} onClick={this.props.cancelFunction} variant="contained" color="primary">Close</Button>
+                        </Container>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Container style={{ whiteSpace: 'pre-wrap' }}>
+                            {this.getStudentResult(this.state.currentStudentId)}
+                        </Container>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Container style={{ whiteSpace: 'pre-wrap', backgroundColor: 'lightgreen' }}>
+                            {this.state.expectedConfiguration}
+                        </Container>
+                    </Grid>
+                </Grid>
             </div>
         );
     }

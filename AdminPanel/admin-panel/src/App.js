@@ -58,20 +58,11 @@ class App extends Component {
       if (this.state.activeCard === 0) {
         activePage = <DisplayExistingLecturesComponent />
       }
-      if (this.state.activeCard === -1) {
-        activePage = <CreateNewLectureComponent />
-      }
       if (this.state.activeCard === 1) {
         activePage = <DisplayStudentsComponent />
       }
       if (this.state.activeCard === 2) {
         activePage = <LiveComponent />
-      }
-      if (this.state.activeCard === 3) {
-        activePage = <CreateNewUserComponent />
-      }
-      if (this.state.activeCard === 4) {
-        activePage = <AddStudentToLectureComponent />
       }
       page = <Grid container spacing={0}  >
         <Grid item xs={2}><div style={{ backgroundColor: '#eceff1', height: '80px', borderBottom: '1px solid #aaa' }}>{this.state.userNameReady ? this.state.userName : ""}</div></Grid>

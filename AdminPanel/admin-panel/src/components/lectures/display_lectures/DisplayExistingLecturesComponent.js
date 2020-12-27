@@ -56,6 +56,7 @@ class DisplayExistingLecturesComponent extends Component {// extends React.Compo
         console.log(lecture);
         Axios.patch(url, lecture).then(console.log("lab updated")).catch((error) => console.log(error));
         console.log(this.state.currentLectureState);
+        this.resetIndex();
     }
 
     deleteLaboratory = () => {
@@ -72,6 +73,10 @@ class DisplayExistingLecturesComponent extends Component {// extends React.Compo
         console.log('toggle create');
     }
 
+    //cancel
+    resetIndex = () => {
+        this.setState({ currentLectureIndex: -1 });
+    }
 
 
 
@@ -87,11 +92,11 @@ class DisplayExistingLecturesComponent extends Component {// extends React.Compo
             }
             else if (this.state.lectureEditionType == 'results') {
                 submitButton = "";
-                lectureToDisplayGuard = <DisplayResultsComponent labId={this.state.labs[this.state.currentLectureIndex].id} />
+                lectureToDisplayGuard = <DisplayResultsComponent labId={this.state.labs[this.state.currentLectureIndex].id} cancelFunction={() => this.handleLectureChoice(-1, "")} />
             }
             else {
 
-                submitButton = <div><Button style={{ margin: '1ch' }} variant="contained" color="primary" onClick={this.sendRequest}>Submit changes</Button><Button style={{ margin: '1ch' }} variant="contained" color="primary" onClick={this.deleteLaboratory}>Delete laboratory</Button></div>
+                submitButton = <div><Button style={{ margin: '1ch' }} variant="contained" color="primary" onClick={this.sendRequest}>Submit changes</Button><Button style={{ margin: '1ch' }} variant="contained" color="primary" onClick={this.deleteLaboratory}>Delete laboratory</Button><Button style={{ margin: '1ch' }} variant="contained" color="primary" onClick={this.resetIndex}>Cancel</Button></div>
                 lectureToDisplayGuard = <ChangeLectureForm lectureChange={this.handleLectureChange} lab={this.state.labs[this.state.currentLectureIndex]} teachers={this.state.teachers} />
 
             }
