@@ -1,6 +1,6 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-In the project directory (AdminPanel) run:
+In the project directory (admin-panel) run:
 
 ### `npm start`
 
