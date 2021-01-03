@@ -112,6 +112,7 @@ export default function ChangeLectureForm(props) {
                         label="Tasks"
                         multiline
                         rowsMax={4}
+                        rows={4}
                         onChange={handleChange}
                         variant="outlined"
                         name="tasks"
@@ -124,6 +125,7 @@ export default function ChangeLectureForm(props) {
                         label="Topology"
                         onChange={handleChange}
                         multiline
+                        rows={4}
                         rowsMax={4}
                         variant="outlined"
                         name="topology"
@@ -163,6 +165,7 @@ export default function ChangeLectureForm(props) {
                         placeholder="Code used by students to self-enroll to laboratory"
                         variant="outlined"
                         name="enrollmentCode"
+                        defaultValue={state.enrollmentCode}
                     />
                 </Container>
                 <Container>
@@ -174,6 +177,7 @@ export default function ChangeLectureForm(props) {
                         placeholder="Commands for switch that return final configurtion"
                         variant="outlined"
                         name="collectResultsCommands"
+                        defaultValue={state.collectResultsCommands}
                     />
                 </Container>
                 <Container>
