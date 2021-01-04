@@ -17,7 +17,7 @@ print('Connected to device!')
 # server connection setup
 sio = socketio.Client()
 sio.connect(server_address)
-sio.emit('identify_raspberry', 'malina_1')
+sio.emit('identify_raspberry', device_id)
 print('Connected to server!')
 
 

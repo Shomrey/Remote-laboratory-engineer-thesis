@@ -14,19 +14,16 @@ fake_switch_username = 'root'
 fake_switch_password = 'root'
 ssh_client = paramiko.SSHClient()
 ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-ssh_client.connect(hostname=docker_address, port=docker_port,
-                   username=fake_switch_username, password=fake_switch_password)
+ssh_client.connect(hostname=docker_address, port=docker_port, username=fake_switch_username, password=fake_switch_password)
 device_connection = ssh_client.invoke_shell()
 print('Connected to device!')
 
 # server connection setup
-# server_address = 'https://remote-laboratory.herokuapp.com/'
-# device_id = 'malina_1'
 server_address = sys.argv[3]
 device_id = sys.argv[4]
 sio = socketio.Client()
 sio.connect(server_address)
-sio.emit('identify_raspberry', 'malina_1')
+sio.emit('identify_raspberry', device_id)
 print('Connected to server!')
 
 
