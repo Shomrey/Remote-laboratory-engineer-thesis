@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Client from './SocketIOClient';
 import { MenuList, MenuItem } from '@material-ui/core';
 import socketIOClient from "socket.io-client";
 class LiveComponent extends Component {
@@ -16,7 +15,7 @@ class LiveComponent extends Component {
 
 
     messageHandle = (message) => {
-        console.log(message)
+        console.log(this.state.messages)
         let tmp = this.state.messages;
         tmp.push(message);
         this.setState({ messages: tmp });
@@ -24,6 +23,11 @@ class LiveComponent extends Component {
 
     componentDidMount() {
         this.state.socket.emit('admin');
+        this.state.socket.on('spy', data => {
+            this.messageHandle(data);
+            console.log('I got message in parent');
+            console.log(data);
+        })
     }
     componentWillUnmount() {
 
@@ -32,7 +36,6 @@ class LiveComponent extends Component {
     render() {
         return (
             <div>
-                <Client messagePass={this.messageHandle} socket={this.state.socket} />
                 <MenuList>
                     {this.state.messages.map(message => <MenuItem>{message}</MenuItem>)}
                 </MenuList>

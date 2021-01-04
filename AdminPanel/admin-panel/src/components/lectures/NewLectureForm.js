@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function MultilineTextFields(props) {
+export default function NewLectureForm(props) {
     const classes = useStyles();
     const [value, setValue] = React.useState('Controlled');
     const [state, setState] = React.useState({
